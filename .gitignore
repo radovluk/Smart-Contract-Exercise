@@ -1,0 +1,47 @@
+# Node.js dependencies
+**/node_modules/
+
+# Build artifacts and caches
+**/artifacts/
+**/cache/
+**/dist/
+**/build/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE and editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Hardhat specific
+**/hardhat.config.js
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Miscellaneous
+*.tgz
+*.lock-wscript
+*.lock-sh
+*.lock-win
