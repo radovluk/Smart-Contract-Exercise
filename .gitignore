@@ -36,9 +36,6 @@ Thumbs.db
 *.njsproj
 *.sln
 
-# Hardhat specific
-**/hardhat.config.js
-
 # Optional npm cache directory
 .npm
 
