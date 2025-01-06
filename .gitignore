@@ -1,3 +1,6 @@
+# Ignore .gitignore files in all subfolders
+**/.gitignore
+
 # Node.js dependencies
 **/node_modules/
 
@@ -22,6 +25,8 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+
+.gitignore
 
 # IDE and editor directories and files
 .vscode/
