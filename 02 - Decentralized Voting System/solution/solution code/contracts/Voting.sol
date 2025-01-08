@@ -44,10 +44,16 @@ contract Voting {
     event Voted(address indexed voter, uint indexed candidateIndex);
 
     /**
+     * @dev Event emitted when a new candidate is added.
+     * @param name The name of the candidate to be added.
+     */
+    event CandidateAdded(string name);
+
+    /**
      * @dev The constructor sets the deployer as the owner.
      */
     constructor() {
-        // TODO: Set the deployer of the contract as the owner
+        owner = msg.sender; // The deployer is the owner
     }
 
     /**
@@ -55,7 +61,7 @@ contract Voting {
      *      Reverts with "Not the contract owner" if the caller is not the owner.
      */
     modifier onlyOwner() {
-        // TODO: Implement access control to ensure only the owner can execute the function
+        require(msg.sender == owner, "Not the contract owner");
         _;
     }
 
@@ -68,9 +74,11 @@ contract Voting {
      * - The candidate name cannot be empty.
      */
     function addCandidate(string memory _name) public onlyOwner {
-        // TODO: Ensure that the candidate name is not empty
-        // TODO: Create a new Candidate struct with the provided name and zero votes
-        // TODO: Add the new candidate to the candidates array
+        require(bytes(_name).length > 0, "Candidate name cannot be empty");
+        // Create a new Candidate struct and push it to the candidates array
+        candidates.push(Candidate({name: _name, voteCount: 0}));
+        // Emit the CandidateAdded event
+        emit CandidateAdded(_name);
     }
 
     /**
@@ -82,11 +90,18 @@ contract Voting {
      * - The candidate index is valid (within the array bounds).
      */
     function vote(uint _candidateIndex) public {
-        // TODO: Check if the sender has already voted
-        // TODO: Check if the candidate index is within the valid range
-        // TODO: Increment the vote count for the chosen candidate
-        // TODO: Mark the sender as having voted
-        // TODO: Emit the Voted event with the voter's address and candidate index
+        // Ensure the caller hasn't voted yet
+        require(!hasVoted[msg.sender], "Already voted");
+        // Ensure the candidate index is valid
+        require(_candidateIndex < candidates.length, "Invalid candidate index");
+
+        // Increment the vote count for the chosen candidate
+        candidates[_candidateIndex].voteCount += 1;
+        // Mark the caller as having voted
+        hasVoted[msg.sender] = true;
+
+        // Emit the Voted event
+        emit Voted(msg.sender, _candidateIndex);
     }
 
     /**
@@ -94,7 +109,7 @@ contract Voting {
      * @return The length of the candidates array.
      */
     function getCandidateCount() public view returns (uint) {
-        // TODO: Return the number of candidates in the candidates array
+        return candidates.length;
     }
 
     /**
@@ -107,8 +122,11 @@ contract Voting {
      * - The candidate index must be within bounds.
      */
     function getCandidate(uint _index) public view returns (string memory name, uint voteCount) {
-        // TODO: Ensure the index is within the valid range
-        // TODO: Retrieve the candidate's name and vote count from the candidates array
+        // Ensure the index is valid
+        require(_index < candidates.length, "Index out of range");
+        // Retrieve the candidate from the array
+        Candidate storage candidate = candidates[_index];
+        return (candidate.name, candidate.voteCount);
     }
 
     /**
@@ -120,9 +138,19 @@ contract Voting {
      * - There must be at least one candidate in the array.
      */
     function winningCandidate() public view returns (uint) {
-        // TODO: Ensure there is at least one candidate to determine a winner
-        // TODO: Initialize variables to track the highest vote count and winner index
-        // TODO: Iterate through the candidates array to find the candidate with the highest vote count
-        // TODO: Return the index of the winning candidate
+        require(candidates.length > 0, "No candidates available");
+
+        uint winningVoteCount = candidates[0].voteCount;
+        uint winnerIndex = 0;
+
+        // Iterate through all candidates to find the one with the highest vote count
+        for (uint i = 1; i < candidates.length; i++) {
+            if (candidates[i].voteCount > winningVoteCount) {
+                winningVoteCount = candidates[i].voteCount;
+                winnerIndex = i;
+            }
+        }
+        return winnerIndex; // Return the index of the winning candidate
     }
 }
+
