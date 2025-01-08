@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{  }\PYG{c+cm}{/**}
+\PYG{c+cm}{  * @dev Event emitted when a vote is cast.}
+\PYG{c+cm}{  * @param voter The address of the voter.}
+\PYG{c+cm}{  * @param candidateIndex The index of the candidate voted for.}
+\PYG{c+cm}{  */}
+\PYG{+w}{ }\PYG{k+kt}{event}\PYG{+w}{ }\PYG{n+nv}{Voted}\PYG{p}{(}\PYG{k+kt}{address}\PYG{+w}{ }\PYG{n+nv}{indexed}\PYG{+w}{ }voter\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{uint}\PYG{+w}{ }\PYG{n+nv}{indexed}\PYG{+w}{ }candidateIndex\PYG{p}{);}
+
+\PYG{+w}{ }\PYG{c+cm}{/**}
+\PYG{c+cm}{  * @dev Event emitted when a new candidate is added.}
+\PYG{c+cm}{  * @param name The name of the candidate to be added.}
+\PYG{c+cm}{  */}
+\PYG{+w}{ }\PYG{k+kt}{event}\PYG{+w}{ }\PYG{n+nv}{CandidateAdded}\PYG{p}{(}\PYG{k+kt}{string}\PYG{+w}{ }\PYG{n+nv}{name}\PYG{p}{);}
+\end{Verbatim}

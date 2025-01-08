@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{  }\PYGZdl{}\PYG{+w}{ }npx\PYG{+w}{ }hardhat\PYG{+w}{ }run\PYG{+w}{ }scripts/deploy.js
+\end{Verbatim}
