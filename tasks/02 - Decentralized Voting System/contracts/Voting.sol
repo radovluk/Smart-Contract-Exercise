@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
  * @dev A simple voting contract where the owner can add candidates
  *      and any address can vote exactly once for a candidate.
  * 
- * The contract must include the following functionalities:
+ * The contract includes the following functionalities:
  * 
  * - The contract owner can add candidates.
  * - Any address can vote exactly once for a candidate.
@@ -15,23 +15,6 @@ pragma solidity ^0.8.0;
  * - The contract provides a function to get the total number of candidates.
  * - The contract provides a function to get a candidate's name and vote count by index.
  * - The contract provides a function to get the index of the winning candidate.
- * 
- * The contract must include the following components:
- * 
- * - `owner`: The address of the contract owner.
- * - `Candidate`: A struct representing a candidate, with a name and vote count.
- * - `candidates`: A dynamic array to store all candidates.
- * - `hasVoted`: A mapping to track whether an address has already voted.
- * 
- * The contract must include the following functions:
- * 
- * - `constructor()`: Sets the deployer as the owner.
- * - `onlyOwner()`: A modifier that only allows the owner to call certain functions.
- * - `addCandidate(string memory _name)`: Adds a new candidate (only the owner can call).
- * - `vote(uint _candidateIndex)`: Votes for a candidate by index.
- * - `getCandidateCount()`: Returns the total number of candidates.
- * - `getCandidate(uint _index)`: Returns a candidate's name and vote count by index.
- * - `winningCandidate()`: Returns the index of the winning candidate (the highest vote count).
  */
 contract Voting {
     // Address of the contract owner
@@ -54,19 +37,25 @@ contract Voting {
     mapping(address => bool) public hasVoted;
 
     /**
-     * @dev The constructor should set the deployer as the owner.
-     * Constructor will be called when contract is deployed.
+     * @dev Event emitted when a vote is cast.
+     * @param voter The address of the voter.
+     * @param candidateIndex The index of the candidate voted for.
+     */
+    event Voted(address indexed voter, uint indexed candidateIndex);
+
+    /**
+     * @dev The constructor sets the deployer as the owner.
      */
     constructor() {
-        owner = msg.sender;
+        // TODO: Set the deployer of the contract as the owner
     }
 
     /**
      * @dev Modifier to restrict function access to only the contract owner.
-     *      Throws an error if the caller is not the owner.
+     *      Reverts with "Not the contract owner" if the caller is not the owner.
      */
     modifier onlyOwner() {
-        // TODO: require that msg.sender == owner
+        // TODO: Implement access control to ensure only the owner can execute the function
         _;
     }
 
@@ -76,10 +65,12 @@ contract Voting {
      *
      * Requirements:
      * - Only the contract owner can add a candidate.
+     * - The candidate name cannot be empty.
      */
-    function addCandidate(string memory _name) public {
-        // TODO: msg.sender must be onlyOwner (use the modifier)
-        // TODO: push a new candidate into the candidates array
+    function addCandidate(string memory _name) public onlyOwner {
+        // TODO: Ensure that the candidate name is not empty
+        // TODO: Create a new Candidate struct with the provided name and zero votes
+        // TODO: Add the new candidate to the candidates array
     }
 
     /**
@@ -91,9 +82,11 @@ contract Voting {
      * - The candidate index is valid (within the array bounds).
      */
     function vote(uint _candidateIndex) public {
-        // TODO: require that msg.sender hasn't voted before
-        // TODO: increment the candidate's voteCount
-        // TODO: set hasVoted[msg.sender] = true
+        // TODO: Check if the sender has already voted
+        // TODO: Check if the candidate index is within the valid range
+        // TODO: Increment the vote count for the chosen candidate
+        // TODO: Mark the sender as having voted
+        // TODO: Emit the Voted event with the voter's address and candidate index
     }
 
     /**
@@ -101,27 +94,35 @@ contract Voting {
      * @return The length of the candidates array.
      */
     function getCandidateCount() public view returns (uint) {
-        // TODO: return length of the candidates array
+        // TODO: Return the number of candidates in the candidates array
     }
 
     /**
      * @dev Retrieves a candidate's details by their index.
      * @param _index The index of the candidate in the candidates array.
-     * @return The name and vote count of the candidate.
+     * @return name The name of the candidate.
+     * @return voteCount The number of votes the candidate has received.
      *
      * Requirements:
      * - The candidate index must be within bounds.
      */
-    function getCandidate(uint _index) public view returns (string memory, uint) {
-        // TODO: return candidate info
+    function getCandidate(uint _index) public view returns (string memory name, uint voteCount) {
+        // TODO: Ensure the index is within the valid range
+        // TODO: Retrieve the candidate's name and vote count from the candidates array
     }
 
     /**
      * @dev Determines the index of the candidate with the highest vote count.
      *      If multiple candidates have the same highest vote count, the first one encountered is returned.
      * @return The index of the winning candidate in the candidates array.
+     *
+     * Requirements:
+     * - There must be at least one candidate in the array.
      */
     function winningCandidate() public view returns (uint) {
-        // TODO: loop through candidates, find the highest voteCount
+        // TODO: Ensure there is at least one candidate to determine a winner
+        // TODO: Initialize variables to track the highest vote count and winner index
+        // TODO: Iterate through the candidates array to find the candidate with the highest vote count
+        // TODO: Return the index of the winning candidate
     }
 }

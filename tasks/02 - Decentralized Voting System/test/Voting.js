@@ -1,16 +1,17 @@
 // Import necessary modules from Hardhat and Chai
 const { loadFixture } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
 const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
 // Describe the test suite for the Voting contract
-describe("Voting", function () {
+describe("Voting Contract Test Suite", function () {
   /**
    * Fixture to deploy the Voting contract.
    * Re-runs between tests to ensure each test starts from a clean state.
    */
   async function deployVotingFixture() {
     // Retrieve a list of accounts provided by Hardhat
-    const [owner, voter1, voter2] = await ethers.getSigners();
+    const [owner, voter1, voter2, voter3, voter4, voter5, nonOwner] = await ethers.getSigners();
 
     // 1. Get the contract factory for the Voting contract
     const Voting = await ethers.getContractFactory("Voting");
@@ -19,144 +20,301 @@ describe("Voting", function () {
     const voting = await Voting.deploy();
 
     // Return the deployed contract instance and the signers for use in tests
-    return { voting, owner, voter1, voter2 };
+    return { voting, owner, voter1, voter2, voter3, voter4, voter5, nonOwner };
   }
 
   // Test suite for Deployment-related tests
   describe("Deployment", function () {
-    it("Should deploy the contract successfully", async function () {
-      // Load the fixture to deploy a fresh contract instance
+    it("Should deploy the contract successfully and have a valid address", async function () {
       const { voting } = await loadFixture(deployVotingFixture);
-      
-      // Check that the deployed contract has a proper address
       expect(voting.target).to.properAddress;
     });
 
     it("Should set the right owner", async function () {
-      // Load the fixture
       const { voting, owner } = await loadFixture(deployVotingFixture);
-      
-      // Assert that the owner variable in the contract matches the deployer's address
       expect(await voting.owner()).to.equal(owner.address);
+    });
+
+    it("Should initialize with zero candidates", async function () {
+      const { voting } = await loadFixture(deployVotingFixture);
+      const count = await voting.getCandidateCount();
+      expect(count).to.equal(0);
+    });
+  });
+
+  // Test suite for Access Control
+  describe("Access Control", function () {
+    it("Only owner can add candidates", async function () {
+      const { voting, owner, nonOwner } = await loadFixture(deployVotingFixture);
+
+      // Owner adds a candidate
+      await expect(voting.connect(owner).addCandidate("Alice")).to.not.be.reverted;
+
+      // Non-owner attempts to add a candidate
+      await expect(voting.connect(nonOwner).addCandidate("Bob")).to.be.revertedWith("Not the contract owner");
     });
   });
 
   // Test suite for Candidate-related tests
-  describe("Candidates", function () {
-    it("Should allow the owner to add candidates", async function () {
-      // Load the fixture
+  describe("Candidates Management", function () {
+    it("Should allow the owner to add multiple candidates", async function () {
       const { voting, owner } = await loadFixture(deployVotingFixture);
 
-      // Owner adds two candidates: "Alice" and "Bob"
+      // Owner adds multiple candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
+      await voting.connect(owner).addCandidate("Charlie");
 
-      // Retrieve the total number of candidates added
-      const candidateCount = await voting.getCandidateCount();
-      expect(candidateCount).to.equal(2);
+      const count = await voting.getCandidateCount();
+      expect(count).to.equal(3);
 
-      // Retrieve and verify the first candidate's name
       const candidate1 = await voting.getCandidate(0);
-      expect(candidate1[0]).to.equal("Alice");
+      expect(candidate1.name).to.equal("Alice");
+      expect(candidate1.voteCount).to.equal(0);
 
-      // Retrieve and verify the second candidate's name
       const candidate2 = await voting.getCandidate(1);
-      expect(candidate2[0]).to.equal("Bob");
+      expect(candidate2.name).to.equal("Bob");
+      expect(candidate2.voteCount).to.equal(0);
+
+      const candidate3 = await voting.getCandidate(2);
+      expect(candidate3.name).to.equal("Charlie");
+      expect(candidate3.voteCount).to.equal(0);
     });
 
-    it("Should not allow non-owners to add candidates", async function () {
-      // Load the fixture
-      const { voting, voter1 } = await loadFixture(deployVotingFixture);
+    it("Should prevent adding candidates with empty names", async function () {
+      const { voting, owner } = await loadFixture(deployVotingFixture);
 
-      // Attempt to add a candidate as a non-owner and expect it to be reverted with an error
-      await expect(voting.connect(voter1).addCandidate("Alice")).to.be.revertedWith("Not the contract owner");
+      await expect(voting.connect(owner).addCandidate("")).to.be.revertedWith("Candidate name cannot be empty");
+    });
+
+    it("Should allow adding candidates with duplicate names", async function () {
+      const { voting, owner } = await loadFixture(deployVotingFixture);
+
+      await voting.connect(owner).addCandidate("Alice");
+      await voting.connect(owner).addCandidate("Alice");
+
+      const count = await voting.getCandidateCount();
+      expect(count).to.equal(2);
+
+      const candidate1 = await voting.getCandidate(0);
+      const candidate2 = await voting.getCandidate(1);
+      expect(candidate1.name).to.equal("Alice");
+      expect(candidate2.name).to.equal("Alice");
     });
   });
 
   // Test suite for Voting-related tests
-  describe("Voting", function () {
-    it("Should allow a voter to cast a vote", async function () {
-      // Load the fixture
+  describe("Voting Mechanism", function () {
+    it("Should allow a voter to cast a vote for a valid candidate", async function () {
       const { voting, owner, voter1 } = await loadFixture(deployVotingFixture);
 
-      // Owner adds a candidate named "Alice"
+      // Owner adds a candidate
       await voting.connect(owner).addCandidate("Alice");
 
-      // Voter1 casts a vote for the first candidate (index 0)
-      await voting.connect(voter1).vote(0);
+      // Voter1 casts a vote
+      await expect(voting.connect(voter1).vote(0)).to.emit(voting, 'Voted').withArgs(voter1.address, 0);
 
-      // Retrieve the candidate's details to verify the vote count
+      // Verify vote count
       const candidate = await voting.getCandidate(0);
-      expect(candidate[1]).to.equal(1); // Expect voteCount to be 1
+      expect(candidate.voteCount).to.equal(1);
+    });
+
+    it("Should not allow voting for a non-existent candidate", async function () {
+      const { voting, voter1 } = await loadFixture(deployVotingFixture);
+
+      // Attempt to vote without adding any candidates
+      await expect(voting.connect(voter1).vote(0)).to.be.revertedWith("Invalid candidate index");
     });
 
     it("Should not allow a voter to vote more than once", async function () {
-      // Load the fixture
       const { voting, owner, voter1 } = await loadFixture(deployVotingFixture);
 
-      // Owner adds a candidate named "Alice"
+      // Owner adds a candidate
       await voting.connect(owner).addCandidate("Alice");
 
       // Voter1 casts their first vote
       await voting.connect(voter1).vote(0);
 
-      // Voter1 attempts to cast a second vote and expects it to be reverted
+      // Voter1 attempts to cast a second vote
       await expect(voting.connect(voter1).vote(0)).to.be.revertedWith("Already voted");
     });
 
-    it("Should allow multiple voters to vote", async function () {
-      // Load the fixture
+    it("Should allow multiple voters to vote for different candidates", async function () {
       const { voting, owner, voter1, voter2 } = await loadFixture(deployVotingFixture);
 
-      // Owner adds a candidate named "Alice"
+      // Owner adds two candidates
+      await voting.connect(owner).addCandidate("Alice");
+      await voting.connect(owner).addCandidate("Bob");
+
+      // Voter1 votes for Alice and Voter2 votes for Bob
+      await voting.connect(voter1).vote(0);
+      await voting.connect(voter2).vote(1);
+
+      // Verify vote counts
+      const candidate1 = await voting.getCandidate(0);
+      const candidate2 = await voting.getCandidate(1);
+      expect(candidate1.voteCount).to.equal(1);
+      expect(candidate2.voteCount).to.equal(1);
+    });
+
+    it("Should emit a Voted event upon successful voting", async function () {
+      const { voting, owner, voter1 } = await loadFixture(deployVotingFixture);
+
+      // Owner adds a candidate
       await voting.connect(owner).addCandidate("Alice");
 
-      // Voter1 and Voter2 both cast votes for the first candidate (index 0)
-      await voting.connect(voter1).vote(0);
-      await voting.connect(voter2).vote(0);
-
-      // Retrieve the candidate's details to verify the total vote count
-      const candidate = await voting.getCandidate(0);
-      expect(candidate[1]).to.equal(2); // Expect voteCount to be 2
+      // Voter1 casts a vote and expects an event
+      await expect(voting.connect(voter1).vote(0))
+        .to.emit(voting, 'Voted')
+        .withArgs(voter1.address, 0);
     });
   });
 
-  // Test suite for Result-related tests
-  describe("Results", function () {
-    it("Should return the correct vote count for a candidate", async function () {
-      // Load the fixture
-      const { voting, owner, voter1, voter2 } = await loadFixture(deployVotingFixture);
+  // Test suite for Results-related tests
+  describe("Results and Winning Candidate", function () {
+    it("Should return the correct vote count for each candidate", async function () {
+      const { voting, owner, voter1, voter2, voter3 } = await loadFixture(deployVotingFixture);
 
-      // Owner adds two candidates: "Alice" and "Bob"
+      // Owner adds two candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
 
-      // Voter1 votes for "Alice" (index 0) and Voter2 votes for "Bob" (index 1)
-      await voting.connect(voter1).vote(0);
-      await voting.connect(voter2).vote(1);
+      // Cast votes
+      await voting.connect(voter1).vote(0); // Alice: 1
+      await voting.connect(voter2).vote(1); // Bob: 1
+      await voting.connect(voter3).vote(1); // Bob: 2
 
-      // Retrieve and verify the vote counts for both candidates
+      // Retrieve and verify vote counts
       const candidate1 = await voting.getCandidate(0);
       const candidate2 = await voting.getCandidate(1);
-      expect(candidate1[1]).to.equal(1); // "Alice" should have 1 vote
-      expect(candidate2[1]).to.equal(1); // "Bob" should have 1 vote
+      expect(candidate1.voteCount).to.equal(1);
+      expect(candidate2.voteCount).to.equal(2);
     });
 
-    it("Should return the winning candidate", async function () {
-      // Load the fixture
+    it("Should correctly identify the winning candidate", async function () {
       const { voting, owner, voter1, voter2 } = await loadFixture(deployVotingFixture);
 
-      // Owner adds two candidates: "Alice" and "Bob"
+      // Owner adds two candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
 
-      // Both Voter1 and Voter2 vote for "Bob" (index 1)
+      // Both voters vote for Bob
       await voting.connect(voter1).vote(1);
       await voting.connect(voter2).vote(1);
 
-      // Retrieve the index of the winning candidate
+      // Retrieve the winning candidate index
       const winnerIndex = await voting.winningCandidate();
-      expect(winnerIndex).to.equal(1); // Expect "Alice" (index 0) to be the winner
+      expect(winnerIndex).to.equal(1); // Bob should be the winner
+    });
+
+    it("Should handle multiple candidates and determine the correct winner", async function () {
+      const { voting, owner, voter1, voter2, voter3, voter4 } = await loadFixture(deployVotingFixture);
+
+      // Owner adds three candidates
+      await voting.connect(owner).addCandidate("Alice");
+      await voting.connect(owner).addCandidate("Bob");
+      await voting.connect(owner).addCandidate("Charlie");
+
+      // Cast votes
+      await voting.connect(voter1).vote(0); // Alice: 1
+      await voting.connect(voter2).vote(1); // Bob: 1
+      await voting.connect(voter3).vote(1); // Bob: 2
+      await voting.connect(voter4).vote(2); // Charlie: 1
+
+      // Retrieve the winning candidate index
+      const winnerIndex = await voting.winningCandidate();
+      expect(winnerIndex).to.equal(1); // Bob should be the winner
+    });
+  });
+
+  // Test suite for Getter Functions
+  describe("Getter Functions", function () {
+    it("Should return the correct candidate details using getCandidate", async function () {
+      const { voting, owner } = await loadFixture(deployVotingFixture);
+
+      // Owner adds a candidate
+      await voting.connect(owner).addCandidate("Alice");
+
+      // Retrieve candidate details
+      const candidate = await voting.getCandidate(0);
+      expect(candidate.name).to.equal("Alice");
+      expect(candidate.voteCount).to.equal(0);
+    });
+
+    it("Should revert when accessing a candidate with an invalid index", async function () {
+      const { voting } = await loadFixture(deployVotingFixture);
+
+      // Attempt to access a candidate that doesn't exist
+      await expect(voting.getCandidate(0)).to.be.revertedWith("Index out of range");
+    });
+
+    it("Should return the correct total number of candidates", async function () {
+      const { voting, owner } = await loadFixture(deployVotingFixture);
+
+      // Initially, zero candidates
+      let count = await voting.getCandidateCount();
+      expect(count).to.equal(0);
+
+      // Add candidates
+      await voting.connect(owner).addCandidate("Alice");
+      await voting.connect(owner).addCandidate("Bob");
+
+      // Check count again
+      count = await voting.getCandidateCount();
+      expect(count).to.equal(2);
+    });
+  });
+
+  // Test suite for Edge Cases
+  describe("Edge Cases", function () {
+    it("Should handle voting when no candidates are present", async function () {
+      const { voting, voter1 } = await loadFixture(deployVotingFixture);
+
+      // Attempt to vote without any candidates
+      await expect(voting.connect(voter1).vote(0)).to.be.revertedWith("Invalid candidate index");
+    });
+
+    it("Should handle multiple votes and ensure accurate vote tracking", async function () {
+      const { voting, owner, voter1, voter2, voter3, voter4, voter5 } = await loadFixture(deployVotingFixture);
+
+      // Owner adds three candidates
+      await voting.connect(owner).addCandidate("Alice");
+      await voting.connect(owner).addCandidate("Bob");
+      await voting.connect(owner).addCandidate("Charlie");
+
+      // Cast multiple votes
+      await voting.connect(voter1).vote(0); // Alice: 1
+      await voting.connect(voter2).vote(1); // Bob: 1
+      await voting.connect(voter3).vote(1); // Bob: 2
+      await voting.connect(voter4).vote(2); // Charlie: 1
+      await voting.connect(voter5).vote(1); // Bob: 3
+
+      // Verify vote counts
+      const alice = await voting.getCandidate(0);
+      const bob = await voting.getCandidate(1);
+      const charlie = await voting.getCandidate(2);
+
+      expect(alice.voteCount).to.equal(1);
+      expect(bob.voteCount).to.equal(3);
+      expect(charlie.voteCount).to.equal(1);
+
+      // Verify the winner
+      const winnerIndex = await voting.winningCandidate();
+      expect(winnerIndex).to.equal(1); // Bob should be the winner
+    });
+
+    it("Should not allow the same address to vote multiple times across different candidates", async function () {
+      const { voting, owner, voter1 } = await loadFixture(deployVotingFixture);
+
+      // Owner adds two candidates
+      await voting.connect(owner).addCandidate("Alice");
+      await voting.connect(owner).addCandidate("Bob");
+
+      // Voter1 votes for Alice
+      await voting.connect(voter1).vote(0);
+
+      // Voter1 attempts to vote for Bob
+      await expect(voting.connect(voter1).vote(1)).to.be.revertedWith("Already voted");
     });
   });
 });

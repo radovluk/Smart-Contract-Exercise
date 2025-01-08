@@ -6,32 +6,15 @@ pragma solidity ^0.8.0;
  * @dev A simple voting contract where the owner can add candidates
  *      and any address can vote exactly once for a candidate.
  * 
- * The contract must include the following functionalities:
+ * The contract includes the following functionalities:
  * 
  * - The contract owner can add candidates.
  * - Any address can vote exactly once for a candidate.
  * - The contract tracks the number of votes each candidate has received.
  * - The contract tracks whether an address has already voted.
  * - The contract provides a function to get the total number of candidates.
- * - The contract provides a function to get a candidate's name and vote count by index (optional).
- * - The contract provides a function to get the index of the winning candidate (optional).
- * 
- * The contract must include the following components:
- * 
- * - `owner`: The address of the contract owner.
- * - `Candidate`: A struct representing a candidate, with a name and vote count.
- * - `candidates`: A dynamic array to store all candidates.
- * - `hasVoted`: A mapping to track whether an address has already voted.
- * 
- * The contract must include the following functions:
- * 
- * - `constructor()`: Sets the deployer as the owner.
- * - `onlyOwner()`: A modifier that only allows the owner to call certain functions.
- * - `addCandidate(string memory _name)`: Adds a new candidate (only the owner can call).
- * - `vote(uint _candidateIndex)`: Votes for a candidate by index.
- * - `getCandidateCount()`: Returns the total number of candidates.
- * - `getCandidate(uint _index)`: Returns a candidate's name and vote count by index (optional).
- * - `winningCandidate()`: Returns the index of the winning candidate (the highest vote count) (optional).
+ * - The contract provides a function to get a candidate's name and vote count by index.
+ * - The contract provides a function to get the index of the winning candidate.
  */
 contract Voting {
     // Address of the contract owner
@@ -54,8 +37,14 @@ contract Voting {
     mapping(address => bool) public hasVoted;
 
     /**
-     * @dev The constructor should set the deployer as the owner.
-     * Constructor will be called when contract is deployed.
+     * @dev Event emitted when a vote is cast.
+     * @param voter The address of the voter.
+     * @param candidateIndex The index of the candidate voted for.
+     */
+    event Voted(address indexed voter, uint indexed candidateIndex);
+
+    /**
+     * @dev The constructor sets the deployer as the owner.
      */
     constructor() {
         owner = msg.sender; // The deployer is the owner
@@ -63,11 +52,11 @@ contract Voting {
 
     /**
      * @dev Modifier to restrict function access to only the contract owner.
-     *      Throws an error if the caller is not the owner.
+     *      Reverts with "Not the contract owner" if the caller is not the owner.
      */
     modifier onlyOwner() {
         require(msg.sender == owner, "Not the contract owner");
-        _; // Continue executing the function
+        _;
     }
 
     /**
@@ -76,8 +65,10 @@ contract Voting {
      *
      * Requirements:
      * - Only the contract owner can add a candidate.
+     * - The candidate name cannot be empty.
      */
     function addCandidate(string memory _name) public onlyOwner {
+        require(bytes(_name).length > 0, "Candidate name cannot be empty");
         // Create a new Candidate struct and push it to the candidates array
         candidates.push(Candidate({name: _name, voteCount: 0}));
     }
@@ -100,6 +91,9 @@ contract Voting {
         candidates[_candidateIndex].voteCount += 1;
         // Mark the caller as having voted
         hasVoted[msg.sender] = true;
+
+        // Emit the Voted event
+        emit Voted(msg.sender, _candidateIndex);
     }
 
     /**
@@ -113,16 +107,17 @@ contract Voting {
     /**
      * @dev Retrieves a candidate's details by their index.
      * @param _index The index of the candidate in the candidates array.
-     * @return The name and vote count of the candidate.
+     * @return name The name of the candidate.
+     * @return voteCount The number of votes the candidate has received.
      *
      * Requirements:
      * - The candidate index must be within bounds.
      */
-    function getCandidate(uint _index) public view returns (string memory, uint) {
+    function getCandidate(uint _index) public view returns (string memory name, uint voteCount) {
         // Ensure the index is valid
         require(_index < candidates.length, "Index out of range");
         // Retrieve the candidate from the array
-        Candidate memory candidate = candidates[_index];
+        Candidate storage candidate = candidates[_index];
         return (candidate.name, candidate.voteCount);
     }
 
@@ -130,13 +125,18 @@ contract Voting {
      * @dev Determines the index of the candidate with the highest vote count.
      *      If multiple candidates have the same highest vote count, the first one encountered is returned.
      * @return The index of the winning candidate in the candidates array.
+     *
+     * Requirements:
+     * - There must be at least one candidate in the array.
      */
     function winningCandidate() public view returns (uint) {
-        uint winningVoteCount = 0; // Tracks the highest number of votes
-        uint winnerIndex = 0;      // Tracks the index of the winning candidate
+        require(candidates.length > 0, "No candidates available");
+
+        uint winningVoteCount = candidates[0].voteCount; // Initialize with the first candidate's votes
+        uint winnerIndex = 0; // Initialize with the first candidate's index
 
         // Iterate through all candidates to find the one with the highest vote count
-        for (uint i = 0; i < candidates.length; i++) {
+        for (uint i = 1; i < candidates.length; i++) {
             if (candidates[i].voteCount > winningVoteCount) {
                 winningVoteCount = candidates[i].voteCount; // Update highest vote count
                 winnerIndex = i; // Update winning candidate index
@@ -145,3 +145,4 @@ contract Voting {
         return winnerIndex; // Return the index of the winning candidate
     }
 }
+
