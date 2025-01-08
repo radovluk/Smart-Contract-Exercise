@@ -1,6 +1,9 @@
 # Ignore .gitignore files in all subfolders
 **/.gitignore
 
+# Ignore package-lock.json files in all subfolders
+**/package-lock.json
+
 # Node.js dependencies
 **/node_modules/
 
