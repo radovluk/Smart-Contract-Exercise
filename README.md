@@ -9,11 +9,11 @@ This project contains exercises for students to learn about smart contract secur
 ```
 ├── Exercise name
 │   ├── solution
-│   │   ├── solution code
-│   │   └── solution explanation
+│   │   ├── solution-code
+│   │   └── solution-explanation
 │   └── task
-│       ├── task code
-│       └── task instructions
+│       ├── task-code
+│       └── task-instructions
 └── README.md
 ```
 
