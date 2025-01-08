@@ -18,7 +18,7 @@
 
 \geometry{a4paper, margin=1in}
 
-\title{Smart Contracts Exercise 02: \\ Decentralized Voting System}
+\title{Smart Contracts Exercise 01: \\ Hello, Blockchain World!}
 \author{}
 \date{}
 
@@ -64,31 +64,36 @@
 }
 
 \lstset{style=mystyle}
-
-% Přidání balíčku pro záhlaví a zápatí
+% Adding package for header and footer
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
-% Definice záhlaví a zápatí
-\fancyhf{} % Vymazání aktuálního nastavení
-\fancyhead[L]{Smart Contracts Exercise 02} % Levé záhlaví
-\fancyhead[R]{\thepage} % Pravé záhlaví s číslem stránky
+% Define header and footer
+\fancyhf{} % Clear current settings
+\fancyhead[L]{Smart Contracts Exercise 01} % Left header
+\fancyhead[R]{\thepage} % Right header with page number
 
-\renewcommand{\headrulewidth}{0.4pt} % Čára pod záhlavím
-% \renewcommand{\footrulewidth}{0.4pt} % Čára nad zápatím
+\renewcommand{\headrulewidth}{0.4pt} % Line below header
+% \renewcommand{\footrulewidth}{0.4pt} % Line above footer
 
 \begin{document}
 
 \maketitle
-\section{Introduction}
+Welcome to the first smart contracts exercise! In this first exercise, you will become familiar with the basics of smart contract development. The goal is to create a simple smart contract. You will then compile, test, and deploy this smart contract in the local network environment, and subsequently deploy it to the live blockchain.
 
-In this exercise, you will implement a decentralized voting system on the blockchain. This will be a simple smart contract that allows address owners to vote for individual candidates and subsequently display the voting results. The goal of this exercise is to familiarize yourself with the basics of the Solidity language.
+\section{Task: Set Up Hardhat Environment}
 
-To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/tasks/02%20-%20Decentralized%20Voting%20System?ref_type=heads}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. Your implementation will be in the file \textit{contracts/Voting.sol}. To verify that you have implemented the contract correctly, you will also have access to tests.
+In this task, you will set up the Hardhat development environment on your machine. Hardhat is a development environment for Ethereum software. It provides a suite of tools for editing, compiling, debugging, and deploying your smart contracts and decentralized applications.
+
+\begin{itemize}
+    \item \textbf{Tip 1:} If you are using Windows, we strongly recommend using Windows Subsystem for Linux (WSL) to follow this guide. For more information, refer to the \href{https://learn.microsoft.com/en-us/windows/wsl/about}{official documentation}.
+    
+    \item \textbf{Tip 2:} If you are using Visual Studio Code, consider installing the \href{https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity}{Visual Studio Code Solidity Extension}. This extension helps your development process by providing features like syntax highlighting, code completion, etc.
+\end{itemize}
+
 
 \subsection{Prerequisites}
-
-Ensure that you have already installed the following on your system:
+Before setting up Hardhat, ensure that you have the following installed on your system:
 
 \begin{itemize}
     \item \textbf{Node.js} - \url{https://nodejs.org/en/}
