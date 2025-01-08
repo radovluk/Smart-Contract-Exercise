@@ -13,8 +13,8 @@ pragma solidity ^0.8.0;
  * - The contract tracks the number of votes each candidate has received.
  * - The contract tracks whether an address has already voted.
  * - The contract provides a function to get the total number of candidates.
- * - The contract provides a function to get a candidate's name and vote count by index.
- * - The contract provides a function to get the index of the winning candidate.
+ * - The contract provides a function to get a candidate's name and vote count by index (optional).
+ * - The contract provides a function to get the index of the winning candidate (optional).
  * 
  * The contract must include the following components:
  * 
@@ -30,8 +30,8 @@ pragma solidity ^0.8.0;
  * - `addCandidate(string memory _name)`: Adds a new candidate (only the owner can call).
  * - `vote(uint _candidateIndex)`: Votes for a candidate by index.
  * - `getCandidateCount()`: Returns the total number of candidates.
- * - `getCandidate(uint _index)`: Returns a candidate's name and vote count by index.
- * - `winningCandidate()`: Returns the index of the winning candidate (the highest vote count).
+ * - `getCandidate(uint _index)`: Returns a candidate's name and vote count by index (optional).
+ * - `winningCandidate()`: Returns the index of the winning candidate (the highest vote count) (optional).
  */
 contract Voting {
     // Address of the contract owner
@@ -58,7 +58,7 @@ contract Voting {
      * Constructor will be called when contract is deployed.
      */
     constructor() {
-        owner = msg.sender;
+        owner = msg.sender; // The deployer is the owner
     }
 
     /**
@@ -66,8 +66,8 @@ contract Voting {
      *      Throws an error if the caller is not the owner.
      */
     modifier onlyOwner() {
-        // TODO: require that msg.sender == owner
-        _;
+        require(msg.sender == owner, "Not the contract owner");
+        _; // Continue executing the function
     }
 
     /**
@@ -77,9 +77,9 @@ contract Voting {
      * Requirements:
      * - Only the contract owner can add a candidate.
      */
-    function addCandidate(string memory _name) public {
-        // TODO: msg.sender must be onlyOwner (use the modifier)
-        // TODO: push a new candidate into the candidates array
+    function addCandidate(string memory _name) public onlyOwner {
+        // Create a new Candidate struct and push it to the candidates array
+        candidates.push(Candidate({name: _name, voteCount: 0}));
     }
 
     /**
@@ -91,9 +91,15 @@ contract Voting {
      * - The candidate index is valid (within the array bounds).
      */
     function vote(uint _candidateIndex) public {
-        // TODO: require that msg.sender hasn't voted before
-        // TODO: increment the candidate's voteCount
-        // TODO: set hasVoted[msg.sender] = true
+        // Ensure the caller hasn't voted yet
+        require(!hasVoted[msg.sender], "Already voted");
+        // Ensure the candidate index is valid
+        require(_candidateIndex < candidates.length, "Invalid candidate index");
+
+        // Increment the vote count for the chosen candidate
+        candidates[_candidateIndex].voteCount += 1;
+        // Mark the caller as having voted
+        hasVoted[msg.sender] = true;
     }
 
     /**
@@ -101,7 +107,7 @@ contract Voting {
      * @return The length of the candidates array.
      */
     function getCandidateCount() public view returns (uint) {
-        // TODO: return length of the candidates array
+        return candidates.length;
     }
 
     /**
@@ -113,7 +119,11 @@ contract Voting {
      * - The candidate index must be within bounds.
      */
     function getCandidate(uint _index) public view returns (string memory, uint) {
-        // TODO: return candidate info
+        // Ensure the index is valid
+        require(_index < candidates.length, "Index out of range");
+        // Retrieve the candidate from the array
+        Candidate memory candidate = candidates[_index];
+        return (candidate.name, candidate.voteCount);
     }
 
     /**
@@ -122,6 +132,16 @@ contract Voting {
      * @return The index of the winning candidate in the candidates array.
      */
     function winningCandidate() public view returns (uint) {
-        // TODO: loop through candidates, find the highest voteCount
+        uint winningVoteCount = 0; // Tracks the highest number of votes
+        uint winnerIndex = 0;      // Tracks the index of the winning candidate
+
+        // Iterate through all candidates to find the one with the highest vote count
+        for (uint i = 0; i < candidates.length; i++) {
+            if (candidates[i].voteCount > winningVoteCount) {
+                winningVoteCount = candidates[i].voteCount; // Update highest vote count
+                winnerIndex = i; // Update winning candidate index
+            }
+        }
+        return winnerIndex; // Return the index of the winning candidate
     }
 }
