@@ -50,3 +50,10 @@ Thumbs.db
 *.lock-wscript
 *.lock-sh
 *.lock-win
+
+# Ignore all .out and .aux files in all subdirectories
+**/*.out
+**/*.aux
+
+# Ignore all folders that start with _minted
+**/_minted*/

@@ -1,4 +1,4 @@
-# Smart Contracts Vulnerability
+# Smart Contracts Exercises
 
 ## Overview
 
