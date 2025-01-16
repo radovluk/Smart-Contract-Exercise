@@ -208,8 +208,10 @@ contract CTUToken {
         // Check if the caller has enough allowance
         require(allowances[from][msg.sender] >= value, "Transfer amount exceeds allowance");
 
-        // Perform transfer
+        // Subtract the value from the sender's balance
         balances[from] -= value;
+
+        // Add the value to the recipient's balance
         balances[to] += value;
 
         // Update allowance

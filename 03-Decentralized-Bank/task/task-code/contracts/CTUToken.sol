@@ -17,15 +17,16 @@ pragma solidity ^0.8.0;
  * https://docs.openzeppelin.com/contracts/4.x/erc20
  */
 contract CTUToken {
-    // The name of the token.
-    string private nameToken = "CTU Token";
+    // TODO: Set the name of the token to "CTU Token"
+    string private nameToken = "";
 
     // The symbol of the token, usually a shorter version of the name.
     string private symbolToken = "CTU";
 
-    // The total supply of the token there will be.
-    // 1,000,000 tokens with 18 decimal places
-    uint256 private totalSupplyToken = 1000000 * 1e18;
+    // TODO: Set the total supply of the token to 1,000,000 tokens.
+    // The total supply should be 1,000,000 tokens with 18 decimal places.
+    // This means the total supply should be represented as 1,000,000 * 10^18.
+    uint256 private totalSupplyToken = 0;
     
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to another account (`to`).
@@ -37,15 +38,14 @@ contract CTUToken {
      */
     event Transfer(address indexed from, address indexed to, uint256 value);
 
-    /**
-     * @dev Emitted when the allowance of a spender for an owner is set by a call to `approve`.
-     * `value` is the new allowance.
-     * 
-     * @param owner Address of the owner who is setting the allowance.
-     * @param spender Address of the spender who is being allowed to spend.
-     * @param value The amount of tokens the spender is allowed to spend.
-     */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    // TODO: Implement the Approval event to track allowances.
+    // 
+    // @dev Emitted when the allowance of a spender for an owner is set by a call to `approve`.
+    // `value` is the new allowance.
+    // 
+    // @param owner Address of the owner who is setting the allowance.
+    // @param spender Address of the spender who is being allowed to spend.
+    // @param value The amount of tokens the spender is allowed to spend.
 
     // Mapping from account addresses to their current token balance
     mapping(address => uint256) private balances;
@@ -59,25 +59,22 @@ contract CTUToken {
      * Emits a {Transfer} event.
      */
     constructor() {
-        // Assign total supply to the contract deployer
-        balances[msg.sender] = totalSupplyToken;
-
-        // Emit Transfer event about the assignment
-        emit Transfer(address(0), msg.sender, totalSupplyToken);
+        // TODO: Assign total supply to the contract deployer
+        // TODO: Emit Transfer event about the assignment
     }
 
     /**
      * @dev Returns the name of the token.
      */
     function name() public view returns (string memory) {
-        return nameToken;
+        // TODO: Return the name of the token
     }
 
     /**
      * @dev Returns the symbol of the token.
      */
     function symbol() public view returns (string memory) {
-        return symbolToken;
+        // TODO: Return the symbol of the token
     }
 
     /**
@@ -100,7 +97,7 @@ contract CTUToken {
      * @dev Returns the value of tokens in existence.
      */
     function totalSupply() public view returns (uint256) {
-        return totalSupplyToken;
+        // TODO: Return the total supply of the token
     }
 
     /**
@@ -108,7 +105,7 @@ contract CTUToken {
      * @param account The address from which the balance will be retrieved.
      */
     function balanceOf(address account) public view returns (uint256 balance) {
-        return balances[account];
+        // TODO: Return the balance of the account
     }
 
     /**
@@ -123,23 +120,12 @@ contract CTUToken {
      * - the caller must have a balance of at least `value`.
      */
     function transfer(address to, uint256 value) public returns (bool success) {
-        // Check if the recipient is not the zero address
-        require(to != address(0), "Transfer to zero address not allowed");
-        
-        // Check if the sender has enough balance
-        require(balances[msg.sender] >= value, "Insufficient balance");
-
-        // Subtract the value from the sender's balance
-        balances[msg.sender] -= value;
-
-        // Add the value to the recipient's balance
-        balances[to] += value;
-
-        // Emit Transfer event
-        emit Transfer(msg.sender, to, value);
-
-        // Return true if the transfer is successful
-        return true;
+        // TODO: Check if the recipient is not the zero address
+        // TODO: Check if the sender has enough balance
+        // TODO: Subtract the value from the sender's balance
+        // TODO: Add the value to the recipient's balance
+        // TODO: Emit Transfer event
+        // TODO: Return true if the transfer is successful
     }
 
     /**
@@ -152,17 +138,10 @@ contract CTUToken {
      * - `spender` cannot be the zero address.
      */
     function approve(address spender, uint256 value) public returns (bool success) {
-        // Check if the spender is not the zero address
-        require(spender != address(0), "Approve to zero address not allowed");
-
-        // Set the allowance
-        allowances[msg.sender][spender] = value;
-
-        // Emit Approval event
-        emit Approval(msg.sender, spender, value);
-
-        // Return true if the approval is successful
-        return true;
+        // TODO: Check if the spender is not the zero address
+        // TODO: Set the allowance
+        // TODO: Emit Approval event
+        // TODO: Return true if the approval is successful
     }
 
     /**
@@ -173,7 +152,7 @@ contract CTUToken {
      * This value changes when {approve} or {transferFrom} are called.
      */
     function allowance(address owner, address spender) public view returns (uint256 remaining) {
-        return allowances[owner][spender];
+        // TODO: Return the allowance of spender on owner's tokens
     }
 
     /**
@@ -193,32 +172,14 @@ contract CTUToken {
      * `value`.
      */
     function transferFrom(address from, address to, uint256 value) public returns (bool success) {
-        // Check if the sender is not the zero address
-        require(from != address(0), "Transfer from zero address not allowed");
-
-        // Check if the recipient is not the zero address
-        require(value > 0, "Transfer amount must be greater than zero");
-
-        // Check if the recipient is not the zero address
-        require(to != address(0), "Transfer to zero address not allowed");
-
-        // Check if the sender has enough balance
-        require(balances[from] >= value, "Insufficient balance of from address");
-
-        // Check if the caller has enough allowance
-        require(allowances[from][msg.sender] >= value, "Transfer amount exceeds allowance");
-
-        // Perform transfer
-        balances[from] -= value;
-        balances[to] += value;
-
-        // Update allowance
-        allowances[from][msg.sender] -= value;
-
-        // Emit Transfer event
-        emit Transfer(from, to, value);
-
-        // Return true if the transfer is successful
-        return true;
+        // TODO: Check if the sender is not the zero address
+        // TODO: Check if the recipient is not the zero address
+        // TODO: Check if the sender has enough balance
+        // TODO: Check if the caller has enough allowance
+        // TODO: Subtract the value from the sender's balance
+        // TODO: Add the value to the recipient's balance
+        // TODO: Update allowance
+        // TODO: Emit Transfer event
+        // TODO: Return true if the transfer is successful
     }
 }
