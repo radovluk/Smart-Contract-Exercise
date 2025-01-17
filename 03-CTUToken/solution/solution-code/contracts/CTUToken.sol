@@ -25,7 +25,7 @@ contract CTUToken {
 
     // The total supply of the token there will be.
     // 1,000,000 tokens with 18 decimal places
-    uint256 private totalSupplyToken = 1000000 * 1e18;
+    uint256 private totalSupplyToken = 1_000_000 * 10e18;
     
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to another account (`to`).
@@ -192,9 +192,6 @@ contract CTUToken {
     function transferFrom(address from, address to, uint256 value) public returns (bool success) {
         // Check if the sender is not the zero address
         require(from != address(0), "Transfer from zero address not allowed");
-
-        // Check if the recipient is not the zero address
-        require(value >= 0, "Transfer amount must be greater or equal than zero");
 
         // Check if the recipient is not the zero address
         require(to != address(0), "Transfer to zero address not allowed");
