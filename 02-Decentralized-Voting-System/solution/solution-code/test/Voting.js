@@ -7,19 +7,16 @@ const { expect } = require("chai");
 
 // Describe the test suite for the Voting contract
 describe("Voting Contract Test Suite", function () {
-  /**
-   * Fixture to deploy the Voting contract.
-   * Re-runs between tests to ensure each test starts from a clean state.
-   */
+   // Fixture to deploy the Voting contract.
   async function deployVotingFixture() {
     // Retrieve a list of accounts provided by Hardhat
     const [owner, voter1, voter2, voter3, voter4, voter5, nonOwner] = await ethers.getSigners();
 
-    // 1. Get the contract factory for the Voting contract
-    const Voting = await ethers.getContractFactory("Voting");
+    // Deploy the Voting contract
+    const Voting = await ethers.deployContract("Voting");
 
-    // 2. Deploy the Voting contract
-    const voting = await Voting.deploy();
+    // Waiting for the transaction to be mined
+    const voting = await Voting.waitForDeployment();
 
     // Return the deployed contract instance and the signers for use in tests
     return { voting, owner, voter1, voter2, voter3, voter4, voter5, nonOwner };
