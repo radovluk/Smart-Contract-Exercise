@@ -56,14 +56,10 @@ contract CTUToken {
 
     /**
      * @dev Constructor that assigns the entire supply to the contract deployer.
-     * Emits a {Transfer} event.
      */
     constructor() {
         // Assign total supply to the contract deployer
         balances[msg.sender] = totalSupplyToken;
-
-        // Emit Transfer event about the assignment
-        emit Transfer(address(0), msg.sender, totalSupplyToken);
     }
 
     /**
@@ -191,13 +187,14 @@ contract CTUToken {
      * - `from` must have a balance of at least `value`.
      * - the caller must have allowance for ``from``'s tokens of at least
      * `value`.
+     * - Transfer amount must be greater or equal than zero
      */
     function transferFrom(address from, address to, uint256 value) public returns (bool success) {
         // Check if the sender is not the zero address
         require(from != address(0), "Transfer from zero address not allowed");
 
         // Check if the recipient is not the zero address
-        require(value > 0, "Transfer amount must be greater than zero");
+        require(value >= 0, "Transfer amount must be greater or equal than zero");
 
         // Check if the recipient is not the zero address
         require(to != address(0), "Transfer to zero address not allowed");

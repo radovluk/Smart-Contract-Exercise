@@ -1,7 +1,9 @@
-// Import necessary modules from Hardhat and Chai
+// `LoadFixture` is used to share common setups between tests.
+// Using this simplifies the tests and makes them run faster.
 const { loadFixture } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
+
+// Importing Chai to use its asserting functions.
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
 
 // Describe the test suite for the Voting contract
 describe("Voting Contract Test Suite", function () {

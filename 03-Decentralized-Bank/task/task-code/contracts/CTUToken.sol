@@ -4,16 +4,16 @@ pragma solidity ^0.8.0;
 /**
  * @title CTUToken
  * @dev A custom implementation of an ERC-20 Token.
- * 
+ *
  * Features:
- * - Standard ERC-20 functions such as decimals, totalSupply, balanceOf, 
+ * - Standard ERC-20 functions such as decimals, totalSupply, balanceOf,
  *   transfer, transferFrom, approve, and allowance.
  * - Events {Transfer} and {Approval} to track token movements and allowances.
- * 
+ *
  * Note: This contract is intended for learning and experimentation. It is
  * not suitable for production use.
- * 
- * For production, consider using the OpenZeppelin ERC-20 implementation: 
+ *
+ * For production, consider using the OpenZeppelin ERC-20 implementation:
  * https://docs.openzeppelin.com/contracts/4.x/erc20
  */
 contract CTUToken {
@@ -26,23 +26,23 @@ contract CTUToken {
     // TODO: Set the total supply of the token to 1,000,000 tokens.
     // The total supply should be 1,000,000 tokens with 18 decimal places.
     // This means the total supply should be represented as 1,000,000 * 10^18.
-    uint256 private totalSupplyToken = 0;
-    
+    uint256 private totalSupplyToken = 42;
+
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to another account (`to`).
      * @param from Address from which tokens are moved.
      * @param to Address to which tokens are moved.
      * @param value The amount of tokens to be moved.
-     * 
+     *
      *  Note that `value` may be zero.
      */
     event Transfer(address indexed from, address indexed to, uint256 value);
 
     // TODO: Implement the Approval event to track allowances.
-    // 
+    //
     // @dev Emitted when the allowance of a spender for an owner is set by a call to `approve`.
     // `value` is the new allowance.
-    // 
+    //
     // @param owner Address of the owner who is setting the allowance.
     // @param spender Address of the spender who is being allowed to spend.
     // @param value The amount of tokens the spender is allowed to spend.
@@ -56,11 +56,9 @@ contract CTUToken {
 
     /**
      * @dev Constructor that assigns the entire supply to the contract deployer.
-     * Emits a {Transfer} event.
      */
     constructor() {
         // TODO: Assign total supply to the contract deployer
-        // TODO: Emit Transfer event about the assignment
     }
 
     /**
@@ -90,14 +88,15 @@ contract CTUToken {
      * no way affects any of the arithmetic of the contract.
      */
     function decimals() public pure returns (uint8) {
-        return 18;
+        // TODO: uncomment the line below
+        // return 18;
     }
 
     /**
      * @dev Returns the value of tokens in existence.
      */
     function totalSupply() public view returns (uint256) {
-        // TODO: Return the total supply of the token
+        return totalSupplyToken;
     }
 
     /**
@@ -114,7 +113,7 @@ contract CTUToken {
      * @param value The amount to be transferred.
      * @return success A boolean indicating if the operation was successful.
      * @dev Emits a {Transfer} event.
-     * 
+     *
      * Requirements:
      * - `to` cannot be the zero address.
      * - the caller must have a balance of at least `value`.
@@ -133,11 +132,14 @@ contract CTUToken {
      * @param spender The address authorized to spend.
      * @param value The maximum amount they can spend.
      * @return success A boolean indicating if the operation was successful.
-     * 
+     *
      * Requirements:
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 value) public returns (bool success) {
+    function approve(
+        address spender,
+        uint256 value
+    ) public returns (bool success) {
         // TODO: Check if the spender is not the zero address
         // TODO: Set the allowance
         // TODO: Emit Approval event
@@ -151,7 +153,10 @@ contract CTUToken {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) public view returns (uint256 remaining) {
+    function allowance(
+        address owner,
+        address spender
+    ) public view returns (uint256 remaining) {
         // TODO: Return the allowance of spender on owner's tokens
     }
 
@@ -159,19 +164,24 @@ contract CTUToken {
      * @dev Moves a `value` amount of tokens from `from` to `to` using the
      * allowance mechanism. `value` is then deducted from the caller's
      * allowance.
-     * 
+     *
      * @param from The address which you want to send tokens from.
      * @param to The address which you want to transfer to.
      * @param value The amount of tokens to be transferred.
      * @return success A boolean indicating if the operation was successful.
-     * 
+     *
      * Requirements:
      * - `from` and `to` cannot be the zero address.
      * - `from` must have a balance of at least `value`.
      * - the caller must have allowance for ``from``'s tokens of at least
      * `value`.
+     * - Transfer amount must be greater or equal than zero
      */
-    function transferFrom(address from, address to, uint256 value) public returns (bool success) {
+    function transferFrom(
+        address from,
+        address to,
+        uint256 value
+    ) public returns (bool success) {
         // TODO: Check if the sender is not the zero address
         // TODO: Check if the recipient is not the zero address
         // TODO: Check if the sender has enough balance
