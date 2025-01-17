@@ -4,16 +4,16 @@ pragma solidity ^0.8.0;
 /**
  * @title CTUToken
  * @dev A custom implementation of an ERC-20 Token.
- * 
+ *
  * Features:
- * - Standard ERC-20 functions such as decimals, totalSupply, balanceOf, 
+ * - Standard ERC-20 functions such as decimals, totalSupply, balanceOf,
  *   transfer, transferFrom, approve, and allowance.
  * - Events {Transfer} and {Approval} to track token movements and allowances.
- * 
+ *
  * Note: This contract is intended for learning and experimentation. It is
  * not suitable for production use.
- * 
- * For production, consider using the OpenZeppelin ERC-20 implementation: 
+ *
+ * For production, consider using the OpenZeppelin ERC-20 implementation:
  * https://docs.openzeppelin.com/contracts/4.x/erc20
  */
 contract CTUToken {
@@ -25,14 +25,14 @@ contract CTUToken {
 
     // The total supply of the token there will be.
     // 1,000,000 tokens with 18 decimal places
-    uint256 private totalSupplyToken = 1_000_000 * 10e18;
-    
+    uint256 private totalSupplyToken = 1_000_000 * 10**18;
+
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to another account (`to`).
      * @param from Address from which tokens are moved.
      * @param to Address to which tokens are moved.
      * @param value The amount of tokens to be moved.
-     * 
+     *
      *  Note that `value` may be zero.
      */
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -40,12 +40,16 @@ contract CTUToken {
     /**
      * @dev Emitted when the allowance of a spender for an owner is set by a call to `approve`.
      * `value` is the new allowance.
-     * 
+     *
      * @param owner Address of the owner who is setting the allowance.
      * @param spender Address of the spender who is being allowed to spend.
      * @param value The amount of tokens the spender is allowed to spend.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 
     // Mapping from account addresses to their current token balance
     mapping(address => uint256) private balances;
@@ -60,6 +64,9 @@ contract CTUToken {
     constructor() {
         // Assign total supply to the contract deployer
         balances[msg.sender] = totalSupplyToken;
+
+        // Emit Transfer event to show the inital token transfer
+        emit Transfer(address(0), msg.sender, totalSupplyToken);
     }
 
     /**
@@ -113,7 +120,7 @@ contract CTUToken {
      * @param value The amount to be transferred.
      * @return success A boolean indicating if the operation was successful.
      * @dev Emits a {Transfer} event.
-     * 
+     *
      * Requirements:
      * - `to` cannot be the zero address.
      * - the caller must have a balance of at least `value`.
@@ -121,7 +128,7 @@ contract CTUToken {
     function transfer(address to, uint256 value) public returns (bool success) {
         // Check if the recipient is not the zero address
         require(to != address(0), "Transfer to zero address not allowed");
-        
+
         // Check if the sender has enough balance
         require(balances[msg.sender] >= value, "Insufficient balance");
 
@@ -143,21 +150,94 @@ contract CTUToken {
      * @param spender The address authorized to spend.
      * @param value The maximum amount they can spend.
      * @return success A boolean indicating if the operation was successful.
-     * 
+     *
      * Requirements:
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 value) public returns (bool success) {
+    function approve(
+        address spender,
+        uint256 value
+    ) public returns (bool success) {
         // Check if the spender is not the zero address
         require(spender != address(0), "Approve to zero address not allowed");
 
-        // Set the allowance
-        allowances[msg.sender][spender] = value;
+        // Get the current allowance
+        uint256 currentAllowance = allowances[msg.sender][spender];
 
-        // Emit Approval event
-        emit Approval(msg.sender, spender, value);
+        if (value > currentAllowance) {
+            // Increase the allowance
+            increaseAllowance(spender, value - currentAllowance);
+        } else if (value < currentAllowance) {
+            // Decrease the allowance
+            decreaseAllowance(spender, currentAllowance - value);
+        }
 
         // Return true if the approval is successful
+        return true;
+    }
+
+    /**
+     * @dev Increases the allowance granted to `spender` by the caller.
+     * This is an alternative to {approve} that can be used to safely increment an allowance by `addedValue`.
+     * This function mitigates the race condition by not setting a specific value directly.
+     *
+     * @param spender The address authorized to spend.
+     * @param addedValue The amount by which the allowance is to be increased.
+     * @return success A boolean indicating if the operation was successful.
+     *
+     * Emits an {Approval} event indicating the updated allowance.
+     */
+    function increaseAllowance(
+        address spender,
+        uint256 addedValue
+    ) public returns (bool success) {
+        // Check if the spender is not the zero address
+        require(spender != address(0), "Increase allowance for zero address");
+
+        // Increase the allowance
+        allowances[msg.sender][spender] += addedValue;
+
+        // Emit Approval event
+        emit Approval(msg.sender, spender, allowances[msg.sender][spender]);
+
+        // Return true if the operation is successful
+        return true;
+    }
+
+    /**
+     * @dev Decreases the allowance granted to `spender` by the caller.
+     * This is an alternative to {approve} that can be used to safely decrement an allowance by `subtractedValue`.
+     * This function mitigates the race condition by not setting a specific value directly.
+     *
+     * @param spender The address authorized to spend.
+     * @param subtractedValue The amount by which the allowance is to be decreased.
+     * @return success A boolean indicating if the operation was successful.
+     *
+     * Requirements:
+     * - The current allowance must be at least `subtractedValue`.
+     *
+     * Emits an {Approval} event indicating the updated allowance.
+     */
+    function decreaseAllowance(
+        address spender,
+        uint256 subtractedValue
+    ) public returns (bool success) {
+        // Check if the spender is not the zero address
+        require(spender != address(0), "Decrease allowance for zero address");
+
+        // Check if the current allowance is sufficient
+        require(
+            allowances[msg.sender][spender] >= subtractedValue,
+            "Decreased allowance below zero"
+        );
+
+        // Decrease the allowance
+        allowances[msg.sender][spender] -= subtractedValue;
+
+        // Emit Approval event
+        emit Approval(msg.sender, spender, allowances[msg.sender][spender]);
+
+        // Return true if the operation is successful
         return true;
     }
 
@@ -168,7 +248,10 @@ contract CTUToken {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) public view returns (uint256 remaining) {
+    function allowance(
+        address owner,
+        address spender
+    ) public view returns (uint256 remaining) {
         return allowances[owner][spender];
     }
 
@@ -176,12 +259,12 @@ contract CTUToken {
      * @dev Moves a `value` amount of tokens from `from` to `to` using the
      * allowance mechanism. `value` is then deducted from the caller's
      * allowance.
-     * 
+     *
      * @param from The address which you want to send tokens from.
      * @param to The address which you want to transfer to.
      * @param value The amount of tokens to be transferred.
      * @return success A boolean indicating if the operation was successful.
-     * 
+     *
      * Requirements:
      * - `from` and `to` cannot be the zero address.
      * - `from` must have a balance of at least `value`.
@@ -189,7 +272,11 @@ contract CTUToken {
      * `value`.
      * - Transfer amount must be greater or equal than zero
      */
-    function transferFrom(address from, address to, uint256 value) public returns (bool success) {
+    function transferFrom(
+        address from,
+        address to,
+        uint256 value
+    ) public returns (bool success) {
         // Check if the sender is not the zero address
         require(from != address(0), "Transfer from zero address not allowed");
 
@@ -197,10 +284,16 @@ contract CTUToken {
         require(to != address(0), "Transfer to zero address not allowed");
 
         // Check if the sender has enough balance
-        require(balances[from] >= value, "Insufficient balance of from address");
+        require(
+            balances[from] >= value,
+            "Insufficient balance of from address"
+        );
 
         // Check if the caller has enough allowance
-        require(allowances[from][msg.sender] >= value, "Transfer amount exceeds allowance");
+        require(
+            allowances[from][msg.sender] >= value,
+            "Transfer amount exceeds allowance"
+        );
 
         // Subtract the value from the sender's balance
         balances[from] -= value;

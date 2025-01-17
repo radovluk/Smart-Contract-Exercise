@@ -44,6 +44,12 @@ describe("CTUToken Contract Test Suite", function () {
             const ownerBalance = await ctuToken.balanceOf(owner.address);
             expect(ownerBalance).to.equal(totalSupply);
         });
+
+        it("Should set the correct total supply of the token", async function () {
+            const { ctuToken } = await loadFixture(deployCTUTokenFixture);
+            const totalSupply = await ctuToken.totalSupply();
+            expect(totalSupply).to.equal(ethers.parseUnits("1000000", 18));
+        });
     });
 
     // Test suite for ERC-20 standard functions

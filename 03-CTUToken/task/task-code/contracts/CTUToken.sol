@@ -25,7 +25,7 @@ contract CTUToken {
 
     // TODO: Set the total supply of the token to 1,000,000 tokens.
     // The total supply should be 1,000,000 tokens with 18 decimal places.
-    // This means the total supply should be represented as 1,000,000 * 10^18.
+    // This means the total supply should be represented as 1_000_000 * 10**18.
     uint256 private totalSupplyToken = 42;
 
     /**
