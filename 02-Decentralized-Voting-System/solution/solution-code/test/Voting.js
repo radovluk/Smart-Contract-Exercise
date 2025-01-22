@@ -22,20 +22,23 @@ describe("Voting Contract Test Suite", function () {
     return { voting, owner, voter1, voter2, voter3, voter4, voter5, nonOwner };
   }
 
+  // Load the fixture before each test
+  beforeEach(async function () {
+    ({ voting, owner, voter1, voter2, voter3, voter4, voter5, nonOwner } = 
+      await loadFixture(deployVotingFixture));
+  });
+
   // Test suite for Deployment-related tests
   describe("Deployment", function () {
     it("Should deploy the contract successfully and have a valid address", async function () {
-      const { voting } = await loadFixture(deployVotingFixture);
       expect(voting.target).to.properAddress;
     });
 
     it("Should set the right owner", async function () {
-      const { voting, owner } = await loadFixture(deployVotingFixture);
       expect(await voting.owner()).to.equal(owner.address);
     });
 
     it("Should initialize with zero candidates", async function () {
-      const { voting } = await loadFixture(deployVotingFixture);
       const count = await voting.getCandidateCount();
       expect(count).to.equal(0);
     });
@@ -44,8 +47,6 @@ describe("Voting Contract Test Suite", function () {
   // Test suite for Access Control
   describe("Access Control", function () {
     it("Only owner can add candidates", async function () {
-      const { voting, owner, nonOwner } = await loadFixture(deployVotingFixture);
-
       // Owner adds a candidate
       await expect(voting.connect(owner).addCandidate("Alice")).to.not.be.reverted;
 
@@ -57,8 +58,6 @@ describe("Voting Contract Test Suite", function () {
   // Test suite for Candidate-related tests
   describe("Candidates Management", function () {
     it("Should allow the owner to add multiple candidates", async function () {
-      const { voting, owner } = await loadFixture(deployVotingFixture);
-
       // Owner adds multiple candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
@@ -81,14 +80,10 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should prevent adding candidates with empty names", async function () {
-      const { voting, owner } = await loadFixture(deployVotingFixture);
-
       await expect(voting.connect(owner).addCandidate("")).to.be.reverted;
     });
 
     it("Should allow adding candidates with duplicate names", async function () {
-      const { voting, owner } = await loadFixture(deployVotingFixture);
-
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Alice");
 
@@ -102,8 +97,6 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should emit a CandidateAdded event upon successful addition", async function () {
-      const { voting, owner } = await loadFixture(deployVotingFixture);
-
       await expect(voting.connect(owner).addCandidate("Alice"))
         .to.emit(voting, 'CandidateAdded')
         .withArgs("Alice");
@@ -113,8 +106,6 @@ describe("Voting Contract Test Suite", function () {
   // Test suite for Voting-related tests
   describe("Voting Mechanism", function () {
     it("Should allow a voter to cast a vote for a valid candidate", async function () {
-      const { voting, owner, voter1 } = await loadFixture(deployVotingFixture);
-
       // Owner adds a candidate
       await voting.connect(owner).addCandidate("Alice");
 
@@ -127,15 +118,11 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should not allow voting for a non-existent candidate", async function () {
-      const { voting, voter1 } = await loadFixture(deployVotingFixture);
-
       // Attempt to vote without adding any candidates
       await expect(voting.connect(voter1).vote(0)).to.be.reverted;
     });
 
     it("Should not allow a voter to vote more than once", async function () {
-      const { voting, owner, voter1 } = await loadFixture(deployVotingFixture);
-
       // Owner adds a candidate
       await voting.connect(owner).addCandidate("Alice");
 
@@ -147,8 +134,6 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should allow multiple voters to vote for different candidates", async function () {
-      const { voting, owner, voter1, voter2 } = await loadFixture(deployVotingFixture);
-
       // Owner adds two candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
@@ -165,8 +150,6 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should emit a Voted event upon successful voting", async function () {
-      const { voting, owner, voter1 } = await loadFixture(deployVotingFixture);
-
       // Owner adds a candidate
       await voting.connect(owner).addCandidate("Alice");
 
@@ -180,8 +163,6 @@ describe("Voting Contract Test Suite", function () {
   // Test suite for Results-related tests
   describe("Results and Winning Candidate", function () {
     it("Should return the correct vote count for each candidate", async function () {
-      const { voting, owner, voter1, voter2, voter3 } = await loadFixture(deployVotingFixture);
-
       // Owner adds two candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
@@ -199,8 +180,6 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should correctly identify the winning candidate", async function () {
-      const { voting, owner, voter1, voter2 } = await loadFixture(deployVotingFixture);
-
       // Owner adds two candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
@@ -215,8 +194,6 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should handle multiple candidates and determine the correct winner", async function () {
-      const { voting, owner, voter1, voter2, voter3, voter4 } = await loadFixture(deployVotingFixture);
-
       // Owner adds three candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
@@ -237,8 +214,6 @@ describe("Voting Contract Test Suite", function () {
   // Test suite for Getter Functions
   describe("Getter Functions", function () {
     it("Should return the correct candidate details using getCandidate", async function () {
-      const { voting, owner } = await loadFixture(deployVotingFixture);
-
       // Owner adds a candidate
       await voting.connect(owner).addCandidate("Alice");
 
@@ -249,15 +224,11 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should revert when accessing a candidate with an invalid index", async function () {
-      const { voting } = await loadFixture(deployVotingFixture);
-
       // Attempt to access a candidate that doesn't exist
       await expect(voting.getCandidate(0)).to.be.reverted;
     });
 
     it("Should return the correct total number of candidates", async function () {
-      const { voting, owner } = await loadFixture(deployVotingFixture);
-
       // Initially, zero candidates
       let count = await voting.getCandidateCount();
       expect(count).to.equal(0);
@@ -275,15 +246,11 @@ describe("Voting Contract Test Suite", function () {
   // Test suite for Edge Cases
   describe("Edge Cases", function () {
     it("Should handle voting when no candidates are present", async function () {
-      const { voting, voter1 } = await loadFixture(deployVotingFixture);
-
       // Attempt to vote without any candidates
       await expect(voting.connect(voter1).vote(0)).to.be.reverted;
     });
 
     it("Should handle multiple votes and ensure accurate vote tracking", async function () {
-      const { voting, owner, voter1, voter2, voter3, voter4, voter5 } = await loadFixture(deployVotingFixture);
-
       // Owner adds three candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
@@ -311,8 +278,6 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should not allow the same address to vote multiple times across different candidates", async function () {
-      const { voting, owner, voter1 } = await loadFixture(deployVotingFixture);
-
       // Owner adds two candidates
       await voting.connect(owner).addCandidate("Alice");
       await voting.connect(owner).addCandidate("Bob");
