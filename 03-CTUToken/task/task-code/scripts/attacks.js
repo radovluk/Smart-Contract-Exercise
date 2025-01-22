@@ -26,11 +26,11 @@ async function main() {
 
     // Owner transfers 300 tokens to the victim
     const transferTx = await ctuToken.transfer(victim.address, transferAmount);
-    const transferReceipt = await transferTx.wait();
+    await transferTx.wait(); // Wait for the transaction to be mined
 
     // Victim approves attacker to spend 100 tokens
     const approveTx = await ctuToken.connect(victim).approve(attacker.address, approvalAmount);
-    const approveReceipt1 = await approveTx.wait();
+    approveReceipt1 = await approveTx.wait(); // Wait for the transaction to be mined
 
     // Display Initial State
     console.log("===== Initial State =====");
@@ -77,8 +77,7 @@ async function main() {
     console.log("=== Attacker transfers an additional 200 CTU using the increased allowance.");
     // Transfer the remaining 200 tokens using the increased approval
     const txAttacker2 = await ctuToken.connect(attacker).transferFrom(victim.address, attacker.address, increasedApprovalAmount)
-    // Wait until the transaction is mined
-    await txAttacker2.wait();
+    await txAttacker2.wait();  // Wait until the transaction is mined
 
     // Display Final State
     console.log("===== Final State =====");

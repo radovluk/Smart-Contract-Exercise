@@ -172,6 +172,71 @@ contract CTUToken {
     }
 
     /**
+     * @dev Increases the allowance granted to `spender` by the caller.
+     * This is an alternative to {approve} that can be used to safely increment an allowance by `addedValue`.
+     * This function mitigates the race condition by not setting a specific value directly.
+     *
+     * @param spender The address authorized to spend.
+     * @param addedValue The amount by which the allowance is to be increased.
+     * @return success A boolean indicating if the operation was successful.
+     *
+     * Emits an {Approval} event indicating the updated allowance.
+     */
+    function increaseAllowance(
+        address spender,
+        uint256 addedValue
+    ) public returns (bool success) {
+        // Check if the spender is not the zero address
+        require(spender != address(0), "Increase allowance for zero address");
+
+        // Increase the allowance
+        allowances[msg.sender][spender] += addedValue;
+
+        // Emit Approval event
+        emit Approval(msg.sender, spender, allowances[msg.sender][spender]);
+
+        // Return true if the operation is successful
+        return true;
+    }
+
+    /**
+     * @dev Decreases the allowance granted to `spender` by the caller.
+     * This is an alternative to {approve} that can be used to safely decrement an allowance by `subtractedValue`.
+     * This function mitigates the race condition by not setting a specific value directly.
+     *
+     * @param spender The address authorized to spend.
+     * @param subtractedValue The amount by which the allowance is to be decreased.
+     * @return success A boolean indicating if the operation was successful.
+     *
+     * Requirements:
+     * - The current allowance must be at least `subtractedValue`.
+     *
+     * Emits an {Approval} event indicating the updated allowance.
+     */
+    function decreaseAllowance(
+        address spender,
+        uint256 subtractedValue
+    ) public returns (bool success) {
+        // Check if the spender is not the zero address
+        require(spender != address(0), "Decrease allowance for zero address");
+
+        // Check if the current allowance is sufficient
+        require(
+            allowances[msg.sender][spender] >= subtractedValue,
+            "Decreased allowance below zero"
+        );
+
+        // Decrease the allowance
+        allowances[msg.sender][spender] -= subtractedValue;
+
+        // Emit Approval event
+        emit Approval(msg.sender, spender, allowances[msg.sender][spender]);
+
+        // Return true if the operation is successful
+        return true;
+    }
+
+    /**
      * @dev Returns the remaining number of tokens that `spender` will be
      * allowed to spend on behalf of `owner` through {transferFrom}. This is
      * zero by default.

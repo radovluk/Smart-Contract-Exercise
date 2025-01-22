@@ -11,6 +11,7 @@
   "description": "",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "hardhat": "^2.22.18"
+    "hardhat": "^2.22.18",
+    "@openzeppelin/contracts": "^4.8.0"
   }
 }
