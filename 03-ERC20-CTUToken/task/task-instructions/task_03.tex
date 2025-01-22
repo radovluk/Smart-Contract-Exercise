@@ -87,7 +87,7 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
 \begin{enumerate}
   \item \textbf{Fungible Tokens}
 
-  Fungible tokens \href{https://ethereum.org/en/developers/docs/standards/tokens/erc-20/}{(\textit{ERC-20 Tokens})} are interchangeable and have exactly the same value. Each unit of a fungible token is identical to another unit. Examples are cryptocurrencies, utility tokens or governance tokens.
+  Fungible tokens \href{https://eips.ethereum.org/EIPS/eip-20}{(\textit{ERC-20 Tokens})} are interchangeable and have exactly the same value. Each unit of a fungible token is identical to another unit. Examples are cryptocurrencies, utility tokens or governance tokens.
 
     \begin{figure}[h!]
       \centering
@@ -98,7 +98,7 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
 
     \item \textbf{Non-Fungible Tokens (NFTs)}
 
-    Non-fungible tokens \href{https://ethereum.org/en/developers/docs/standards/tokens/erc-721/}{(\textit{ERC-721 Tokens})} are unique and cannot be exchanged on a one-to-one basis. They are used to represent ownership of unique items such as digital art, collectibles, and real estate. Each token is uniquely identifiable by an ID.
+    Non-fungible tokens \href{https://eips.ethereum.org/EIPS/eip-721}{(\textit{ERC-721 Tokens})} are unique and cannot be exchanged on a one-to-one basis. They are used to represent ownership of unique items such as digital art, collectibles, and real estate. Each token is uniquely identifiable by an ID.
 
     \begin{figure}[h!]
       \centering
@@ -109,7 +109,7 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
 
     \item \textbf{Multi-Tokens}
 
-    Multi-tokens \href{https://ethereum.org/en/developers/docs/standards/tokens/erc-1155/}{(\textit{ERC-1155 Tokens})} combine the properties of both fungible and non-fungible tokens. They allow for the creation of multiple token types within a single contract, providing flexibility for various use cases.
+    Multi-tokens \href{https://eips.ethereum.org/EIPS/eip-1155}{(\textit{ERC-1155 Tokens})} combine the properties of both fungible and non-fungible tokens. They allow for the creation of multiple token types within a single contract, providing flexibility for various use cases.
 
     \begin{figure}[h!]
       \centering
@@ -121,7 +121,7 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
 
 In this exercise, you will create your own ERC-20 token contract according to the specified standard, and then we will attempt to hack this contract together.
 
-\subsection{Prerequisites}
+\subsection*{Prerequisites}
 
 Ensure that you have already installed the following on your system:
 
@@ -140,135 +140,88 @@ $ npm -v
 
 Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development. It is recommended that you use NPM 7 or higher.
 
-\subsection{Project Set Up}
+\subsection*{Project Set Up}
 
-To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. After you clone the repository start with the following command within your project folder:
+To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/03-ERC20-CTUToken/task/task-code}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. After you clone the repository start with the following command within your project folder:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
   $ npm install
 \end{minted}
-This will install all the necessary dependencies for the project. Your implementation will be in the file \textit{contracts/Voting.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To fulfill this task you need to pass all the provided tests. You can run the tests with the following command:
+This will install all the necessary dependencies for the project. Your implementation will be in the file \textit{contracts/CTUToken.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To fulfill this task you need to pass all the provided tests. You can run the tests with the following command:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
   $ npx hardhat test
 \end{minted}
 
-There is also a deployment script in the \textit{scripts} folder. You can deploy the contract to the local hardhat network with the following command:
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-  $ npx hardhat run scripts/deploy.js
-\end{minted}
+\section{Specification: ERC-20 Token}
 
-\section{Specification: Voting Contract}
+The ERC-20 standard was first proposed by Fabian Vogelsteller and Vitalik Buterin in November 2015. The token specification defines the interface that a smart contract must implement to be ERC-20 compliant. It is important to note that it \textbf{does not specify the actual implementation}. It is the most widely used standard with more than 1.5 million smart contracts on the main net implementing it.
 
-\subsection{Overview}
+Example functionalities ERC-20 provides:
 
-The \textbf{Voting} contract is a simple implementation of a voting system using Solidity. It allows the contract owner to add candidates, and any address to vote exactly once for a candidate. The contract includes the following functionalities:
 \begin{itemize}
-    \item The contract owner can add candidates.
-    \item Any address can vote exactly once for a candidate.
-    \item The contract tracks the number of votes each candidate has received.
-    \item The contract tracks whether an address has already voted.
-    \item A function to get the total number of candidates.
-    \item A function to retrieve a candidate's name and vote count by index.
-    \item A function to get the index of the winning candidate.
+  \item Transfer tokens from one account to another.
+  \item Get the current token balance of an account.
+  \item Get the total supply of the token available on the network.
+  \item Approve whether an amount of token from an account can be spent by a third-party account.
 \end{itemize}
 
-\subsection{Solidity Crash Course}
+If a Smart Contract implements the following methods and events, it can be called an ERC-20 Token Contract. Once deployed, it will be responsible for keeping track of the created tokens on Ethereum. To see the full specification, visit \href{https://eips.ethereum.org/EIPS/eip-20}{ERC-20 Token Standard}.
 
-The \textbf{Voting} contract is designed to facilitate a decentralized voting system. Below are some solidity code snippets that you might find useful for implementing the contract and explanations of the key components.
-
-\subsubsection{State Variables}
-
-\textbf{State variables} are used to store data permanently on the blockchain. They represent the contract's state and can be accessed and modified by the contract's functions.
+\subsubsection*{Methods}
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
-  // Address of the contract owner
-  address public owner;
-
-  // Dynamic array to store all candidates
-  Candidate[] public candidates;
-
-  // Mapping to track whether an address has already voted
-  mapping(address => bool) public hasVoted;
+  function name() public view returns (string)
+  function symbol() public view returns (string)
+  function decimals() public view returns (uint8)
+  function totalSupply() public view returns (uint256)
+  function balanceOf(address _owner) public view returns (uint256 balance)
+  function transfer(address _to, uint256 _value) public returns (bool success)
+  function transferFrom(address _from, address _to, uint256 _value) 
+    public returns (bool success)
+  function approve(address _spender, uint256 _value) public returns (bool success)
+  function allowance(address _owner, address _spender) 
+    public view returns (uint256 remaining)  
 \end{minted}
 
-\subsubsection{Structs}
-
-\textbf{Structs} are custom data types that allow you to group related data together. They are useful for organizing complex data structures within the contract.
+\subsubsection*{Events}
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
-  /**
-  * @dev Struct to represent a candidate.
-  * @param name The name of the candidate.
-  * @param voteCount The number of votes the candidate has received.
-  */
- struct Candidate {
-     string name;
-     uint voteCount;
-  }
+  event Transfer(address indexed _from, address indexed _to, uint256 _value)
+  event Approval(address indexed _owner, address indexed _spender, uint256 _value)  
 \end{minted}
 
-\subsubsection{Modifiers}
+\subsection*{OpenZeppelin}
 
-\textbf{Modifiers} are used to change the behavior of functions in a declarative way. They can enforce rules or conditions before executing a function's code.
+\href{https://www.openzeppelin.com/}{OpenZeppelin} provides a library for secure smart contract development. It is built on a solid
+foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by Open Zeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official \href{https://eips.ethereum.org/EIPS/eip-20}{EIP20 documentation}. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of your the CTU Token contract using OpenZeppelin would look like this:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
-  // Modifier to restrict access to the contract owner
-  modifier onlyOwner() {
-      require(msg.sender == owner, "Only the owner can call this function");
-      _; // Continue executing the function
-  }
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-  function addCandidate(string memory _name) public onlyOwner {
-    // Only the contract owner can call this function
-  }
+// Import OpenZeppelin's ERC20 implementation
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+/**
+ * @title CTUToken
+ * @dev A custom implementation of an ERC-20 Token using OpenZeppelin's library.
+ */
+contract CTUToken is ERC20 {
+    // Define the initial supply: 1,000,000 tokens with 18 decimal places
+    uint256 private constant INITIAL_SUPPLY = 1_000_000 * 10 ** 18;
+
+    /**
+     * @dev Constructor that initializes the ERC-20 token with a name and symbol,
+     * and mints the total supply to the deployer's address.
+     */
+    constructor() ERC20("CTU Token", "CTU") {
+        // Mint the initial supply to the deployer of the contract
+        _mint(msg.sender, INITIAL_SUPPLY);
+    }
+}
 \end{minted}
 
-\subsubsection{Functions}
-
-\textbf{Functions} define the behavior of the contract. They can read and modify the contract's state, perform computations, and interact with other contracts or external systems.
-
-\subsubsection{Events}
-
-\textbf{Events} are used to log information on the blockchain that can be accessed by off-chain applications. They are essential for tracking contract activities and facilitating interactions with the user interface.
-
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
-  /**
-  * @dev Event emitted when a vote is cast.
-  * @param voter The address of the voter.
-  * @param candidateIndex The index of the candidate voted for.
-  */
- event Voted(address indexed voter, uint indexed candidateIndex);
-
- /**
-  * @dev Event emitted when a new candidate is added.
-  * @param name The name of the candidate to be added.
-  */
- event CandidateAdded(string name);
-\end{minted}
-
-\subsubsection{Functionality Provided by Solidity}
-Here are some useful code snippets you might need:
-
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
-// Sender of the transaction
-address sender = msg.sender;
-
-// Amount sent with the transaction
-uint amount = msg.value;
-
-// Enforcing conditions
-require(condition, "Error message");
-
-// Casting arbitrary data to uint
-uint number = uint(data);
-
-// Empty address
-address emptyAddress = address(0);
-
-// Emit an event
-emit EventName(parameters);
-\end{minted}
-
+\section{CTU Token}
 
 \end{document}
