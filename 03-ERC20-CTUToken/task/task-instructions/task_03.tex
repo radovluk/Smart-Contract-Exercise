@@ -166,7 +166,7 @@ Example functionalities ERC-20 provides:
   \item Approve whether an amount of token from an account can be spent by a third-party account.
 \end{itemize}
 
-If a Smart Contract implements the following methods and events, it can be called an ERC-20 Token Contract. Once deployed, it will be responsible for keeping track of the created tokens on Ethereum. To see the full specification, visit \href{https://eips.ethereum.org/EIPS/eip-20}{ERC-20 Token Standard}.
+If a Smart Contract implements the following methods and events, it can be called an ERC-20 Token Contract. Once deployed, it will be responsible for keeping track of the created tokens on Ethereum. To see the full specification, visit \href{https://eips.ethereum.org/EIPS/eip-20}{EIP20 documentation}.
 
 \subsubsection*{Methods}
 
@@ -193,8 +193,8 @@ If a Smart Contract implements the following methods and events, it can be calle
 
 \subsection*{OpenZeppelin}
 
-\href{https://www.openzeppelin.com/}{OpenZeppelin} provides a library for secure smart contract development. It is built on a solid
-foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by Open Zeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official \href{https://eips.ethereum.org/EIPS/eip-20}{EIP20 documentation}. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of your the CTU Token contract using OpenZeppelin would look like this:
+\href{https://www.openzeppelin.com/}{OpenZeppelin} provides a open-source library for secure smart contract development. It is built on a solid
+foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by Open Zeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official EIP20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
 // SPDX-License-Identifier: MIT
@@ -223,5 +223,80 @@ contract CTUToken is ERC20 {
 \end{minted}
 
 \section{CTU Token}
+
+To complete the CTU Token contract and pass all the associated tests, you need to implement the required functionality in the \textit{contracts/CTUToken.sol} file. Look for the sections marked with \#TODO comments and ensure that all the specified requirements bellow are met.
+
+\subsection*{Token Details}
+\begin{itemize}
+    \item \textbf{Name}: Set the token name to \texttt{"CTU Token"}.
+    \item \textbf{Symbol}: Set the token symbol to \texttt{"CTU"}.
+    \item \textbf{Decimals}: Use \texttt{18} decimal places to align with the standard Ether denomination.
+    \item \textbf{Total Supply}: Initialize the total supply to \texttt{1,000,000} tokens.
+\end{itemize}
+
+\subsection*{Events}
+\begin{itemize}
+    \item \textbf{Transfer Event}: Emit a \texttt{Transfer} event whenever tokens are transferred, including zero-value transfers.
+    \item \textbf{Approval Event}: Implement and emit an \texttt{Approval} event when an allowance is set via the \texttt{approve} function.
+\end{itemize}
+
+\subsection*{State Variables}
+\begin{itemize}
+    \item \textbf{Balances Mapping}: Maintain a \texttt{mapping(address => uint256)} to track the token balance of each account.
+    \item \textbf{Allowances Mapping}: Use a nested \texttt{mapping(address => mapping(address => uint256))} to manage allowances, enabling accounts to authorize others to spend tokens on their behalf.
+\end{itemize}
+
+\subsection*{Constructor}
+\begin{itemize}
+    \item Assign the entire \texttt{totalSupply} to the contract deployer's address upon deployment.
+\end{itemize}
+
+\subsection*{Core Functions}
+\begin{itemize}
+    \item \textbf{name()}: Return the name of the token.
+    \item \textbf{symbol()}: Return the token symbol.
+    \item \textbf{decimals()}: Return the number of decimal places (\texttt{18}).
+    \item \textbf{totalSupply()}: Return the total supply of tokens in existence.
+    \item \textbf{balanceOf(address account)}: Return the token balance of the specified account.
+    \item \textbf{transfer(address to, uint256 value)}:
+    \begin{itemize}
+        \item Ensure the recipient address is not the zero address.
+        \item Verify that the sender has a sufficient balance.
+        \item Update the sender's and recipient's balances accordingly.
+        \item Emit a \texttt{Transfer} event.
+    \end{itemize}
+    \item \textbf{approve(address spender, uint256 value)}:
+    \begin{itemize}
+        \item Ensure the spender address is not the zero address.
+        \item Set the allowance for the spender.
+        \item Emit an \texttt{Approval} event.
+    \end{itemize}
+    \item \textbf{allowance(address owner, address spender)}: Return the remaining number of tokens that the spender is allowed to spend on behalf of the owner.
+    \item \textbf{transferFrom(address from, address to, uint256 value)}:
+    \begin{itemize}
+        \item Ensure neither the sender nor the recipient is the zero address.
+        \item Verify that the source account has a sufficient balance.
+        \item Check that the caller has enough allowance.
+        \item Update the balances of the source and recipient accounts.
+        \item Decrease the allowance accordingly.
+        \item Emit a \texttt{Transfer} event.
+    \end{itemize}
+\end{itemize}
+
+To fulfill the exercise, you need to pass all the provided tests. You can run the tests with the following command:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+  $ npx hardhat test
+\end{minted}
+
+\section{Frontrunning Attack}
+
+Did your contract pass all the tests? Congratulations! It is now fully tested and it is time to deploy your brand new CTU token to the main net. But is it really?
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.9\textwidth]{sandwich.pdf}
+% \caption{Frontrunning Attack}
+\label{fig:frontrunning}
+\end{figure}
 
 \end{document}
