@@ -104,18 +104,18 @@ Both commands should return the installed version numbers of Node.js and NPM res
 
 \subsection{Project Set Up}
 
-To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. After you clone the repository start with the following command within your project folder:
+To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. After you clone the repository, start with the following command within your project folder:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
   $ npm install
 \end{minted}
-This will install all the necessary dependencies for the project. Your implementation will be in the file \textit{contracts/Voting.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To fulfill this task you need to pass all the provided tests. You can run the tests with the following command:
+This will install all the necessary dependencies for the project. Your implementation will be in the file \texttt{contracts/Voting.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To fulfill this task, you need to pass all the provided tests. You can run the tests with the following command:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
   $ npx hardhat test
 \end{minted}
 
-There is also a deployment script in the \textit{scripts} folder. You can deploy the contract to the local hardhat network with the following command:
+There is also a deployment script in the \texttt{scripts} folder. You can deploy the contract to the local Hardhat network with the following command:
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
   $ npx hardhat run scripts/deploy.js
 \end{minted}
@@ -139,9 +139,9 @@ The \textbf{Voting} contract is a simple implementation of a voting system using
 
 The \textbf{Voting} contract is designed to facilitate a decentralized voting system. Below are some solidity code snippets that you might find useful for implementing the contract and explanations of the key components.
 
-\subsubsection{State Variables}
+\subsubsection*{State Variables}
 
-\textbf{State variables} are used to store data permanently on the blockchain. They represent the contract's state and can be accessed and modified by the contract's functions.
+State variables are used to store data permanently on the blockchain. They represent the contract's state and can be accessed and modified by the contract's functions.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
   // Address of the contract owner
@@ -154,9 +154,9 @@ The \textbf{Voting} contract is designed to facilitate a decentralized voting sy
   mapping(address => bool) public hasVoted;
 \end{minted}
 
-\subsubsection{Structs}
+\subsubsection*{Structs}
 
-\textbf{Structs} are custom data types that allow you to group related data together. They are useful for organizing complex data structures within the contract.
+Structs are custom data types that allow you to group related data together. They are useful for organizing complex data structures within the contract.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
   /**
@@ -170,9 +170,9 @@ The \textbf{Voting} contract is designed to facilitate a decentralized voting sy
   }
 \end{minted}
 
-\subsubsection{Modifiers}
+\subsubsection*{Modifiers}
 
-\textbf{Modifiers} are used to change the behavior of functions in a declarative way. They can enforce rules or conditions before executing a function's code.
+Modifiers are used to change the behavior of functions in a declarative way. They can enforce rules or conditions before executing a function's code.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
   // Modifier to restrict access to the contract owner
@@ -186,13 +186,13 @@ The \textbf{Voting} contract is designed to facilitate a decentralized voting sy
   }
 \end{minted}
 
-\subsubsection{Functions}
+\subsubsection*{Functions}
 
-\textbf{Functions} define the behavior of the contract. They can read and modify the contract's state, perform computations, and interact with other contracts or external systems.
+Functions define the behavior of the contract. They can read and modify the contract's state, perform computations, and interact with other contracts or external systems.
 
-\subsubsection{Events}
+\subsubsection*{Events}
 
-\textbf{Events} are used to log information on the blockchain that can be accessed by off-chain applications. They are essential for tracking contract activities and facilitating interactions with the user interface.
+Events are used to log information on the blockchain that can be accessed by off-chain applications. They are essential for tracking contract activities and facilitating interactions with the user interface.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
   /**
@@ -209,7 +209,7 @@ The \textbf{Voting} contract is designed to facilitate a decentralized voting sy
  event CandidateAdded(string name);
 \end{minted}
 
-\subsubsection{Functionality Provided by Solidity}
+\subsubsection*{Functionality Provided by Solidity}
 Here are some useful code snippets you might need:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
