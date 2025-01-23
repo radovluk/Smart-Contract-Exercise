@@ -1,5 +1,5 @@
 {
-  "name": "03-CTUToken",
+  "name": "03-erc20-ctutoken",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {

