@@ -37,7 +37,7 @@ This project contains exercises for students to learn about smart contract secur
 - **Task**: In this exercise, you will implement a decentralized voting system on the blockchain. This will be a simple smart contract that allows address owners to vote for individual candidates and subsequently display the voting results. The goal of this exercise is to familiarize yourself with the basics of the Solidity language.
 
 ### 03 - ERC-20 CTU Token
-- **Task**: In this exercise, you will learn about tokens on Ethereum, with a particular focus on ERC-20 fungible tokens. You will implement a smart contract that adheres to the ERC-20 standards. In the second part of the exercise, we will focus on a **Frontrunning attack** targeting your implemented token contract. Finally, you will need to consider changes to the implementation to mitigate frontrunning attack risk.
+- **Task**: In this exercise, you will learn about tokens on Ethereum, with a particular focus on ERC-20 fungible tokens. You will implement a smart contract that follows the ERC-20 standard. In the second part of the exercise, you will focus on a **Frontrunning attack** targeting your CTU token contract. Finally, you will need to consider changes to the implementation to mitigate the risk of a frontrunning attack.
 
 ## Getting Started
 
