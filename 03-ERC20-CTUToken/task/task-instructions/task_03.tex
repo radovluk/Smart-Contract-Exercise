@@ -119,7 +119,7 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
     \end{figure}
   \end{enumerate}
 
-In this exercise, you will create your own ERC-20 token contract according to the specified standard, and then we will attempt to hack this contract together.
+In this exercise, you will create your own ERC-20 token contract according to the specified standard, and then you will attempt to hack it.
 
 \subsection*{Prerequisites}
 
@@ -142,12 +142,12 @@ Both commands should return the installed version numbers of Node.js and NPM res
 
 \subsection*{Project Set Up}
 
-To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/03-ERC20-CTUToken/task/task-code}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. After you clone the repository start with the following command within your project folder:
+To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/03-ERC20-CTUToken/task/task-code}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. After you clone the repository, start with the following command within your project folder:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
   $ npm install
 \end{minted}
-This will install all the necessary dependencies for the project. Your implementation will be in the file \textit{contracts/CTUToken.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To fulfill this task you need to pass all the provided tests. You can run the tests with the following command:
+This will install all the necessary dependencies for the project. Your implementation will be in the file \texttt{contracts/CTUToken.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To fulfill this task, you need to pass all the provided tests. You can run the tests with the following command:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
   $ npx hardhat test
@@ -155,7 +155,7 @@ This will install all the necessary dependencies for the project. Your implement
 
 \section{Specification: ERC-20 Token}
 
-The ERC-20 standard was first proposed by Fabian Vogelsteller and Vitalik Buterin in November 2015. The token specification defines the interface that a smart contract must implement to be ERC-20 compliant. It is important to note that it \textbf{does not specify the actual implementation}. It is the most widely used standard with more than 1.5 million smart contracts on the main net implementing it.
+The ERC-20 standard was first proposed by Fabian Vogelsteller and Vitalik Buterin in November 2015. The token specification defines the interface that a smart contract must implement to be ERC-20 compliant. It is important to note that it \textbf{does not specify the actual implementation}. It is the most widely used standard with more than 1.5 million smart contracts on the mainnet implementing it.
 
 Example functionalities ERC-20 provides:
 
@@ -194,7 +194,7 @@ If a Smart Contract implements the following methods and events, it can be calle
 \subsection*{OpenZeppelin}
 
 \href{https://www.openzeppelin.com/}{OpenZeppelin} provides a open-source library for secure smart contract development. It is built on a solid
-foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by Open Zeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official EIP20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
+foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by OpenZeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official EIP20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
 // SPDX-License-Identifier: MIT
@@ -224,7 +224,7 @@ contract CTUToken is ERC20 {
 
 \section{CTU Token}
 
-To complete the CTU Token contract and pass all the associated tests, you need to implement the required functionality in the \textit{contracts/CTUToken.sol} file. Look for the sections marked with \#TODO comments and ensure that all the specified requirements bellow are met.
+To complete the CTU Token contract and pass all the associated tests, you need to implement the required functionality in the \texttt{contracts/CTUToken.sol} file. Look for the sections marked with \#TODO comments and ensure that all the specified requirements below are met.
 
 \subsection*{Token Details}
 \begin{itemize}
@@ -290,13 +290,59 @@ To fulfill the exercise, you need to pass all the provided tests. You can run th
 
 \section{Frontrunning Attack}
 
-Did your contract pass all the tests? Congratulations! It is now fully tested and it is time to deploy your brand new CTU token to the main net. But is it really?
+Did your contract pass all the tests? Congratulations! It is now fully tested and it is time to deploy your brand new CTU token to the mainnet. But is it really?
 
-\begin{figure}[h!]
+When you initiate a transaction, it is first sent to the public mempool, where it becomes visible to everyone. To have your transaction included in the blockchain by a miner or validator, you must offer a fee. Miners or validators typically select transactions based on the potential profit rather than the order of initiation. As a result, transactions submitted earlier may be included later, and those submitted later may be included sooner.
+
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{sandwich.pdf}
+\includegraphics[width=0.75\textwidth]{sandwich.pdf}
 % \caption{Frontrunning Attack}
 \label{fig:frontrunning}
 \end{figure}
+
+The following table shows the attack vector for our CTU Token smart contract, where the attacker Bob manages to steal CTU tokens from Alice due to a frontrunning attack.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|c|l|l|p{8.5cm}|}
+      \hline
+      \textbf{Step} & \textbf{Actor} & \textbf{Action} & \textbf{Description} \\
+      \hline
+      \scriptsize{1} & \scriptsize{Alice} & \scriptsize{Approve Bob} & \scriptsize{Alice approves Bob to spend 100 CTU tokens on her behalf using the \texttt{\textbf{approve}} function.} \\
+      \hline
+      \scriptsize{2} & \scriptsize{Bob} & \scriptsize{Monitor Mempool} & \scriptsize{Bob monitors the mempool for pending transactions, specifically looking for Alice's approval transaction.} \\
+      \hline
+      \scriptsize{3} & \scriptsize{Alice} & \scriptsize{Change Approval} & \scriptsize{Alice decides to change Bob's allowance from 100 CTU to 200 CTU and initiates a new \texttt{\textbf{approve}} transaction.} \\
+      \hline
+      \scriptsize{4} & \scriptsize{Bob} & \scriptsize{Frontrun Transaction} & \scriptsize{Upon detecting Alice's new approval transaction in the mempool, Bob quickly submits a \texttt{\textbf{transferFrom}} transaction to utilize the existing 100 CTU allowance before Alice's transaction is mined. Bob sets a higher gas price to prioritize his transaction.} \\
+      \hline
+      \scriptsize{5} & \scriptsize{Network} & \scriptsize{Transaction Ordering} & \scriptsize{Due to the higher gas price, Bob's \texttt{\textbf{transferFrom}} transaction is mined before Alice's new \texttt{\textbf{approve}} transaction. This allows Bob to transfer 100 CTU tokens before the allowance is updated.} \\
+      \hline
+      \scriptsize{6} & \scriptsize{Alice} & \scriptsize{Approval Mined} & \scriptsize{Alice's \texttt{\textbf{approve}} transaction is mined, increasing Bob's allowance to 200 CTU.} \\
+      \hline
+      \scriptsize{7} & \scriptsize{Bob} & \scriptsize{Exploit Increased Allowance} & \scriptsize{Bob now has an increased allowance of 200 CTU and can transfer an additional 200 CTU from Alice's account, totaling 300 CTU stolen.} \\
+      \hline
+  \end{tabular}
+  % \caption{Frontrunning Attack Scenario Between Alice and Bob}
+  \label{tab:attack-scenario}
+\end{table}
+
+Review the file \texttt{scripts/attack.js} where this attack is implemented and understand it. Then run the attack using the command
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+  $ npx hardhat run scripts/attack.js --config priority.mempool.js
+\end{minted}
+
+For this attack, we use a special configuration file for Hardhat, where we set that a new block is confirmed every 500ms and transactions are selected for inclusion in the blockchain based on priority fees. In our simulation, each block contains only one transaction for simplicity. However, this does not protect against frontrunning attacks, as transactions with higher fees will simply be included in earlier blocks. 
+
+\subsection*{Task:} Modify the CTU Token smart contract to prevent vulnerability to frontrunning attacks.
+
+\begin{itemize}
+  \item \textbf{Tip:} To display all blocks in the simulation, uncomment the last line of the main function.
+  \item \textbf{Tip:} Use these functions for easier debugging: \texttt{displayState}, 
+  \texttt{logTransactionDetails}, \texttt{printMempool}, \texttt{printLastBlockInfo}, \texttt{printAllBlocksInfo}.
+  \item \textbf{Tip:} You might need to change the approval process completely.
+\end{itemize}
 
 \end{document}
