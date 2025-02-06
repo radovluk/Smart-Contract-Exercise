@@ -281,7 +281,12 @@ It's crucial to keep sensitive information like your private key and Infura API 
     SEPOLIA_PRIVATE_KEY=your_metamask_private_key
     \end{minted}
 \end{itemize}
-\textbf{Warning}: Never commit your \texttt{.env} file to version control. Add \texttt{.env} to your \texttt{.gitignore} file to prevent accidental exposure.
+
+\begin{itemize}
+    \item \textbf{Warning 1}: Never commit your \texttt{.env} file to version control. Add \texttt{.env} to your \texttt{.gitignore} file to prevent accidental exposure.
+
+    \item \textbf{Warning 2}: Never store your private keys as plain text, even in your \texttt{.env} file. Use secure key management tools. However, for the purpose of our exercise, we will use environment variables. \textbf{Never use your private key associated with real money in plain text!}
+\end{itemize}
 
 \subsubsection{Updating \texttt{hardhat.config.js}}
 
