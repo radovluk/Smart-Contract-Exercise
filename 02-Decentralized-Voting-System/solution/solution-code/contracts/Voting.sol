@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.28;
 
 /**
  * @title Voting
@@ -18,7 +18,7 @@ pragma solidity ^0.8.0;
  */
 contract Voting {
     // Address of the contract owner
-    address public owner;
+    address public immutable owner;
 
     /**
      * @dev Struct to represent a candidate.
@@ -67,41 +67,41 @@ contract Voting {
 
     /**
      * @dev Adds a new candidate to the candidates array.
-     * @param _name The name of the candidate to be added.
+     * @param name The name of the candidate to be added.
      *
      * Requirements:
      * - Only the contract owner can add a candidate.
      * - The candidate name cannot be empty.
      */
-    function addCandidate(string memory _name) public onlyOwner {
-        require(bytes(_name).length > 0, "Candidate name cannot be empty");
+    function addCandidate(string memory name) public onlyOwner {
+        require(bytes(name).length > 0, "Candidate name cannot be empty");
         // Create a new Candidate struct and push it to the candidates array
-        candidates.push(Candidate({name: _name, voteCount: 0}));
+        candidates.push(Candidate({name: name, voteCount: 0}));
         // Emit the CandidateAdded event
-        emit CandidateAdded(_name);
+        emit CandidateAdded(name);
     }
 
     /**
      * @dev Allows a user to vote for a candidate by their index.
-     * @param _candidateIndex The index of the candidate in the candidates array.
+     * @param candidateIndex The index of the candidate in the candidates array.
      *
      * Requirements:
      * - The caller has not voted before.
      * - The candidate index is valid (within the array bounds).
      */
-    function vote(uint _candidateIndex) public {
+    function vote(uint candidateIndex) public {
         // Ensure the caller hasn't voted yet
         require(!hasVoted[msg.sender], "Already voted");
         // Ensure the candidate index is valid
-        require(_candidateIndex < candidates.length, "Invalid candidate index");
+        require(candidateIndex < candidates.length, "Invalid candidate index");
 
         // Increment the vote count for the chosen candidate
-        candidates[_candidateIndex].voteCount += 1;
+        candidates[candidateIndex].voteCount += 1;
         // Mark the caller as having voted
         hasVoted[msg.sender] = true;
 
         // Emit the Voted event
-        emit Voted(msg.sender, _candidateIndex);
+        emit Voted(msg.sender, candidateIndex);
     }
 
     /**
@@ -114,18 +114,18 @@ contract Voting {
 
     /**
      * @dev Retrieves a candidate's details by their index.
-     * @param _index The index of the candidate in the candidates array.
+     * @param index The index of the candidate in the candidates array.
      * @return name The name of the candidate.
      * @return voteCount The number of votes the candidate has received.
      *
      * Requirements:
      * - The candidate index must be within bounds.
      */
-    function getCandidate(uint _index) public view returns (string memory name, uint voteCount) {
+    function getCandidate(uint index) public view returns (string memory name, uint voteCount) {
         // Ensure the index is valid
-        require(_index < candidates.length, "Index out of range");
+        require(index < candidates.length, "Index out of range");
         // Retrieve the candidate from the array
-        Candidate storage candidate = candidates[_index];
+        Candidate storage candidate = candidates[index];
         return (candidate.name, candidate.voteCount);
     }
 
@@ -142,9 +142,10 @@ contract Voting {
 
         uint winningVoteCount = candidates[0].voteCount;
         uint winnerIndex = 0;
+        uint candidatesLength = candidates.length; // Cache the length
 
         // Iterate through all candidates to find the one with the highest vote count
-        for (uint i = 1; i < candidates.length; i++) {
+        for (uint i = 1; i < candidatesLength; i++) {
             if (candidates[i].voteCount > winningVoteCount) {
                 winningVoteCount = candidates[i].voteCount;
                 winnerIndex = i;

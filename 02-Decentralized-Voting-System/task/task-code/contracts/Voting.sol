@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.28;
 
 /**
  * @title Voting
@@ -18,7 +18,7 @@ pragma solidity ^0.8.0;
  */
 contract Voting {
     // Address of the contract owner
-    address public owner;
+    address public immutable owner;
 
     /**
      * @dev Struct to represent a candidate.
@@ -69,29 +69,29 @@ contract Voting {
 
     /**
      * @dev Adds a new candidate to the candidates array.
-     * @param _name The name of the candidate to be added.
+     * @param name The name of the candidate to be added.
      *
      * Requirements:
      * - Only the contract owner can add a candidate.
      * - The candidate name cannot be empty.
      */
-    function addCandidate(string memory _name) public onlyOwner {
+    function addCandidate(string memory name) public onlyOwner {
         // TODO: Ensure that the candidate name is not empty
         // TODO: Create a new Candidate struct with the provided name and zero votes
         // TODO: Add the new candidate to the candidates array
         // TODO: Uncomment the line below to emit the CandidateAdded event
-        // emit CandidateAdded(_name);
+        // emit CandidateAdded(name);
     }
 
     /**
      * @dev Allows a user to vote for a candidate by their index.
-     * @param _candidateIndex The index of the candidate in the candidates array.
+     * @param candidateIndex The index of the candidate in the candidates array.
      *
      * Requirements:
      * - The caller has not voted before.
      * - The candidate index is valid (within the array bounds).
      */
-    function vote(uint _candidateIndex) public {
+    function vote(uint candidateIndex) public {
         // TODO: Check if the sender has already voted
         // Tip: Use msg.sender to get the sender address and require statetment.
         // TODO: Check if the candidate index is within the valid range
@@ -111,14 +111,14 @@ contract Voting {
 
     /**
      * @dev Retrieves a candidate's details by their index.
-     * @param _index The index of the candidate in the candidates array.
+     * @param index The index of the candidate in the candidates array.
      * @return name The name of the candidate.
      * @return voteCount The number of votes the candidate has received.
      *
      * Requirements:
      * - The candidate index must be within bounds.
      */
-    function getCandidate(uint _index) public view returns (string memory name, uint voteCount) {
+    function getCandidate(uint index) public view returns (string memory name, uint voteCount) {
         // TODO: Ensure the index is within the valid range
         // TODO: Retrieve the candidate's name and vote count from the candidates array
     }
@@ -134,6 +134,7 @@ contract Voting {
     function winningCandidate() public view returns (uint) {
         // TODO: Ensure there is at least one candidate to determine a winner
         // TODO: Initialize variables to track the highest vote count and winner index
+        // TODO: Cache the length of the candidates array before looping through it
         // TODO: Return the index of the winning candidate
     }
 }
