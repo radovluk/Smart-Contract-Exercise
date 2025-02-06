@@ -129,7 +129,7 @@ Start by creating a new directory inside your project called \texttt{contracts} 
 // contracts/Greeter.sol
 
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 
 /**
  * @title Greeter
@@ -184,7 +184,7 @@ require("@nomicfoundation/hardhat-toolbox");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.0",
+  solidity: "0.8.28",
 };
 \end{minted}
 For more information about plugins and how to test contracts in Hardhat, visit: \\ \href{https://hardhat.org/docs}{Hardhat Documentation}.
@@ -260,16 +260,15 @@ To deploy your smart contract to the Sepolia testnet, you need to configure Hard
 
 \subsubsection{Storing Sensitive Information}
 
-It's crucial to keep sensitive information like your private key and Infura API key secure. We recommend using environment variables to manage these credentials.
+It's crucial to keep sensitive information like your private key and Infura API key secure. We recommend using environment variables to manage these credentials only for the purpose of this exercise.
 
 \begin{itemize}
-
-\item Install the dotenv Package:
+\item Install the dotenv package:
     
     \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
     $ npm install dotenv --save
     \end{minted}
-    
+
 \item Create a \texttt{.env} file in your directory:
 
     In the root of your project directory, create a file named \texttt{.env} and add the following content:
@@ -285,7 +284,7 @@ It's crucial to keep sensitive information like your private key and Infura API 
 \begin{itemize}
     \item \textbf{Warning 1}: Never commit your \texttt{.env} file to version control. Add \texttt{.env} to your \texttt{.gitignore} file to prevent accidental exposure.
 
-    \item \textbf{Warning 2}: Never store your private keys as plain text, even in your \texttt{.env} file. Use secure key management tools. However, for the purpose of our exercise, we will use environment variables. \textbf{Never use your private key associated with real money in plain text!}
+    \item \textbf{Warning 2}: Never store your private keys as plain text, even in your \texttt{.env} file. Use secure key management tools. For the purpose of our exercise, we will use environment variables. \textbf{Never use your private key associated with real money in plain text!}
 \end{itemize}
 
 \subsubsection{Updating \texttt{hardhat.config.js}}
@@ -300,7 +299,7 @@ require("dotenv").config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.0",
+  solidity: "0.8.28",
   networks: {
     sepolia: {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
