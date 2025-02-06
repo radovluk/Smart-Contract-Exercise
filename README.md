@@ -32,12 +32,15 @@ This project contains exercises for students to learn about smart contract secur
 
 ### 01 - Hello Blockchain World
 - **Task**: In this first exercise, you will become familiar with the basics of smart contract development. The goal is to create a simple smart contract. You will then compile, test, and deploy this smart contract in the local network environment, and subsequently deploy it to the live blockchain.
+- **Topics**: Hardhat, MetaMask, Infura, Sepolia, Etherscan
 
 ### 02 - Decentralized Voting System
 - **Task**: In this exercise, you will implement a decentralized voting system on the blockchain. This will be a simple smart contract that allows address owners to vote for individual candidates and subsequently display the voting results. The goal of this exercise is to familiarize yourself with the basics of the Solidity language.
+- **Topics**: Solidity programming
 
 ### 03 - ERC-20 CTU Token
-- **Task**: In this exercise, you will learn about tokens on Ethereum, with a particular focus on ERC-20 fungible tokens. You will implement a smart contract that follows the ERC-20 standard. In the second part of the exercise, you will focus on a **Frontrunning attack** targeting your CTU token contract. Finally, you will need to consider changes to the implementation to mitigate the risk of a frontrunning attack.
+- **Task**: In this exercise, you will learn about tokens on Ethereum, with a particular focus on ERC-20 fungible tokens. You will implement a smart contract that follows the ERC-20 standard. In the second part of the exercise, you will focus on a Frontrunning attack targeting your CTU token contract. Finally, you will need to consider changes to the implementation to mitigate the risk of a frontrunning attack.
+- **Topics**: Frontrunning Attack, ERC-20, ERC-1155, ERC-721, OpenZeppelin
 
 ## Getting Started
 
