@@ -12,8 +12,8 @@
  * @throws {Error} If there is an issue with the deployment process.
  * 
  * @example
- * // To run this script, use the Hardhat command:
- * // npx hardhat run scripts/deploy.js --network <network-name>
+ * To run this script, use the Hardhat command:
+ * npx hardhat run scripts/deploy.js --network <network-name>
  */
 async function main() {
     // Get the first signer account from Hardhat's ethers provider
