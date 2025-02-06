@@ -2,15 +2,12 @@
   "name": "03-erc20-ctutoken",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [],
   "author": "Lukas Radovansky",
   "license": "MIT",
-  "description": "",
+  "description": "Educational exercise for Solidity learning.",
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "hardhat": "^2.22.18"
+    "@nomicfoundation/hardhat-toolbox": "latest",
+    "hardhat": "latest"
   }
 }

@@ -1,17 +1,17 @@
 {
-  "name": "01---hello-blockchain-world",
+  "name": "01-hello-blockchain-world",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "directories": {
+    "test": "test",
+    "scripts": "scripts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Lukas Radovansky",
+  "license": "MIT",
+  "description": "Educational exercise for Solidity learning.",
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "hardhat": "^2.22.17"
+    "@nomicfoundation/hardhat-toolbox": "latest",
+    "hardhat": "latest"
   },
   "dependencies": {
     "dotenv": "^16.4.7"
