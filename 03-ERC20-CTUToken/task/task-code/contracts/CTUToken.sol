@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 
 /**
  * @title CTUToken
@@ -18,15 +18,15 @@ pragma solidity ^0.8.0;
  */
 contract CTUToken {
     // TODO: Set the name of the token to "CTU Token"
-    string private nameToken = "";
+    string private NAME_TOKEN = "";
 
     // The symbol of the token, usually a shorter version of the name.
-    string private symbolToken = "CTU";
+    string private TOKEN_SYMBOL = "CTU";
 
     // TODO: Set the total supply of the token to 1,000,000 tokens.
     // The total supply should be 1,000,000 tokens with 18 decimal places.
     // This means the total supply should be represented as 1_000_000 * 10**18.
-    uint256 private totalSupplyToken = 42;
+    uint256 private TOKEN_TOTAL_SUPPLY = 42;
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to another account (`to`).
@@ -96,7 +96,7 @@ contract CTUToken {
      * @dev Returns the value of tokens in existence.
      */
     function totalSupply() public view returns (uint256) {
-        return totalSupplyToken;
+        return TOKEN_TOTAL_SUPPLY;
     }
 
     /**

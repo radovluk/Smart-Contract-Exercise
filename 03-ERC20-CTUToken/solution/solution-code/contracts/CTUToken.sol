@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 
 /**
  * @title CTUToken
@@ -18,14 +18,14 @@ pragma solidity ^0.8.0;
  */
 contract CTUToken {
     // The name of the token.
-    string private nameToken = "CTU Token";
+    string private constant TOKEN_NAME = "CTU Token";
 
     // The symbol of the token, usually a shorter version of the name.
-    string private symbolToken = "CTU";
+    string private constant TOKEN_SYMBOL = "CTU";
 
     // The total supply of the token there will be.
     // 1,000,000 tokens with 18 decimal places
-    uint256 private totalSupplyToken = 1_000_000 * 10**18;
+    uint256 private constant TOKEN_TOTAL_SUPPLY = 1_000_000 * 10**18;
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to another account (`to`).
@@ -63,24 +63,24 @@ contract CTUToken {
      */
     constructor() {
         // Assign total supply to the contract deployer
-        balances[msg.sender] = totalSupplyToken;
+        balances[msg.sender] = TOKEN_TOTAL_SUPPLY;
 
         // Emit Transfer event to show the inital token transfer
-        emit Transfer(address(0), msg.sender, totalSupplyToken);
+        emit Transfer(address(0), msg.sender, TOKEN_TOTAL_SUPPLY);
     }
 
     /**
      * @dev Returns the name of the token.
      */
-    function name() public view returns (string memory) {
-        return nameToken;
+    function name() public pure returns (string memory) {
+        return TOKEN_NAME;
     }
 
     /**
      * @dev Returns the symbol of the token.
      */
-    function symbol() public view returns (string memory) {
-        return symbolToken;
+    function symbol() public pure returns (string memory) {
+        return TOKEN_SYMBOL;
     }
 
     /**
@@ -102,8 +102,8 @@ contract CTUToken {
     /**
      * @dev Returns the value of tokens in existence.
      */
-    function totalSupply() public view returns (uint256) {
-        return totalSupplyToken;
+    function totalSupply() public pure returns (uint256) {
+        return TOKEN_TOTAL_SUPPLY;
     }
 
     /**
