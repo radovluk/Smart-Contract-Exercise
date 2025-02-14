@@ -1,0 +1,150 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+
+\usepackage{minted} % For advanced code listings
+
+% Define a custom minted style (optional)
+\usemintedstyle{colorful} % You can choose from various styles like 'monokai', 'tango', 'colorful', etc.
+
+% Custom color setup
+\definecolor{bashtextcolor}{RGB}{0, 0, 0} % Define black color
+
+% Define a new command for inline code using minted
+\newcommand{\codeinline}[1]{\mintinline{text}{#1}}
+
+\geometry{a4paper, margin=1in}
+
+\title{Smart Contracts Exercise 04: \\ The Immutable Truth -- Solution}
+\author{}
+\date{}
+
+% Define a new command for inline code with a dark background
+\newcommand{\codeblack}[1]{%
+  \texttt{\colorbox{black!7}{\textcolor{black}{#1}}}%
+}
+
+% Define a new command for inline code with a dark background
+\newcommand{\codegrey}[1]{%
+  \texttt{\colorbox{black!4}{\textcolor{black}{#1}}}%
+}
+
+% Define custom colors (optional)
+\definecolor{myURLColor}{RGB}{0, 102, 204} % Example: A shade of blue
+
+\hypersetup{
+    colorlinks=true,        % Enable colored links
+    linkcolor=blue,         % Color for internal links (e.g., \ref, \cite)
+    citecolor=blue,         % Color for citations
+    filecolor=magenta,      % Color for file links
+    urlcolor=myURLColor     % Color for external URLs
+}
+
+% Define a style for code listings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{lightgray!20},   
+    commentstyle=\color{green!50!black},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{red},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+% Adding package for header and footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% Define header and footer
+\fancyhf{} % Clear current settings
+\fancyhead[L]{Smart Contracts Exercise 04} % Left header
+\fancyhead[R]{\thepage} % Right header with page number
+
+\renewcommand{\headrulewidth}{0.4pt} % Line below header
+% \renewcommand{\footrulewidth}{0.4pt} % Line above footer
+
+\begin{document}
+
+\maketitle
+The example implementation of the CTU Token contract can be found in this \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/03-ERC20-CTUToken/solution/solution-code}{GitLab repository}. The required implementation is in the file \texttt{contracts/CTUToken.sol}. Even this implementation cannot prevent a frontrunning attack using only the \texttt{approve()} function. One possible solution is to use the \texttt{increaseAllowance()} and \texttt{decreaseAllowance()} functions instead of the \texttt{approve()} function.
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+function increaseAllowance(
+   address spender,
+   uint256 addedValue
+) public returns (bool success) {
+   // Check if the spender is not the zero address
+   require(spender != address(0), "Increase allowance for zero address");
+   // Increase the allowance
+   allowances[msg.sender][spender] += addedValue;
+   // Emit Approval event
+   emit Approval(msg.sender, spender, allowances[msg.sender][spender]);
+   // Return true if the operation is successful
+   return true;
+}
+\end{minted}
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+function decreaseAllowance(
+   address spender,
+   uint256 subtractedValue
+) public returns (bool success) {
+   // Check if the spender is not the zero address
+   require(spender != address(0), "Decrease allowance for zero address");
+   // Check if the current allowance is sufficient
+   require(
+       allowances[msg.sender][spender] >= subtractedValue,
+       "Decreased allowance below zero"
+   );
+   // Decrease the allowance
+   allowances[msg.sender][spender] -= subtractedValue;
+   // Emit Approval event
+   emit Approval(msg.sender, spender, allowances[msg.sender][spender]);
+   // Return true if the operation is successful
+   return true;
+}
+\end{minted}
+
+The recommended approach is to use the following ERC20 token implementation from OpenZeppelin. You can find it in the file \texttt{contracts/CTUTokenOpenZeppelin.sol}.
+Go through \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{OpenZeppelin GitHub repository} and understand it.
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+// Import OpenZeppelin's ERC20 implementation
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+/**
+ * @title CTUToken
+ * @dev A custom implementation of an ERC-20 Token using OpenZeppelin's library.
+ */
+contract CTUToken is ERC20 {
+    // Define the initial supply: 1,000,000 tokens with 18 decimal places
+    uint256 private constant INITIAL_SUPPLY = 1_000_000 * 10 ** 18;
+
+    /**
+     * @dev Constructor that initializes the ERC-20 token with a name and symbol,
+     * and mints the total supply to the deployer's address.
+     */
+    constructor() ERC20("CTU Token", "CTU") {
+        // Mint the initial supply to the deployer of the contract
+        _mint(msg.sender, INITIAL_SUPPLY);
+    }
+}
+\end{minted}
+
+\end{document}
