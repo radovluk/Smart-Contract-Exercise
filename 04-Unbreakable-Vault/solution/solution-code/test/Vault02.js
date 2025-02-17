@@ -27,8 +27,18 @@ describe("Vault02 Test Suite", function () {
 
         // =========================
         // YOUR CODE GOES HERE
-        // Use only player account to call breachVault with the correct value
-        // await vault.connect(player).breachVault(<PASSWORD>);
+
+        // See https://docs.ethers.org/v6/api/hashing/ for more.
+        // Using ethers.solidityPacked to mimic abi.encodePacked(msg.sender)
+        const encodedAddress = ethers.solidityPacked(["address"], [player.address]);
+        console.log("Encoded address is: ", encodedAddress);
+
+        // Hash the encoded address using keccak256
+        const hash = ethers.keccak256(encodedAddress);
+        console.log("Hash of the encoded address is: ", hash);
+
+        // Call breachVault with the derived value
+        await vault.connect(player).breachVault(hash);
         // =========================
 
         /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */

@@ -27,13 +27,8 @@ describe("Vault01 Test Suite", function () {
         
         // =========================
         // YOUR CODE GOES HERE
-        // Use player account to call breachVault with the correct value
+        // Use only player account to breach the vault
         // await vault.connect(player).breachVault(<PASSWORD>);
-        // A simple hashing function which operates on UTF-8 strings to compute an 32-byte identifier.
-        // This simply computes the UTF-8 bytes and computes the keccak256.
-        // See https://docs.ethers.org/v6/api/hashing/ for more.
-        const hash = ethers.id("password");
-        await vault.connect(player).breachVault(hash);
         // =========================
 
          /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */

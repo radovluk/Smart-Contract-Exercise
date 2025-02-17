@@ -5,7 +5,7 @@ interface IVault03 {
     function breachVault() external returns (bool);
 }
 
-contract AttackVault03 {
+contract Vault03Attack {
     IVault03 public vault;
 
     // Constructor to set the address of the vault contract
