@@ -13,6 +13,8 @@
   "scripts": {
     "vault01": "npx hardhat test test/Vault01.js",
     "vault02": "npx hardhat test test/Vault02.js",
-    "vault03": "npx hardhat test test/Vault03.js"
+    "vault03": "npx hardhat test test/Vault03.js",
+    "vault04": "npx hardhat test test/Vault04.js",
+    "vault05": "npx hardhat test test/Vault05.js"
   }
 }

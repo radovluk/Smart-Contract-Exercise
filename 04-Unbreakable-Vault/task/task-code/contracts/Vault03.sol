@@ -2,24 +2,17 @@
 pragma solidity ^0.8.28;
 
 contract Vault03 {
+    // Address of the last person who solved the challenge
     address public lastSolver;
 
     /**
-     * @notice Steal the money from the vault by providing the correct password.
-     * @param _password The correct password required to complete the challenge.
+     * @notice Breach the vault by providing the correct password.
      * @return bool Returns true if the challenge was successfully completed.
      */
-    function steal(bytes32 _password) public returns (bool) {
-        // Verify that the provided password matches the on-chain computed value.
-        require(
-            _password ==
-                keccak256(
-                    abi.encodePacked(
-                        blockhash(block.number - 1),
-                        block.timestamp
-                    )
-                ),
-            "Incorrect password"
+    function breachVault() public returns (bool) {
+        // The caller of the function should not be the transaction origin.
+        require(msg.sender != tx.origin,
+            "Caller must not be the transaction origin"
         );
         lastSolver = tx.origin;
         return true;

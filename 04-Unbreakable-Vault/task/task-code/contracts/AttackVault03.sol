@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 interface IVault03 {
-    function steal(bytes32 _password) external returns (bool);
+    function breachVault() external returns (bool);
 }
 
 contract AttackVault03 {
@@ -16,16 +16,10 @@ contract AttackVault03 {
     // Function to perform the attack
     function attack() external returns (bool) {
         // =========================
-        // YOUR CODE GOES HERE
-        // vault.unlock(password);
-
-        // Compute the password using on-chain values in the same transaction.
-        bytes32 password = keccak256(
-            abi.encodePacked(blockhash(block.number - 1), block.timestamp)
-        );
+        // YOUR CODE GOES HERE;
 
         // Call the unlock function of the vault contract with the computed password
-        return vault.steal(password);
+        return vault.breachVault();
         // =========================
     }
 }

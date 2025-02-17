@@ -1,9 +1,9 @@
 // Importing Chai to use its asserting functions.
 const { expect } = require("chai");
 /**
- * Test Suite for the Vault03 contract.
+ * Test Suite for the Vault04 contract.
  */
-describe("Vault03 Test Suite", function () {
+describe("Vault04 Test Suite", function () {
     let vault;
     let deployer, player;
 
@@ -14,21 +14,21 @@ describe("Vault03 Test Suite", function () {
         [deployer, player] = await ethers.getSigners();
 
         // Deploy Vault contract
-        vault = await ethers.deployContract("Vault03");
+        vault = await ethers.deployContract("Vault04");
         await vault.waitForDeployment();
     });
 
     /**
-     * Test case to check if the player can breach the Vault03 contract using the AttackVault03 contract.
+     * Test case to check if the player can breach the Vault04 contract using the AttackVault04 contract.
      */
-    it("Player's attempt: Breach the Vault03 via the AttackVault03 contract", async function () {
+    it("Player's attempt: Breach the Vault04 via the AttackVault04 contract", async function () {
         /**
          * SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE
          * Code your solution in contracts/AttackVault03.sol
          */
         
         // Deploy the attacker contract from the player's account.
-        attackVault = await ethers.deployContract("AttackVault03", [vault.target], player);
+        attackVault = await ethers.deployContract("AttackVault04", [vault.target], player);
         await attackVault.waitForDeployment();
 
         // Call the attack function from the attacker contract

@@ -17,31 +17,27 @@ describe("Vault01 Test Suite", function () {
         // Deploy Vault contract
         vault = await ethers.deployContract("Vault01");
         await vault.waitForDeployment();
-
-        // The vault should be locked initially
-        await expect(vault.connect(player).steal()).to.be.revertedWith("Vault is not unlocked");
     });
 
     /**
-     * Here's where you try to unlock the vault.
-     * Fill in your logic to figure out the password or call `unlock` with the correct parameter.
+     * Here's where you try to breach the vault.
+     * Fill in your logic to figure out the password and call the breachVault function.
      */
-    it("Player's attempt: Unlock the Vault01", async function () {
+    it("Player's attempt: Breach the Vault01", async function () {
         
         // =========================
         // YOUR CODE GOES HERE
-        // Use player account to call unlock with the correct value
-        // await vault.connect(player).unlock(<PASSWORD>);
-
-        // Use player account to call unlock with the correct value
+        // Use player account to call breachVault with the correct value
+        // await vault.connect(player).breachVault(<PASSWORD>);
         // A simple hashing function which operates on UTF-8 strings to compute an 32-byte identifier.
         // This simply computes the UTF-8 bytes and computes the keccak256.
         // See https://docs.ethers.org/v6/api/hashing/ for more.
         const hash = ethers.id("password");
-        await vault.connect(player).unlock(hash);
+        await vault.connect(player).breachVault(hash);
         // =========================
 
          /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */
-        expect(await vault.unlocked(), "Vault is not unlocked").to.equal(true);
+        // Expect the last solver to be the player
+        expect(await vault.lastSolver(), "Last solver is not the player").to.equal(player.address);
     });
 });
