@@ -1,0 +1,18 @@
+{
+  "name": "04-unbreakable-vault",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Lukas Radovansky",
+  "license": "ISC",
+  "description": "Educational exercise for Solidity learning.",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "latest",
+    "hardhat": "latest"
+  },
+  "scripts": {
+    "vault01": "npx hardhat test test/Vault01.js",
+    "vault02": "npx hardhat test test/Vault02.js",
+    "vault03": "npx hardhat test test/Vault03.js"
+  }
+}
