@@ -1,4 +1,4 @@
-// Importing Chai to use its asserting functions.
+// Importing necessary modules
 const { expect } = require("chai");
 
 /**
@@ -6,27 +6,39 @@ const { expect } = require("chai");
  */
 describe("Vault06 Test Suite", function () {
     let vault;
-    let deployer, player;
+    let player; // Signer representing the player
+    let playerAddress; // Address of the player
 
     before(async function () {
         /** SET UP - DO NOT CHANGE ANYTHING HERE */
 
-        // Get test accounts
-        [deployer, player] = await ethers.getSigners();
+        // For the purpouse of this test switch to the Sepolia test network
+        await hre.switchNetwork("sepolia");
 
-        // Deploy Vault contract
-        // @note: For this challenge, suppose you do not have access to the contract deployment,
-        // this means that the next line will be hidden from you.
-        vault = await ethers.deployContract("Vault06", ["supersecretpassword"], deployer);
-        await vault.waitForDeployment();
+        // Using ethers.getContractAt to load the contract interface at the desired address
+        const vaultAddress = "0xA3a763bF62550511A0E485d6EB16c98937609A32";
+        const vaultAbi = [
+            "function breachVault(string memory _password) public returns (bool)",
+            "function lastSolver() public view returns (address)"
+        ];
+        vault = await ethers.getContractAt(vaultAbi, vaultAddress);
+
+        // Retrieve the list of signers
+        [player] = await ethers.getSigners();
+
+        // Get the player's address
+        playerAddress = await player.getAddress();
+
+        // Now you can call functions on the vault contract as if you're on Sepolia
+        console.log("Contract loaded from forked Sepolia network at", vaultAddress);
+        console.log("Player's address:", playerAddress);
     });
 
     /**
      * Here's where you try to breach the vault.
      * Fill in your logic to figure out the password and call the breachVault function.
      */
-    it("Player's attempt: Breach the Vault05", async function () {
-
+    it("Player's attempt: Breach the Vault06", async function () {
         // =========================
         // YOUR CODE GOES HERE
         // Use player account to call unlock with the correct value
@@ -36,12 +48,14 @@ describe("Vault06 Test Suite", function () {
         slotValue = slotValue.substring(0, slotValue.length - 2) + "00";
         const password = ethers.decodeBytes32String(slotValue);
         console.log("Storage value at slot", 1, ":", password);
-        await vault.connect(player).breachVault(password);
+
+        // Call breachVault with recovered password
+        const tx = await vault.breachVault(password);
+        await tx.wait();
         // =========================
 
         /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */
-        // Check if the attack was successful
-        // Expect the last solver to be the player
-        expect(await vault.lastSolver(), "Last solver is not the player").to.equal(player.address);
+        // Verify lastSolver == our wallet address
+        expect(await vault.lastSolver(), "Last solver is not the player").to.equal(playerAddress);
     });
 });

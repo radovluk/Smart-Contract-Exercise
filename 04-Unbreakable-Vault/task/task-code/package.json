@@ -8,7 +8,8 @@
   "description": "Educational exercise for Solidity learning.",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "latest",
-    "hardhat": "latest"
+    "hardhat": "latest",
+    "hardhat-switch-network": "^1.2.0"
   },
   "scripts": {
     "vault01": "npx hardhat test test/Vault01.js",
@@ -16,6 +17,7 @@
     "vault03": "npx hardhat test test/Vault03.js",
     "vault04": "npx hardhat test test/Vault04.js",
     "vault05": "npx hardhat test test/Vault05.js",
-    "vault06": "npx hardhat test test/Vault06.js"
+    "vault06": "npx hardhat test test/Vault06.js --network sepolia",
+    "all": "npm run vault01 && npm run vault02 && npm run vault03 && npm run vault04 && npm run vault05 && npm run vault06"
   }
 }

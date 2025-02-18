@@ -14,7 +14,8 @@ contract Vault06 {
     }
 
     /**
-     * @notice You must call lockInPassword before you call this function.
+     * @notice Breach the vault by providing the correct password.
+     * @param _password The correct password required to complete the challenge.
      * @return bool Returns true if the challenge was successfully completed.
      */
     function breachVault(string memory _password) public returns (bool) {
