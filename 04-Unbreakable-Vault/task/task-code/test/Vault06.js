@@ -40,7 +40,7 @@ describe("Vault06 Test Suite", function () {
      */
     it("Player's attempt: Breach the Vault06", async function () {
         // =========================
-        // YOUR CODE GOES HERE
+        // TODO: YOUR CODE GOES HERE
         // Use your sepolia account to call breachVault with the correct password
         // Example:
         // const password = "your_password_here";

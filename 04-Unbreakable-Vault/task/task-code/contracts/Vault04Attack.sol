@@ -16,7 +16,7 @@ contract Vault04Attack {
     // Function to perform the attack
     function attack() external returns (bool) {
         // =========================
-        // YOUR CODE GOES HERE
+        // TODO: YOUR CODE GOES HERE
         // =========================
     }
 }

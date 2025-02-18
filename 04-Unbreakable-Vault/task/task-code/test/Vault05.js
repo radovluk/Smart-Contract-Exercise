@@ -26,7 +26,7 @@ describe("Vault05 Test Suite", function () {
     it("Player's attempt: Breach the Vault05", async function () {
 
         // =========================
-        // YOUR CODE GOES HERE
+        // TODO: YOUR CODE GOES HERE
         // Use only player account 
         // await vault.connect(player).lockInPassword(<PASSWORD>);
         // await vault.connect(player).breachVault();
