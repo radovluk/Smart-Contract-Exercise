@@ -260,29 +260,26 @@ To deploy your smart contract to the Sepolia testnet, you need to configure Hard
 
 \subsubsection{Storing Sensitive Information}
 
-It's crucial to keep sensitive information like your private key and Infura API key secure. We recommend using environment variables to manage these credentials only for the purpose of this exercise.
+It's crucial to keep sensitive information like your private key and Infura API key secure. We recommend using environment variables to manage these credentials only for the purpose of this exercise. A Hardhat project can use configuration variables for user-specific values or for data that shouldn't be included in the code repository. These variables are set via tasks in the vars scope and can be retrieved in the config using the vars object. 
 
 \begin{itemize}
-\item Install the dotenv package:
+    \item Set the INFURA\_API\_KEY
     
     \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-    $ npm install dotenv --save
+        $ npx hardhat vars set INFURA_API_KEY
+        Enter value: ********************************
     \end{minted}
 
-\item Create a \texttt{.env} file in your directory:
-
-    In the root of your project directory, create a file named \texttt{.env} and add the following content:
+    \item Set the SEPOLIA\_PRIVATE\_KEY
 
     \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-    # .env
-    
-    INFURA_API_KEY=your_infura_project_id
-    SEPOLIA_PRIVATE_KEY=your_metamask_private_key
+        $ npx hardhat vars set SEPOLIA_PRIVATE_KEY
+        Enter value: ********************************
     \end{minted}
 \end{itemize}
 
 \begin{itemize}
-    \item \textbf{Warning 1}: Never commit your \texttt{.env} file to version control. Add \texttt{.env} to your \texttt{.gitignore} file to prevent accidental exposure.
+    \item \textbf{Warning 1}: Configuration variables are stored in plain text on your disk. Avoid using this feature for data you wouldn’t normally save in an unencrypted file. Run \texttt{npx hardhat vars path} to find the storage's file location.
 
     \item \textbf{Warning 2}: Never store your private keys as plain text, even in your \texttt{.env} file. Use secure key management tools. For the purpose of our exercise, we will use environment variables. \textbf{Never use your private key associated with real money in plain text!}
 \end{itemize}
@@ -295,7 +292,9 @@ Modify your \texttt{hardhat.config.js} file to include the Sepolia network confi
 // hardhat.config.js
 
 require("@nomicfoundation/hardhat-toolbox");
-require("dotenv").config();
+
+const INFURA_API_KEY = vars.get("INFURA_API_KEY");
+const SEPOLIA_PRIVATE_KEY = vars.get("SEPOLIA_PRIVATE_KEY");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
