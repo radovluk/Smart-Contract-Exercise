@@ -5,8 +5,8 @@
 \usepackage{xcolor}
 \usepackage{geometry}
 \usepackage{graphicx} % For including graphics
-
 \usepackage{minted} % For advanced code listings
+\usepackage{listings-solidity}  % Include Solidity highlighting
 
 % Define a custom minted style (optional)
 \usemintedstyle{colorful} % You can choose from various styles like 'monokai', 'tango', 'colorful', etc.
@@ -81,12 +81,7 @@
 
 \maketitle
 \section{Introduction}
-In this exercise, you will be tasked with breaching several vaults, one by one. You will gain familiarity with the JavaScript library \href{https://docs.ethers.org/v6}{Ethers.js}, which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in \href{https://remix.ethereum.org/}{Remix IDE}, an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, the differences between \texttt{msg.sender} and \texttt{tx.origin}, and how to predict \texttt{blockhash} or \texttt{block.timestamp} in certain scenarios.
-
-% https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js
-
-% Task 6
-% https://sepolia.etherscan.io/address/0xA3a763bF62550511A0E485d6EB16c98937609A32#code
+In this exercise, you will be tasked with breach several vaults, one by one. You will gain familiarity with the JavaScript library \href{https://docs.ethers.org/v6}{Ethers.js}, which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in \href{https://remix.ethereum.org/}{Remix IDE}, an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, the differences between \texttt{msg.sender} and \texttt{tx.origin}, and how to predict \texttt{blockhash} or \texttt{block.timestamp} in certain scenarios.
 
 \subsection*{Prerequisites}
 
@@ -107,7 +102,7 @@ $ npm -v
 
 Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development. It is recommended that you use NPM 7 or higher.
 
-For the purposes of this exercise, you will need an Infura API Key and a configured wallet. If you do not have this set up yet, we recommend going through the Smart Contracts Exercise 01: Hello, Blockchain World! where everything is explained. You should have configuration variables set for Hardhat projects. You can verify this by running:
+For the purposes of this exercise, you will need an Infura API key and a configured wallet. If you do not have this set up yet, we recommend going through the Smart Contracts Exercise 01: Hello, Blockchain World! where everything is explained. Ensure that configuration variables are set for your Hardhat projects. You can verify this by running:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ npx hardhat vars get INFURA_API_KEY
@@ -133,7 +128,260 @@ To run all tests at once, run:
 $ npx hardhat test
 \end{minted}
 
+\section{Task: Breach the Vaults}
+\subsection*{Vault 01: A Password Password}
+The first vault is quite straightforward. To complete this challenge, you need to call the \texttt{breachVault} function with the correct password and become the \texttt{lastSolver}. Implement your solution in \texttt{test/Vault01.js}. Do not alter the contract code. Use only the \texttt{player} account to breach the vault.
 
+\begin{lstlisting}[language=Solidity]
+  // SPDX-License-Identifier: MIT
+  pragma solidity ^0.8.28;
+  
+  contract Vault01 {
+      address public lastSolver;
+  
+      function breachVault(uint256 _password) public returns (bool) {
+          require(
+              _password == uint256(keccak256("password")),
+              "Incorrect password"
+          );
+          lastSolver = tx.origin;
+          return true;
+      }
+  }  
+\end{lstlisting}
 
+\medskip
+\noindent
+Sources you might want to use:
+\begin{itemize}
+  \item \href{https://docs.ethers.org/v6/api/hashing/}{https://docs.ethers.org/v6/api/hashing/}
+  \item \href{https://docs.soliditylang.org/en/latest/}{https://docs.soliditylang.org/en/latest/}
+\end{itemize}
+
+\medskip
+\noindent
+Verify your solution with:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+  $ npm run vault01
+\end{minted}
+
+\subsubsection*{Remix IDE}
+
+In this exercise, each individual task is also available in Remix IDE. Remix is a versatile tool that requires no installation, promotes rapid development, and offers a wide range of plugins with intuitive GUIs created by Ethereum foundation. It is available as both a web application and a desktop application. The purpose of this is to familiarize you with the basic operations in this program and to facilitate your interaction with smart contracts.
+
+\medskip
+\noindent
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault01 in Remix IDE}
+
+\medskip
+\noindent
+How to get started with Remix:
+\begin{itemize}
+  \item \href{https://www.youtube.com/watch?v=vH8T3In6ZkE&t=7s&ab_channel=EatTheBlocks}{Getting Started With Remix (Solidity) in 2 mins}
+  \item \href{https://remix-ide.readthedocs.io/en/latest/}{https://remix-ide.readthedocs.io/en/latest/}
+\end{itemize}
+
+\subsection*{Vault 02: Packet Sender}
+
+There is nothing new here, the previous hints are enough for you to break into this vault! Solve the challenge in \texttt{test/Vault02.js}.
+
+\begin{lstlisting}[language=Solidity]
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+ 
+contract Vault02 {
+    address public lastSolver;
+ 
+    function breachVault(uint256 _password) public returns (bool) {
+        require(
+            _password == uint256(keccak256(abi.encodePacked(msg.sender))),
+            "Incorrect password"
+        );
+        lastSolver = tx.origin;
+        return true;
+    }
+}
+\end{lstlisting}
+
+\medskip
+\noindent
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault02.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault02 in Remix IDE}
+
+\subsection*{Vault 03: Origins}
+
+In the Ethereum network, there are two main types of accounts:
+
+\begin{itemize}
+  \item Externally Owned Accounts (EOAs)
+  \item Smart Contract Accounts (SCAs)
+\end{itemize}
+EOAs are managed by private keys, SCAs are governed by smart contract code.
+
+To breach the third vault, you need to understand the difference between \texttt{msg.sender} and \texttt{tx.origin}. The key distinction is that \texttt{tx.origin} always refers to the original external account that initiated the transaction, while \texttt{msg.sender} can be any contract or account that called the current function. As illustrated in the graph below (see Figure~\ref{fig:msg.sender}), smart contracts can call other smart contracts, but only an externally owned account (EOA) can initiate a transaction and forward the gas. It is important to never use \texttt{tx.origin} for authentication. For this challenge, you cannot implement the solution directly in \texttt{test/Vault03}. Instead, you need to use a proxy contract. Implement your solution in \texttt{contracts/AttackVault03.sol}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{msg.sender.pdf}
+  \caption{msg.sender vs tx.origin}
+  \label{fig:msg.sender}
+\end{figure}
+
+\begin{lstlisting}[language=Solidity]
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+contract Vault03 {
+    // Address of the last person who solved the challenge
+    address public lastSolver;
+
+    function breachVault() public returns (bool) {
+        require(msg.sender != tx.origin,
+            "Caller must not be the transaction origin"
+        );
+        lastSolver = tx.origin;
+        return true;
+    }
+}
+\end{lstlisting}
+
+\medskip
+\noindent
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault03.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault03 in Remix IDE}
+
+\medskip
+\noindent
+Optional deep dive:
+\href{https://eips.ethereum.org/EIPS/eip-4337}{EIP 4337} is a proposal that aims to enable smart contract-like functionality for all accounts, effectively eliminating the distinction between Externally Owned Accounts (EOAs) and Smart Contract Accounts (SCAs). This would allow for more advanced and flexible control over account operations, including features like gas sponsorship, multi-signature authentication, and custom transaction logic.
+
+\subsection*{Vault 04: On the Same Block}
+
+For this vault, you will need a proxy contract as well. Implement your solution in the \texttt{contracts/AttackVault04.sol} file. The hint is hidden in the name of the challenge.
+
+\begin{lstlisting}[language=Solidity]
+  // SPDX-License-Identifier: MIT
+  pragma solidity ^0.8.28;
+  
+  contract Vault04 {
+      address public lastSolver;
+  
+      function breachVault(bytes32 _password) public returns (bool) {
+          require(
+              _password ==
+                  keccak256(
+                      abi.encodePacked(
+                          blockhash(block.number - 1),
+                          block.timestamp
+                      )
+                  ),
+              "Incorrect password"
+          );
+          lastSolver = tx.origin;
+          return true;
+      }
+  }
+\end{lstlisting}
+
+\medskip
+\noindent
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault04.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault04 in Remix IDE}
+
+\subsection*{Vault 05: Fortune Teller}
+
+This vault cannot be opened without a crystal ball. Or can it? Implement your solution in the \texttt{test/Vault05.sol} file. Look for hints here: \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Units and global variables in Solidity}.
+
+\begin{lstlisting}[language=Solidity]
+  // SPDX-License-Identifier: MIT
+  pragma solidity ^0.8.28;
+  
+  contract Vault05 {
+      address public lastSolver;
+      bytes32 private password;
+      uint256 private lockInBlockNumber;
+  
+      function lockInPassword(bytes32 _password) public {
+          password = _password;
+          lockInBlockNumber = block.number;
+      }
+  
+      function breachVault() public returns (bool) {
+          require(block.number > lockInBlockNumber, "Wait for the next block");
+          require(password == blockhash(lockInBlockNumber), "Incorrect password");
+          lastSolver = tx.origin;
+          return true;
+      }
+  }
+\end{lstlisting}
+
+\medskip
+\noindent
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault05.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault05 in Remix IDE}
+
+\subsection*{Vault 06: Private Property}
+
+Ethereum has three main types of memory when executing smart contracts:
+\begin{itemize}
+  \item \textbf{Storage} 
+  \begin{itemize}
+      \item Data stored in \textbf{storage} is written to the blockchain and persists between transactions.
+      \item It is the most expensive type of memory to modify because it requires writing to disk (state updates).
+      \item Defined with the \texttt{storage} keyword or used implicitly for state variables.
+  \end{itemize}
+
+  \item \textbf{Memory}
+  \begin{itemize}
+      \item Memory is temporary and only lasts during the execution of a transaction.
+      \item It is used for function execution and is cleared at the end of each transaction.
+      \item Declaring variables with \texttt{memory} ensures they are not stored on-chain, reducing gas costs.
+  \end{itemize}
+
+  \item \textbf{Stack}
+  \begin{itemize}
+      \item The stack is a small, ultra-fast memory section used for local variable storage and function execution.
+      \item It has a strict size limit (1024 slots), meaning complex operations often require \texttt{memory} or \texttt{storage}.
+  \end{itemize}
+\end{itemize}
+
+\noindent
+It's important to note that marking a variable as private only restricts access from other contracts. Private state variables and local variables remain publicly accessible. For this task, there is already a deployed contract on the Sepolia testnet. You can find the contract address and the source code below. Implement your solution in the \texttt{test/Vault06.js} file. The address of the deployed contract is \texttt{0xA3a763bF62550511A0E485d6EB16c98937609A32}.
+
+\medskip
+\noindent
+\href{https://sepolia.etherscan.io/address/0xA3a763bF62550511A0E485d6EB16c98937609A32}{Vault06 on Sepolia Etherscan}
+
+\begin{lstlisting}[language=Solidity]
+  // SPDX-License-Identifier: MIT
+  pragma solidity ^0.8.28;
+  
+  contract Vault06 {
+      address public lastSolver;
+      string private password;
+  
+      constructor(string memory _password) {
+          password = _password;
+      }
+  
+      function breachVault(string memory _password) public returns (bool) {
+          require(
+              keccak256(abi.encodePacked(password)) ==
+                  keccak256(abi.encodePacked(_password)),
+              "Incorrect password"
+          );
+          lastSolver = tx.origin;
+          return true;
+      }
+  }
+\end{lstlisting}
+
+\medskip
+\noindent
+You can also interact with the contract directly from the Remix IDE if you connect it to your MetaMask wallet, change the environment to "Injected Provider - MetaMask" and use the "Load contract from address" function.
+
+\medskip
+\noindent
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault06.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault06 in Remix IDE}
+
+\medskip
+\noindent
+\textbf{Hint:} \href{https://medium.com/@flores.eugenio03/exploring-the-storage-layout-in-solidity-and-how-to-access-state-variables-bf2cbc6f8018}{Exploring the Storage Layout in Solidity and How to Access State Variables}
 
 \end{document}
