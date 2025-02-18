@@ -81,10 +81,59 @@
 
 \maketitle
 \section{Introduction}
+In this exercise, you will be tasked with breaching several vaults, one by one. You will gain familiarity with the JavaScript library \href{https://docs.ethers.org/v6}{Ethers.js}, which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in \href{https://remix.ethereum.org/}{Remix IDE}, an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, the differences between \texttt{msg.sender} and \texttt{tx.origin}, and how to predict \texttt{blockhash} or \texttt{block.timestamp} in certain scenarios.
 
-https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js
+% https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js
 
-Task 6
-https://sepolia.etherscan.io/address/0xA3a763bF62550511A0E485d6EB16c98937609A32#code
+% Task 6
+% https://sepolia.etherscan.io/address/0xA3a763bF62550511A0E485d6EB16c98937609A32#code
+
+\subsection*{Prerequisites}
+
+Ensure that you have already installed the following on your system:
+
+\begin{itemize}
+    \item \textbf{Node.js} - \url{https://nodejs.org/en/}
+    An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser. 
+    \item \textbf{NPM}: Node Package Manager, which comes with Node.js.
+\end{itemize}
+
+Open your terminal and run the following commands to verify the installations:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ node -v
+$ npm -v
+\end{minted}
+
+Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development. It is recommended that you use NPM 7 or higher.
+
+For the purposes of this exercise, you will need an Infura API Key and a configured wallet. If you do not have this set up yet, we recommend going through the Smart Contracts Exercise 01: Hello, Blockchain World! where everything is explained. You should have configuration variables set for Hardhat projects. You can verify this by running:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ npx hardhat vars get INFURA_API_KEY
+$ npx hardhat vars get SEPOLIA_PRIVATE_KEY
+\end{minted}
+
+
+
+\subsection*{Project Set Up}
+
+To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/04-Unbreakable-Vault/task/task-code}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. After you clone the repository, start with the following command within your project folder:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ npm install
+\end{minted}
+This will install all the necessary dependencies for the project. Your implementation will be in the \texttt{contracts} and \texttt{test} folders.
+There will be multiple vaults in this exercise that you need to breach, each one having a separate test. To see if you have completed the task successfully, run \texttt{npm run vaultXX} where \texttt{XX} is the number of the vault you are trying to breach. For example, to test the first vault, run:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ npm run vault01
+\end{minted}
+To run all tests at once, run:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ npx hardhat test
+\end{minted}
+
+
+
 
 \end{document}
