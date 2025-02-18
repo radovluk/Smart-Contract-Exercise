@@ -258,24 +258,25 @@ In order to finish this task, you will need the following tools:
 
 To deploy your smart contract to the Sepolia testnet, you need to configure Hardhat with the network details and your wallet credentials.
 
-\subsubsection{Storing Sensitive Information}
+\subsubsection*{Storing Sensitive Information}
 
 It's crucial to keep sensitive information like your private key and Infura API key secure. We recommend using environment variables to manage these credentials only for the purpose of this exercise. A Hardhat project can use configuration variables for user-specific values or for data that shouldn't be included in the code repository. These variables are set via tasks in the vars scope and can be retrieved in the config using the vars object. 
 
 \begin{itemize}
     \item Set the INFURA\_API\_KEY
     
-    \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-        $ npx hardhat vars set INFURA_API_KEY
-        Enter value: ********************************
-    \end{minted}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+    $ npx hardhat vars set INFURA_API_KEY
+    Enter value: ********************************
+\end{minted}
 
     \item Set the SEPOLIA\_PRIVATE\_KEY
 
-    \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-        $ npx hardhat vars set SEPOLIA_PRIVATE_KEY
-        Enter value: ********************************
-    \end{minted}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+    $ npx hardhat vars set SEPOLIA_PRIVATE_KEY
+    Enter value: ********************************
+\end{minted}
+
 \end{itemize}
 
 \begin{itemize}
@@ -284,7 +285,7 @@ It's crucial to keep sensitive information like your private key and Infura API 
     \item \textbf{Warning 2}: Never store your private keys as plain text, even in your \texttt{.env} file. Use secure key management tools. For the purpose of our exercise, we will use environment variables. \textbf{Never use your private key associated with real money in plain text!}
 \end{itemize}
 
-\subsubsection{Updating \texttt{hardhat.config.js}}
+\subsubsection*{Updating \texttt{hardhat.config.js}}
 
 Modify your \texttt{hardhat.config.js} file to include the Sepolia network configuration:
 
