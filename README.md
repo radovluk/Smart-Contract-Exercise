@@ -43,7 +43,7 @@ This project contains exercises for students to learn about smart contract secur
 - **Topics**: Frontrunning Attack, ERC-20, ERC-1155, ERC-721, OpenZeppelin
 
 ### 04 - Unbreakable Vault
-In this exercise, you will be tasked with breaching several vaults, one by one in CTF style. You will gain familiarity with the JavaScript library Ethers.js, which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in Remix IDE, an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, the differences between msg.sender and tx.origin, and how to predict blockhash or block.timestamp in certain scenarios.
+- **Task**: In this exercise, you will be tasked with breaching several vaults, one by one in CTF style. You will gain familiarity with the JavaScript library Ethers.js, which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in Remix IDE, an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, the differences between msg.sender and tx.origin, and how to predict blockhash or block.timestamp in certain scenarios.
 - **Topics**: Ethers.js, Remix IDE, storage, blockhash, timestamp, tx.origin, msg.sender
 
 ## Getting Started
