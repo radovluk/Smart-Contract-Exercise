@@ -129,7 +129,7 @@ $ npx hardhat test
 \end{minted}
 
 \section{Task: Breach the Vaults}
-\subsection*{Vault 01: A Password Password}
+\subsection*{Vault01: A Password Password}
 The first vault is quite straightforward. To complete this challenge, you need to call the \texttt{breachVault} function with the correct password and become the \texttt{lastSolver}. Implement your solution in \texttt{test/Vault01.js}. Do not alter the contract code. Use only the \texttt{player} account to breach the vault.
 
 \begin{lstlisting}[language=Solidity]
@@ -181,7 +181,7 @@ How to get started with Remix:
   \item \href{https://remix-ide.readthedocs.io/en/latest/}{https://remix-ide.readthedocs.io/en/latest/}
 \end{itemize}
 
-\subsection*{Vault 02: Packet Sender}
+\subsection*{Vault02: Packet Sender}
 
 There is nothing new here, the previous hints are enough for you to break into this vault! Solve the challenge in \texttt{test/Vault02.js}.
 
@@ -207,7 +207,7 @@ contract Vault02 {
 \noindent
 \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault02.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault02 in Remix IDE}
 
-\subsection*{Vault 03: Origins}
+\subsection*{Vault03: Origins}
 
 In the Ethereum network, there are two main types of accounts:
 
@@ -253,7 +253,7 @@ contract Vault03 {
 Optional deep dive:
 \href{https://eips.ethereum.org/EIPS/eip-4337}{EIP 4337} is a proposal that aims to enable smart contract-like functionality for all accounts, effectively eliminating the distinction between Externally Owned Accounts (EOAs) and Smart Contract Accounts (SCAs). This would allow for more advanced and flexible control over account operations, including features like gas sponsorship, multi-signature authentication, and custom transaction logic.
 
-\subsection*{Vault 04: On the Same Block}
+\subsection*{Vault04: On the Same Block}
 
 For this vault, you will need a proxy contract as well. Implement your solution in the \texttt{contracts/AttackVault04.sol} file. The hint is hidden in the name of the challenge.
 
@@ -285,7 +285,7 @@ For this vault, you will need a proxy contract as well. Implement your solution 
 \noindent
 \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault04.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault04 in Remix IDE}
 
-\subsection*{Vault 05: Fortune Teller}
+\subsection*{Vault05: Fortune Teller}
 
 This vault cannot be opened without a crystal ball. Or can it? Implement your solution in the \texttt{test/Vault05.sol} file. Look for hints here: \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Units and global variables in Solidity}.
 
@@ -316,7 +316,7 @@ This vault cannot be opened without a crystal ball. Or can it? Implement your so
 \noindent
 \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault05.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault05 in Remix IDE}
 
-\subsection*{Vault 06: Private Property}
+\subsection*{Vault06: Explorer}
 
 Ethereum has three main types of memory when executing smart contracts:
 \begin{itemize}
@@ -344,10 +344,6 @@ Ethereum has three main types of memory when executing smart contracts:
 \noindent
 It's important to note that marking a variable as private only restricts access from other contracts. Private state variables and local variables remain publicly accessible. For this task, there is already a deployed contract on the Sepolia testnet. You can find the contract address and the source code below. Implement your solution in the \texttt{test/Vault06.js} file. The address of the deployed contract is \texttt{0xA3a763bF62550511A0E485d6EB16c98937609A32}.
 
-\medskip
-\noindent
-\href{https://sepolia.etherscan.io/address/0xA3a763bF62550511A0E485d6EB16c98937609A32}{Vault06 on Sepolia Etherscan}
-
 \begin{lstlisting}[language=Solidity]
   // SPDX-License-Identifier: MIT
   pragma solidity ^0.8.28;
@@ -374,11 +370,53 @@ It's important to note that marking a variable as private only restricts access 
 
 \medskip
 \noindent
+\textbf{Hint:} For this challenge, you can find the solution just by closely inspecting the contract on: \href{https://sepolia.etherscan.io/address/0xA3a763bF62550511A0E485d6EB16c98937609A32}{Vault06 on Sepolia Etherscan}
+
+\medskip
+\noindent
 You can also interact with the contract directly from the Remix IDE if you connect it to your MetaMask wallet, change the environment to "Injected Provider - MetaMask" and use the "Load contract from address" function.
 
 \medskip
 \noindent
 \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault06.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault06 in Remix IDE}
+
+\subsection*{Vault07: You Shall Not Pass!}
+
+\noindent
+In this exercise, you will not be able to find the solution just by inspecting Etherscan as you did in the previous exercise. Instead, you will need to decode the storage yourself. You can find the necessary functions here: \href{https://docs.ethers.org/v6/api/providers/}{https://docs.ethers.org/v6/api/providers/}. Implement your solution in the \texttt{test/Vault07.js} file. The address of the deployed contract is \texttt{0xa81C96B2216eDFfF8945e371dd581D13f8ECfbAD}.
+
+\begin{lstlisting}[language=Solidity]
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.28;
+    
+    contract Vault07 {
+        address public lastSolver;
+        uint8 private small1 = 42;
+        uint16 private small2 = 999;
+        bool private isActive = true;
+        uint256 private big1 = 1337;
+        bytes32 private hashData = keccak256(abi.encode("You Shall Not Pass"));
+        uint256 private big2 = 0xDEADBEEF;
+        string private password;
+    
+        constructor(string memory _password) {
+            password = _password;
+        }
+    
+        function breachVault(bytes32 _password) public returns (bool) {
+            require(
+                keccak256(abi.encodePacked(password, msg.sender)) == _password,
+                "Incorrect password"
+            );
+            lastSolver = tx.origin;
+            return true;
+        }
+    }
+\end{lstlisting}
+
+\medskip
+\noindent
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault07.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{Vault07 in Remix IDE}
 
 \medskip
 \noindent
