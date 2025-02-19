@@ -4,7 +4,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{geometry}
-
+\usepackage{listings-solidity}  % Include Solidity highlighting
 \usepackage{minted} % For advanced code listings
 
 % Define a custom minted style (optional)
@@ -125,7 +125,7 @@ Select \codegrey{Create an empty \texttt{hardhat.config.js}} with your keyboard 
 
 Start by creating a new directory inside your project called \texttt{contracts} and create a file inside the directory called \texttt{Greeter.sol}. Paste the code below into the file and take a minute to read the code.
 
-\begin{minted}[frame=lines, bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
 // contracts/Greeter.sol
 
 // SPDX-License-Identifier: MIT
@@ -155,7 +155,7 @@ contract Greeter {
         return greeting;
     }
 }
-\end{minted}
+\end{lstlisting}
 
 The Greeter contract is a simple Solidity smart contract that stores a greeting message, initializes it during deployment, and allows users to retrieve it via a public function. To compile the contract, run \codeblack{npx hardhat compile} in your terminal.
 
@@ -389,6 +389,8 @@ For more detailed information, refer to the following resources:
 \begin{itemize}
     \item \href{https://docs.soliditylang.org/en/v0.8.0/}{Solidity Documentation}
     \item \href{https://hardhat.org/docs}{Hardhat Documentation}
+    \item \href{https://solidity-by-example.org/}{Solidity by Example}
+    \item \href{https://docs.ethers.org/v6/}{Ethers.js Documentation} (for scripting)
     \item \href{https://www.chaijs.com/}{Chai Assertion Library}
 
 \end{itemize}

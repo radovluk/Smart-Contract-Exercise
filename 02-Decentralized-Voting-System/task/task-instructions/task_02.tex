@@ -4,7 +4,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{geometry}
-
+\usepackage{listings-solidity}  % Include Solidity highlighting
 \usepackage{minted} % For advanced code listings
 
 % Define a custom minted style (optional)
@@ -143,7 +143,7 @@ The \textbf{Voting} contract is designed to facilitate a decentralized voting sy
 
 State variables are used to store data permanently on the blockchain. They represent the contract's state and can be accessed and modified by the contract's functions.
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
   // Address of the contract owner
   address public owner;
 
@@ -152,13 +152,13 @@ State variables are used to store data permanently on the blockchain. They repre
 
   // Mapping to track whether an address has already voted
   mapping(address => bool) public hasVoted;
-\end{minted}
+\end{lstlisting}
 
 \subsubsection*{Structs}
 
 Structs are custom data types that allow you to group related data together. They are useful for organizing complex data structures within the contract.
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
   /**
   * @dev Struct to represent a candidate.
   * @param name The name of the candidate.
@@ -168,13 +168,13 @@ Structs are custom data types that allow you to group related data together. The
      string name;
      uint voteCount;
   }
-\end{minted}
+\end{lstlisting}
 
 \subsubsection*{Modifiers}
 
 Modifiers are used to change the behavior of functions in a declarative way. They can enforce rules or conditions before executing a function's code.
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
   // Modifier to restrict access to the contract owner
   modifier onlyOwner() {
       require(msg.sender == owner, "Only the owner can call this function");
@@ -184,7 +184,7 @@ Modifiers are used to change the behavior of functions in a declarative way. The
   function addCandidate(string memory name) public onlyOwner {
     // Only the contract owner can call this function
   }
-\end{minted}
+\end{lstlisting}
 
 \subsubsection*{Functions}
 
@@ -194,7 +194,7 @@ Functions define the behavior of the contract. They can read and modify the cont
 
 Events are used to log information on the blockchain that can be accessed by off-chain applications. They are essential for tracking contract activities and facilitating interactions with the user interface.
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
   /**
   * @dev Event emitted when a vote is cast.
   * @param voter The address of the voter.
@@ -207,12 +207,12 @@ Events are used to log information on the blockchain that can be accessed by off
   * @param name The name of the candidate to be added.
   */
  event CandidateAdded(string name);
-\end{minted}
+\end{lstlisting}
 
 \subsubsection*{Functionality Provided by Solidity}
 Here are some useful code snippets you might need:
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
 // Sender of the transaction
 address sender = msg.sender;
 
@@ -230,7 +230,7 @@ address emptyAddress = address(0);
 
 // Emit an event
 emit EventName(parameters);
-\end{minted}
+\end{lstlisting}
 
 
 \end{document}

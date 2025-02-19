@@ -5,7 +5,7 @@
 \usepackage{xcolor}
 \usepackage{geometry}
 \usepackage{graphicx} % For including graphics
-
+\usepackage{listings-solidity}  % Include Solidity highlighting
 \usepackage{minted} % For advanced code listings
 
 % Define a custom minted style (optional)
@@ -170,7 +170,7 @@ If a Smart Contract implements the following methods and events, it can be calle
 
 \subsubsection*{Methods}
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
   function name() public view returns (string)
   function symbol() public view returns (string)
   function decimals() public view returns (uint8)
@@ -182,21 +182,21 @@ If a Smart Contract implements the following methods and events, it can be calle
   function approve(address _spender, uint256 _value) public returns (bool success)
   function allowance(address _owner, address _spender) 
     public view returns (uint256 remaining)  
-\end{minted}
+\end{lstlisting}
 
 \subsubsection*{Events}
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
   event Transfer(address indexed _from, address indexed _to, uint256 _value)
   event Approval(address indexed _owner, address indexed _spender, uint256 _value)  
-\end{minted}
+\end{lstlisting}
 
 \subsection*{OpenZeppelin}
 
 \href{https://www.openzeppelin.com/}{OpenZeppelin} provides a open-source library for secure smart contract development. It is built on a solid
 foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by OpenZeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official EIP20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
@@ -220,7 +220,7 @@ contract CTUToken is ERC20 {
         _mint(msg.sender, INITIAL_SUPPLY);
     }
 }
-\end{minted}
+\end{lstlisting}
 
 \section{CTU Token}
 

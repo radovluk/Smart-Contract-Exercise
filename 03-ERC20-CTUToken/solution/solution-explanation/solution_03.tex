@@ -4,7 +4,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{geometry}
-
+\usepackage{listings-solidity}  % Include Solidity highlighting
 \usepackage{minted} % For advanced code listings
 
 % Define a custom minted style (optional)
@@ -81,7 +81,7 @@
 \maketitle
 The example implementation of the CTU Token contract can be found in this \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/03-ERC20-CTUToken/solution/solution-code}{GitLab repository}. The required implementation is in the file \texttt{contracts/CTUToken.sol}. Even this implementation cannot prevent a frontrunning attack using only the \texttt{approve()} function. One possible solution is to use the \texttt{increaseAllowance()} and \texttt{decreaseAllowance()} functions instead of the \texttt{approve()} function.
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
 function increaseAllowance(
    address spender,
    uint256 addedValue
@@ -95,9 +95,9 @@ function increaseAllowance(
    // Return true if the operation is successful
    return true;
 }
-\end{minted}
+\end{lstlisting}
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
 function decreaseAllowance(
    address spender,
    uint256 subtractedValue
@@ -116,12 +116,12 @@ function decreaseAllowance(
    // Return true if the operation is successful
    return true;
 }
-\end{minted}
+\end{lstlisting}
 
 The recommended approach is to use the following ERC20 token implementation from OpenZeppelin. You can find it in the file \texttt{contracts/CTUTokenOpenZeppelin.sol}.
 Go through \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{OpenZeppelin GitHub repository} and understand it.
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
@@ -145,6 +145,6 @@ contract CTUToken is ERC20 {
         _mint(msg.sender, INITIAL_SUPPLY);
     }
 }
-\end{minted}
+\end{lstlisting}
 
 \end{document}
