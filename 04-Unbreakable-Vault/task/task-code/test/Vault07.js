@@ -42,6 +42,12 @@ describe("Vault07 Test Suite", function () {
     it("Player's attempt: Breach the Vault07", async function () {
         // =========================
         // TODO: YOUR CODE GOES HERE
+        // Use your sepolia account to call breachVault with the correct password
+        // Example:
+        // const password = "your_password_here";
+        // Call breachVault with recovered password
+        // const tx = await vault.breachVault(password);
+        // await tx.wait();
         // =========================
 
         // /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */

@@ -17,6 +17,7 @@ contract Vault03Attack {
     function attack() external returns (bool) {
         // =========================
         // TODO: YOUR CODE GOES HERE
+        // Return the value of the breachVault() function to pass the test
         // =========================
     }
 }

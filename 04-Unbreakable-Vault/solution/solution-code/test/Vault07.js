@@ -87,7 +87,10 @@ describe("Vault07 Test Suite", function () {
         console.log("Password: ", actualPassword);
 
         // Compute the hash in the same way Solidity does with abi.encodePacked
-        const hashedPassword = ethers.solidityPackedKeccak256(["string", "address"], [actualPassword, playerAddress]);
+        const hashedPassword = ethers.solidityPackedKeccak256(
+            ["string", "address"], 
+            [actualPassword, playerAddress]
+        );
 
         console.log(hashedPassword);
 

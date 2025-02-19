@@ -16,9 +16,9 @@ contract Vault03Attack {
     // Function to perform the attack
     function attack() external returns (bool) {
         // =========================
-        // YOUR CODE GOES HERE;
-
-        // Call the unlock function of the vault contract with the computed password
+        // YOUR CODE GOES HERE
+        // Call the unlock function from the attack contract
+        // msg.sender != tx.origin
         return vault.breachVault();
         // =========================
     }

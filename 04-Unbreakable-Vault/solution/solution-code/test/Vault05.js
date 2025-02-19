@@ -31,7 +31,8 @@ describe("Vault05 Test Suite", function () {
         // blockhash(uint blockNumber) returns (bytes32): hash of the given block - only works for 256 most recent blocks
         // then it returns zero
         // https://docs.soliditylang.org/en/latest/cheatsheet.html
-        // Lock the password
+        
+        // Lock the zero hash
         await vault.connect(player).lockInPassword(ethers.ZeroHash);
         console.log("Locked value: ", ethers.ZeroHash);
 
@@ -40,7 +41,7 @@ describe("Vault05 Test Suite", function () {
             await ethers.provider.send("evm_mine", []);
         }
 
-        // Call breachVault with the derived value
+        // Call breachVault()
         await vault.connect(player).breachVault();
         // =========================
 

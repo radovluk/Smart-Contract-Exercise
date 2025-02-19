@@ -27,11 +27,16 @@ describe("Vault01 Test Suite", function () {
         
         // =========================
         // YOUR CODE GOES HERE
+        // id(value: string) => string
         // A simple hashing function which operates on UTF-8 strings to compute an 32-byte identifier.
         // This simply computes the UTF-8 bytes and computes the keccak256.
-        // See https://docs.ethers.org/v6/api/hashing/ for more.
+        // See https://docs.ethers.org/v6/api/hashing/#id for more.
+
+        // Hash the "password" string using Keccak256
         const hash = ethers.id("password");
         console.log("Hash of the password is: ", hash);
+
+        // Breach the vault
         await vault.connect(player).breachVault(hash);
         // =========================
 

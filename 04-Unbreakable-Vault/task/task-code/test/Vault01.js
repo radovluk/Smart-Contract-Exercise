@@ -31,7 +31,7 @@ describe("Vault01 Test Suite", function () {
         // await vault.connect(player).breachVault(<PASSWORD>);
         // =========================
 
-         /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */
+        /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */
         // Expect the last solver to be the player
         expect(await vault.lastSolver(), "Last solver is not the player").to.equal(player.address);
     });
