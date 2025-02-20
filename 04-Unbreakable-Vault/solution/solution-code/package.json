@@ -4,7 +4,7 @@
   "main": "index.js",
   "keywords": [],
   "author": "Lukas Radovansky",
-  "license": "ISC",
+  "license": "MIT",
   "description": "Educational exercise for Solidity learning.",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "latest",
