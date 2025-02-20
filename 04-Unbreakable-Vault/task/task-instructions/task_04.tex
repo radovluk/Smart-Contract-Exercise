@@ -217,7 +217,8 @@ In the Ethereum network, there are two main types of accounts:
 \end{itemize}
 EOAs are managed by private keys, SCAs are governed by smart contract code.
 
-To breach the third vault, you need to understand the difference between \texttt{msg.sender} and \texttt{tx.origin}. The key distinction is that \texttt{tx.origin} always refers to the original external account that initiated the transaction, while \texttt{msg.sender} can be any contract or account that called the current function. As illustrated in the graph below (see Figure~\ref{fig:msg.sender}), smart contracts can call other smart contracts, but only an externally owned account (EOA) can initiate a transaction and forward the gas. It is important to never use \texttt{tx.origin} for authentication. For this challenge, you cannot implement the solution directly in \texttt{test/Vault03}. Instead, you need to use a proxy contract. Implement your solution in \texttt{contracts/AttackVault03.sol}.
+\noindent
+To breach the third vault, you need to understand the difference between \texttt{msg.sender} and \texttt{tx.origin}. The key distinction is that \texttt{tx.origin} always refers to the original external account that initiated the transaction, while \texttt{msg.sender} can be any contract or account that called the current function. As illustrated in the graph below (see Figure~\ref{fig:msg.sender}), smart contracts can call other smart contracts, but only an externally owned account can initiate a transaction and forward the gas. It is important to never use \texttt{tx.origin} for authentication. For this challenge, you cannot implement the solution directly in \texttt{test/Vault03}. Instead, you need to use a proxy contract. Implement your solution in \texttt{contracts/AttackVault03.sol}.
 
 \begin{figure}[h!]
   \centering
@@ -251,7 +252,7 @@ contract Vault03 {
 \medskip
 \noindent
 Optional deep dive:
-\href{https://eips.ethereum.org/EIPS/eip-4337}{EIP 4337} is a proposal that aims to enable smart contract-like functionality for all accounts, effectively eliminating the distinction between Externally Owned Accounts (EOAs) and Smart Contract Accounts (SCAs). This would allow for more advanced and flexible control over account operations, including features like gas sponsorship, multi-signature authentication, and custom transaction logic.
+\href{https://eips.ethereum.org/EIPS/eip-4337}{EIP 4337} is a proposal that aims to enable smart contract-like functionality for all accounts, effectively eliminating the distinction between Externally Owned Accounts and Smart Contract Accounts. This would allow for more advanced and flexible control over account operations, including features like gas sponsorship, multi-signature authentication, and custom transaction logic.
 
 \subsection*{Vault04: Pseudo-Random Trap}
 
@@ -260,16 +261,15 @@ Generating a random number in Ethereum can be tricky. The Ethereum Virtual Machi
 \begin{itemize}
     \item \texttt{blockhash(uint blockNumber)}: Hash of a recent block.
     \item \texttt{block.number}: Current block number.
-    \item \texttt{block.coinbase}: Miner’s address.
     \item \texttt{block.timestamp}: Block timestamp (Unix epoch).
 \end{itemize}
 
 \noindent
-The problem is, that block proposers might attempt to delay transactions that do not yield the desired outcome. This issue is particularly relevant for transactions involving bigger amounts of money (more than the mining reward). It is potentially predictable and generally not recommended.
+The problem is, that block proposers might attempt to delay transactions that do not yield the desired outcome. This issue is particularly relevant for transactions involving bigger amounts of money (more than the staking reward). It is potentially predictable and generally not recommended.
 
 \subsubsection*{Solution with Oracles} Oracles are typically used to access external data from outside the blockchain. Additionally, oracles can provide verifiable random numbers. However, they come with limitations such as high gas costs and dependency on third parties (the oracle owner can manipulate the data). We will learn more about oracles in future exercises.
 
-\subsubsection*{Commit and Reveal Scheme} The proccess involves two steps:
+\subsubsection*{Commit and Reveal Scheme} Another solution might be commit and reveal scheme. The proccess involves two steps:
 \begin{enumerate}
     \item \textbf{Commit}: Users (more than one) hash their random number concatenated with a secret value. They commit to this number by publishing the hash to the smart contract.
     \item \textbf{Reveal}: Users reveal their random number and the secret value. The smart contract verifies the hash and calculates the random number from these commits:
@@ -281,9 +281,16 @@ The problem is, that block proposers might attempt to delay transactions that do
 \noindent
 A potential limitation is that it requires user interaction, and users can withhold their reveals.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{commit-reveal.pdf}
+    \caption{Commit and reveal scheme}
+    \label{fig:commit-reveal}
+\end{figure}
+
 \medskip
 \noindent
-For this vault, you will need a proxy contract as well. Implement your solution in the \texttt{contracts/AttackVault04.sol} file. The hint is hidden in the name of the challenge.
+For this vault, you will need a proxy contract as well. Implement your solution in the \texttt{contracts/AttackVault04.sol} file.
 
 \begin{lstlisting}[language=Solidity]
     // SPDX-License-Identifier: MIT
