@@ -2,7 +2,7 @@
 const { expect } = require("chai");
 
 /**
- * Test Suite for the Vault07 contract.
+ * Test Suite for the Vault07: You Shall Not Pass!
  */
 describe("Vault07 Test Suite", function () {
     let vault;
@@ -10,8 +10,8 @@ describe("Vault07 Test Suite", function () {
     let playerAddress; // Address of the player
     let vaultAddress; // Address of the vault contract
 
-    before(async function () {
-        /** SET UP - DO NOT CHANGE ANYTHING HERE */
+    before("Set up the challenge", async function () {
+        /** DO NOT CHANGE ANYTHING HERE */
 
         // For the purpouse of this test switch to the Sepolia test network
         await hre.switchNetwork("sepolia");
@@ -39,7 +39,7 @@ describe("Vault07 Test Suite", function () {
      * Here's where you try to breach the vault.
      * Fill in your logic to figure out the password and call the breachVault function.
      */
-    it("Player's attempt: Breach the Vault07", async function () {
+    it("Execution of the player's code", async function () {
         // =========================
         // TODO: YOUR CODE GOES HERE
         // Use your sepolia account to call breachVault with the correct password
@@ -49,9 +49,13 @@ describe("Vault07 Test Suite", function () {
         // const tx = await vault.breachVault(password);
         // await tx.wait();
         // =========================
+    });
 
-        // /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */
-        // // Verify lastSolver == our wallet address
+    after("Success conditions", async function () {
+        /** DO NOT CHANGE ANYTHING HERE */
+
+        // Expect the last solver to be the player
+         // Verify lastSolver == your wallet address
         expect(await vault.lastSolver(), "Last solver is not the player").to.equal(playerAddress);
     });
 });

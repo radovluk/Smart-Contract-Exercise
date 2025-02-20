@@ -2,14 +2,14 @@
 const { expect } = require("chai");
 
 /**
- * Test Suite for the Vault05 contract.
+ * Test Suite for the Vault05: Fortune Teller
  */
 describe("Vault05 Test Suite", function () {
     let vault;
-    let deployer, player;
+    let player;
 
-    before(async function () {
-        /** SET UP - DO NOT CHANGE ANYTHING HERE */
+    before("Set up the challenge", async function () {
+        /** DO NOT CHANGE ANYTHING HERE */
 
         // Get test accounts
         [deployer, player] = await ethers.getSigners();
@@ -21,19 +21,20 @@ describe("Vault05 Test Suite", function () {
 
     /**
      * Here's where you try to breach the vault.
-     * Fill in your logic to figure out the random number and call the breachVault function.
+     * Fill in your logic to figure out the guess and call the breachVault function.
      */
-    it("Player's attempt: Breach the Vault05", async function () {
-
+    it("Execution of the player's code", async function () {
         // =========================
         // TODO: YOUR CODE GOES HERE
         // Use only player account 
         // await vault.connect(player).lockInGuess(<GUESS>);
         // await vault.connect(player).breachVault();
         // =========================
+    });
 
-        /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */
-        // Check if the attack was successful
+    after("Success conditions", async function () {
+        /** DO NOT CHANGE ANYTHING HERE */
+
         // Expect the last solver to be the player
         expect(await vault.lastSolver(), "Last solver is not the player").to.equal(player.address);
     });

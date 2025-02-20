@@ -2,15 +2,15 @@
 const { expect } = require("chai");
 
 /**
- * Test Suite for the Vault06 contract.
+ * Test Suite for the Vault06: Explorer
  */
 describe("Vault06 Test Suite", function () {
     let vault;
     let player; // Signer representing the player
     let playerAddress; // Address of the player
 
-    before(async function () {
-        /** SET UP - DO NOT CHANGE ANYTHING HERE */
+    before("Set up the challenge", async function () {
+        /** DO NOT CHANGE ANYTHING HERE */
 
         // For the purpouse of this test switch to the Sepolia test network
         await hre.switchNetwork("sepolia");
@@ -38,10 +38,7 @@ describe("Vault06 Test Suite", function () {
      * Here's where you try to breach the vault.
      * Fill in your logic to figure out the password and call the breachVault function.
      */
-    it("Player's attempt: Breach the Vault06", async function () {
-        // =========================
-        // YOUR CODE GOES HERE
-        // Use player account to call unlock with the correct value
+    it("Execution of the player's code", async function () {
         // Read the storage slot value (32 bytes)
         let slotValue = await ethers.provider.getStorage(vault.target, 1);
         // Replace the last byte with 0x00 so that it becomes a valid bytes32 string:
@@ -52,10 +49,13 @@ describe("Vault06 Test Suite", function () {
         // Call breachVault with recovered password
         const tx = await vault.breachVault(password);
         await tx.wait();
-        // =========================
+    });
 
-        /** SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE */
-        // Verify lastSolver == our wallet address
+    after("Success conditions", async function () {
+        /** DO NOT CHANGE ANYTHING HERE */
+
+        // Expect the last solver to be the player
+         // Verify lastSolver == your wallet address
         expect(await vault.lastSolver(), "Last solver is not the player").to.equal(playerAddress);
     });
 });

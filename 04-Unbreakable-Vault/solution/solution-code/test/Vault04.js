@@ -1,14 +1,15 @@
 // Importing Chai to use its asserting functions.
 const { expect } = require("chai");
 /**
- * Test Suite for the Vault04 contract.
+ * Test Suite for the Vault04: Pseudo-Random Trap
  */
 describe("Vault04 Test Suite", function () {
     let vault;
-    let deployer, player;
+    let player;
+    let success;
 
-    before(async function () {
-        /** SET UP - DO NOT CHANGE ANYTHING HERE */
+    before("Set up the challenge", async function () {
+        /** DO NOT CHANGE ANYTHING HERE */
 
         // Get test accounts
         [deployer, player] = await ethers.getSigners();
@@ -21,12 +22,12 @@ describe("Vault04 Test Suite", function () {
     /**
      * Test case to check if the player can breach the Vault04 contract using the AttackVault04 contract.
      */
-    it("Player's attempt: Breach the Vault04 via the Vault04Attack contract", async function () {
+    it("Execution of the player's code", async function () {
         /**
-         * SUCCESS CONDITIONS - DO NOT CHANGE ANYTHING HERE
+         * DO NOT CHANGE ANYTHING HERE
          * Code your solution in contracts/VaultAttack04.sol
          */
-        
+
         // Deploy the attacker contract from the player's account.
         attackVault = await ethers.deployContract("Vault04Attack", [vault.target], player);
         await attackVault.waitForDeployment();
@@ -36,10 +37,15 @@ describe("Vault04 Test Suite", function () {
         await tx.wait();
 
         // Check if the attack was successful
-        const success = await attackVault.attack.staticCall();
-        expect(success, "Attack was not successful").to.be.true;
+        success = await attackVault.attack.staticCall();
+    });
+
+    after("Success conditions", async function () {
+        /** DO NOT CHANGE ANYTHING HERE */
 
         // Expect the last solver to be the player
         expect(await vault.lastSolver(), "Last solver is not the player").to.equal(player.address);
+        // Expect the attack to be successful
+        expect(success, "Attack was not successful").to.be.true;
     });
 });
