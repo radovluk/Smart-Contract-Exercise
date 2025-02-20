@@ -21,7 +21,7 @@ describe("Vault05 Test Suite", function () {
 
     /**
      * Here's where you try to breach the vault.
-     * Fill in your logic to figure out the password and call the breachVault function.
+     * Fill in your logic to figure out the guess and call the breachVault function.
      */
     it("Player's attempt: Breach the Vault05", async function () {
 
@@ -32,9 +32,8 @@ describe("Vault05 Test Suite", function () {
         // then it returns zero
         // https://docs.soliditylang.org/en/latest/cheatsheet.html
         
-        // Lock the zero hash
-        await vault.connect(player).lockInPassword(ethers.ZeroHash);
-        console.log("Locked value: ", ethers.ZeroHash);
+        // Lock the the zero value
+        await vault.connect(player).lockInGuess(0);
 
         // Mine 256 blocks
         for (let i = 0; i < 256; i++) {

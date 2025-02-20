@@ -21,14 +21,14 @@ describe("Vault05 Test Suite", function () {
 
     /**
      * Here's where you try to breach the vault.
-     * Fill in your logic to figure out the password and call the breachVault function.
+     * Fill in your logic to figure out the random number and call the breachVault function.
      */
     it("Player's attempt: Breach the Vault05", async function () {
 
         // =========================
         // TODO: YOUR CODE GOES HERE
         // Use only player account 
-        // await vault.connect(player).lockInPassword(<PASSWORD>);
+        // await vault.connect(player).lockInGuess(<GUESS>);
         // await vault.connect(player).breachVault();
         // =========================
 

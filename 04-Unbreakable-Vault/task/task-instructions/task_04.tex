@@ -81,7 +81,7 @@
 
 \maketitle
 \section{Introduction}
-In this exercise, you will be tasked with breach several vaults, one by one. You will gain familiarity with the JavaScript library \href{https://docs.ethers.org/v6}{Ethers.js}, which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in \href{https://remix.ethereum.org/}{Remix IDE}, an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, the differences between \texttt{msg.sender} and \texttt{tx.origin}, and how to predict \texttt{blockhash} or \texttt{block.timestamp} in certain scenarios.
+In this exercise, you will be tasked with breach several vaults, one by one. You will gain familiarity with the JavaScript library \href{https://docs.ethers.org/v6}{Ethers.js}, which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in \href{https://remix.ethereum.org/}{Remix IDE}, an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, storage, randomness pattern and the differences between \texttt{msg.sender} and \texttt{tx.origin}.
 
 \subsection*{Prerequisites}
 
@@ -253,32 +253,62 @@ contract Vault03 {
 Optional deep dive:
 \href{https://eips.ethereum.org/EIPS/eip-4337}{EIP 4337} is a proposal that aims to enable smart contract-like functionality for all accounts, effectively eliminating the distinction between Externally Owned Accounts (EOAs) and Smart Contract Accounts (SCAs). This would allow for more advanced and flexible control over account operations, including features like gas sponsorship, multi-signature authentication, and custom transaction logic.
 
-\subsection*{Vault04: On the Same Block}
+\subsection*{Vault04: Pseudo-Random Trap}
 
+Generating a random number in Ethereum can be tricky. The Ethereum Virtual Machine executes smart contracts in a deterministic environment, ensuring consistent outputs for identical inputs. Solidity does not provide anu function that generate random numbers. To work around this, some developers use pseudo-random number generators (PRNGs) based on \href{https://docs.soliditylang.org/en/latest/cheatsheet.html\#block-and-transaction-properties}{block properties} like:
+
+\begin{itemize}
+    \item \texttt{blockhash(uint blockNumber)}: Hash of a recent block.
+    \item \texttt{block.number}: Current block number.
+    \item \texttt{block.coinbase}: Miner’s address.
+    \item \texttt{block.timestamp}: Block timestamp (Unix epoch).
+\end{itemize}
+
+\noindent
+The problem is, that block proposers might attempt to delay transactions that do not yield the desired outcome. This issue is particularly relevant for transactions involving bigger amounts of money (more than the mining reward). It is potentially predictable and generally not recommended.
+
+\subsubsection*{Solution with Oracles} Oracles are typically used to access external data from outside the blockchain. Additionally, oracles can provide verifiable random numbers. However, they come with limitations such as high gas costs and dependency on third parties (the oracle owner can manipulate the data). We will learn more about oracles in future exercises.
+
+\subsubsection*{Commit and Reveal Scheme} The proccess involves two steps:
+\begin{enumerate}
+    \item \textbf{Commit}: Users (more than one) hash their random number concatenated with a secret value. They commit to this number by publishing the hash to the smart contract.
+    \item \textbf{Reveal}: Users reveal their random number and the secret value. The smart contract verifies the hash and calculates the random number from these commits:
+    \[
+    \left( \sum_{i=1}^{n} r_i \right) \bmod N
+    \]
+    where $r_i$ is the random number from user $i$ and $N$ is the number of users.
+\end{enumerate}
+\noindent
+A potential limitation is that it requires user interaction, and users can withhold their reveals.
+
+\medskip
+\noindent
 For this vault, you will need a proxy contract as well. Implement your solution in the \texttt{contracts/AttackVault04.sol} file. The hint is hidden in the name of the challenge.
 
 \begin{lstlisting}[language=Solidity]
-  // SPDX-License-Identifier: MIT
-  pragma solidity ^0.8.28;
-  
-  contract Vault04 {
-      address public lastSolver;
-  
-      function breachVault(bytes32 _password) public returns (bool) {
-          require(
-              _password ==
-                  keccak256(
-                      abi.encodePacked(
-                          blockhash(block.number - 1),
-                          block.timestamp
-                      )
-                  ),
-              "Incorrect password"
-          );
-          lastSolver = tx.origin;
-          return true;
-      }
-  }
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.28;
+    
+    contract Vault04 {
+        address public lastSolver;
+    
+        function breachVault(uint256 guess) public returns (bool) {
+            require(
+                guess ==
+                    uint256(
+                        keccak256(
+                            abi.encodePacked(
+                                blockhash(block.number - 1),
+                                block.timestamp
+                            )
+                        )
+                    ) % 100,
+                "Incorrect guess"
+            );
+            lastSolver = tx.origin;
+            return true;
+        }
+    }
 \end{lstlisting}
 
 \medskip
@@ -290,26 +320,30 @@ For this vault, you will need a proxy contract as well. Implement your solution 
 This vault cannot be opened without a crystal ball. Or can it? Implement your solution in the \texttt{test/Vault05.sol} file. Look for hints here: \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Units and global variables in Solidity}.
 
 \begin{lstlisting}[language=Solidity]
-  // SPDX-License-Identifier: MIT
-  pragma solidity ^0.8.28;
-  
-  contract Vault05 {
-      address public lastSolver;
-      bytes32 private password;
-      uint256 private lockInBlockNumber;
-  
-      function lockInPassword(bytes32 _password) public {
-          password = _password;
-          lockInBlockNumber = block.number;
-      }
-  
-      function breachVault() public returns (bool) {
-          require(block.number > lockInBlockNumber, "Wait for the next block");
-          require(password == blockhash(lockInBlockNumber), "Incorrect password");
-          lastSolver = tx.origin;
-          return true;
-      }
-  }
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.28;
+    
+    contract Vault05 {
+        address public lastSolver;
+        uint256 private guess;
+        uint256 private lockInBlockNumber;
+    
+        function lockInGuess(uint256 _guess) public {
+            guess = _guess;
+            lockInBlockNumber = block.number;
+        }
+    
+        function breachVault() public returns (bool) {
+            require(block.number > lockInBlockNumber, "Wait for the next block");
+            require(
+                guess == uint256(blockhash(lockInBlockNumber)) % 100,
+                "Incorrect guess"
+            );
+            lastSolver = tx.origin;
+            return true;
+        }
+    }
+    
 \end{lstlisting}
 
 \medskip
@@ -318,27 +352,15 @@ This vault cannot be opened without a crystal ball. Or can it? Implement your so
 
 \subsection*{Vault06: Explorer}
 
-Ethereum has three main types of memory when executing smart contracts:
+EVM can store data in three different places: storage, memory, and stack.
+
 \begin{itemize}
-  \item \textbf{Storage} 
-  \begin{itemize}
-      \item Data stored in \textbf{storage} is written to the blockchain and persists between transactions.
-      \item It is the most expensive type of memory to modify because it requires writing to disk (state updates).
-      \item Defined with the \texttt{storage} keyword or used implicitly for state variables.
-  \end{itemize}
+\item \textbf{Storage} keeps data between function calls and is persistent for every smart contract. It is the most expensive type of memory in terms of gas cost. We can think of storage as a hard drive. State variable are saved in storage by default.
 
-  \item \textbf{Memory}
-  \begin{itemize}
-      \item Memory is temporary and only lasts during the execution of a transaction.
-      \item It is used for function execution and is cleared at the end of each transaction.
-      \item Declaring variables with \texttt{memory} ensures they are not stored on-chain, reducing gas costs.
-  \end{itemize}
+\item \textbf{Memory} is a temporary storage location for data. Once execution is completed, memory is cleared for the next execution. It is comparable to RAM.
 
-  \item \textbf{Stack}
-  \begin{itemize}
-      \item The stack is a small, ultra-fast memory section used for local variable storage and function execution.
-      \item It has a strict size limit (1024 slots), meaning complex operations often require \texttt{memory} or \texttt{storage}.
-  \end{itemize}
+\item \textbf{Stack} EVM is a stack machine rather than a register machine; all computations are done in the data region called the stack. It has a strict size limit (1024 slots), meaning complex operations often require \texttt{memory} or \texttt{storage}.
+
 \end{itemize}
 
 \noindent

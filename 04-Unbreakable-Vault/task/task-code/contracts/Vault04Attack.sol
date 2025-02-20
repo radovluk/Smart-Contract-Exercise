@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 interface IVault04 {
-    function breachVault(bytes32 _password) external returns (bool);
+    function breachVault(uint256 _password) external returns (bool);
 }
 
 contract Vault04Attack {
@@ -17,6 +17,7 @@ contract Vault04Attack {
     function attack() external returns (bool) {
         // =========================
         // TODO: YOUR CODE GOES HERE
+        // Return the result of calling the breachVault() function to pass the tests
         // =========================
     }
 }
