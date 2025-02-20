@@ -1,0 +1,13 @@
+{
+  "name": "05-reentrancy",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Lukas Radovansky",
+  "license": "MIT",
+  "description": "Educational exercise for Solidity learning.",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "latest",
+    "hardhat": "latest"
+  }
+}
