@@ -9,5 +9,8 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "latest",
     "hardhat": "latest"
+  },
+  "scripts": {
+    "catcharity": "npx hardhat test test/CatCharity.js"
   }
 }
