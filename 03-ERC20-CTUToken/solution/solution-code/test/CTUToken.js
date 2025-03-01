@@ -88,7 +88,7 @@ describe("CTUToken Contract Test Suite", function () {
 
                 await expect(
                     ctuToken.transfer(ethers.ZeroAddress, transferAmount)
-                ).to.be.reverted;
+                ).to.be.revertedWithCustomError(ctuToken, "TransferToZeroAddress");
             });
 
             it("Should fail when sender has insufficient balance", async function () {
@@ -97,7 +97,7 @@ describe("CTUToken Contract Test Suite", function () {
                 // addr1 has 0 balance initially
                 await expect(
                     ctuToken.connect(addr1).transfer(addr2.address, transferAmount)
-                ).to.be.reverted;
+                ).to.be.revertedWithCustomError(ctuToken, "InsufficientBalance");
             });
 
             it("Should allow transferring zero tokens", async function () {
@@ -141,7 +141,7 @@ describe("CTUToken Contract Test Suite", function () {
 
                 await expect(
                     ctuToken.approve(ethers.ZeroAddress, approveAmount)
-                ).to.be.reverted;
+                ).to.be.revertedWithCustomError(ctuToken, "ApproveToZeroAddress");
             });
 
             it("Should allow setting allowance to zero", async function () {
@@ -190,7 +190,7 @@ describe("CTUToken Contract Test Suite", function () {
 
                 await expect(
                     ctuToken.connect(addr1).transferFrom(owner.address, ethers.ZeroAddress, transferAmount)
-                ).to.be.reverted;
+                ).to.be.revertedWithCustomError(ctuToken, "TransferToZeroAddress");
             });
 
             it("Should fail when transferring more than balance", async function () {
@@ -202,7 +202,7 @@ describe("CTUToken Contract Test Suite", function () {
 
                 await expect(
                     ctuToken.connect(addr1).transferFrom(owner.address, addr2.address, transferAmount)
-                ).to.be.reverted;
+                ).to.be.revertedWithCustomError(ctuToken, "InsufficientBalance");
             });
 
             it("Should fail when transferring more than allowance", async function () {
@@ -213,7 +213,7 @@ describe("CTUToken Contract Test Suite", function () {
 
                 await expect(
                     ctuToken.connect(addr1).transferFrom(owner.address, addr2.address, transferAmount)
-                ).to.be.reverted;
+                ).to.be.revertedWithCustomError(ctuToken, "TransferExceedsAllowance");
             });
 
             it("Should allow multiple transfers up to the allowance", async function () {
@@ -304,7 +304,7 @@ describe("CTUToken Contract Test Suite", function () {
             // addr1 has no allowance
             await expect(
                 ctuToken.connect(addr1).transferFrom(owner.address, addr2.address, transferAmount)
-            ).to.be.reverted;
+            ).to.be.revertedWithCustomError(ctuToken, "TransferExceedsAllowance");
         });
 
         it("Should correctly handle total supply after multiple transfers", async function () {
@@ -333,7 +333,10 @@ describe("CTUToken Contract Test Suite", function () {
             // Attempt to transfer more than balance
             await expect(
                 ctuToken.transfer(addr1.address, maxUint)
-            ).to.be.reverted;
+            ).to.be.revertedWithCustomError(
+                ctuToken,
+                "InsufficientBalance"
+            );;
         });
     });
 });

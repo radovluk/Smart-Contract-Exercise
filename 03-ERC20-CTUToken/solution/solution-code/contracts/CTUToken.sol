@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity =0.8.28;
 
 /**
  * @title CTUToken
@@ -17,6 +17,10 @@ pragma solidity ^0.8.28;
  * https://docs.openzeppelin.com/contracts/4.x/erc20
  */
 contract CTUToken {
+    // ------------------------------------------------------------------------
+    //                              Constants
+    // ------------------------------------------------------------------------
+
     // The name of the token.
     string private constant TOKEN_NAME = "CTU Token";
 
@@ -25,7 +29,22 @@ contract CTUToken {
 
     // The total supply of the token there will be.
     // 1,000,000 tokens with 18 decimal places
-    uint256 private constant TOKEN_TOTAL_SUPPLY = 1_000_000 * 10**18;
+    uint256 private constant TOKEN_TOTAL_SUPPLY = 1_000_000 * 10 ** 18;
+
+    // ------------------------------------------------------------------------
+    //                          Storage Variables
+    // ------------------------------------------------------------------------
+
+    // Mapping from account addresses to their current token balance
+    mapping(address => uint256) private balances;
+
+    // Mapping from account addresses to another account's allowances.
+    // This allows an account to authorize another account to spend tokens on its behalf.
+    mapping(address => mapping(address => uint256)) private allowances;
+
+    // ------------------------------------------------------------------------
+    //                              Events
+    // ------------------------------------------------------------------------
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to another account (`to`).
@@ -51,12 +70,30 @@ contract CTUToken {
         uint256 value
     );
 
-    // Mapping from account addresses to their current token balance
-    mapping(address => uint256) private balances;
+    // ------------------------------------------------------------------------
+    //                               Errors
+    // ------------------------------------------------------------------------
 
-    // Mapping from account addresses to another account's allowances.
-    // This allows an account to authorize another account to spend tokens on its behalf.
-    mapping(address => mapping(address => uint256)) private allowances;
+    /// Attempting to transfer to the zero address.
+    error TransferToZeroAddress();
+    /// Attempting to transfer from the zero address.
+    error TransferFromZeroAddress();
+    /// Account does not have enough balance. Requested:`requsted` Available:`available`
+    error InsufficientBalance(uint256 requested, uint256 available);
+    /// Attempting to approve the zero address as a spender.
+    error ApproveToZeroAddress();
+    /// Attempting to increase allowance for the zero address.
+    error IncreaseAllowanceForZeroAddress();
+    /// Attempting to decrease allowance for the zero address.
+    error DecreaseAllowanceForZeroAddress();
+    /// Attempting to decrease allowance=`requested` below the current value=`current`.
+    error DecreasedAllowanceBelowZero(uint256 requested, uint256 current);
+    /// Trying to transfer an amount=`requested` exceeding the current allowance=`allowance`.
+    error TransferExceedsAllowance(uint256 requested, uint256 allowance);
+
+    // ------------------------------------------------------------------------
+    //                               Constructor
+    // ------------------------------------------------------------------------
 
     /**
      * @dev Constructor that assigns the entire supply to the contract deployer.
@@ -68,6 +105,10 @@ contract CTUToken {
         // Emit Transfer event to show the inital token transfer
         emit Transfer(address(0), msg.sender, TOKEN_TOTAL_SUPPLY);
     }
+
+    // ------------------------------------------------------------------------
+    //                          ERC-20 Standard Functions
+    // ------------------------------------------------------------------------
 
     /**
      * @dev Returns the name of the token.
@@ -127,10 +168,10 @@ contract CTUToken {
      */
     function transfer(address to, uint256 value) public returns (bool success) {
         // Check if the recipient is not the zero address
-        require(to != address(0), "Transfer to zero address not allowed");
+        require(to != address(0), TransferToZeroAddress());
 
         // Check if the sender has enough balance
-        require(balances[msg.sender] >= value, "Insufficient balance");
+        require(balances[msg.sender] >= value, InsufficientBalance(value, balances[msg.sender]));
 
         // Subtract the value from the sender's balance
         balances[msg.sender] -= value;
@@ -159,7 +200,7 @@ contract CTUToken {
         uint256 value
     ) public returns (bool success) {
         // Check if the spender is not the zero address
-        require(spender != address(0), "Approve to zero address not allowed");
+        require(spender != address(0), ApproveToZeroAddress());
 
         // Set the allowance
         allowances[msg.sender][spender] = value;
@@ -187,7 +228,7 @@ contract CTUToken {
         uint256 addedValue
     ) public returns (bool success) {
         // Check if the spender is not the zero address
-        require(spender != address(0), "Increase allowance for zero address");
+        require(spender != address(0), IncreaseAllowanceForZeroAddress());
 
         // Increase the allowance
         allowances[msg.sender][spender] += addedValue;
@@ -218,7 +259,7 @@ contract CTUToken {
         uint256 subtractedValue
     ) public returns (bool success) {
         // Check if the spender is not the zero address
-        require(spender != address(0), "Decrease allowance for zero address");
+        require(spender != address(0), DecreaseAllowanceForZeroAddress());
 
         // Check if the current allowance is sufficient
         require(
@@ -273,21 +314,21 @@ contract CTUToken {
         uint256 value
     ) public returns (bool success) {
         // Check if the sender is not the zero address
-        require(from != address(0), "Transfer from zero address not allowed");
+        require(from != address(0), TransferFromZeroAddress());
 
         // Check if the recipient is not the zero address
-        require(to != address(0), "Transfer to zero address not allowed");
+        require(to != address(0), TransferToZeroAddress());
 
         // Check if the sender has enough balance
         require(
             balances[from] >= value,
-            "Insufficient balance of from address"
+            InsufficientBalance(value, balances[from])
         );
 
         // Check if the caller has enough allowance
         require(
             allowances[from][msg.sender] >= value,
-            "Transfer amount exceeds allowance"
+            TransferExceedsAllowance(value, allowances[from][msg.sender])
         );
 
         // Subtract the value from the sender's balance

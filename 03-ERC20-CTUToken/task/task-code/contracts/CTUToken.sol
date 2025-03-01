@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity =0.8.28;
 
 /**
  * @title CTUToken
@@ -17,6 +17,10 @@ pragma solidity ^0.8.28;
  * https://docs.openzeppelin.com/contracts/4.x/erc20
  */
 contract CTUToken {
+    // ------------------------------------------------------------------------
+    //                              Constants
+    // ------------------------------------------------------------------------
+
     // TODO: Set the name of the token to "CTU Token"
     string private NAME_TOKEN = "";
 
@@ -27,6 +31,21 @@ contract CTUToken {
     // The total supply should be 1,000,000 tokens with 18 decimal places.
     // This means the total supply should be represented as 1_000_000 * 10**18.
     uint256 private TOKEN_TOTAL_SUPPLY = 42;
+
+    // ------------------------------------------------------------------------
+    //                          Storage Variables
+    // ------------------------------------------------------------------------
+
+    // Mapping from account addresses to their current token balance
+    mapping(address => uint256) private balances;
+
+    // Mapping from account addresses to another account's allowances.
+    // This allows an account to authorize another account to spend tokens on its behalf.
+    mapping(address => mapping(address => uint256)) private allowances;
+
+    // ------------------------------------------------------------------------
+    //                              Events
+    // ------------------------------------------------------------------------
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to another account (`to`).
@@ -47,12 +66,37 @@ contract CTUToken {
     // @param spender Address of the spender who is being allowed to spend.
     // @param value The amount of tokens the spender is allowed to spend.
 
-    // Mapping from account addresses to their current token balance
-    mapping(address => uint256) private balances;
+    // ------------------------------------------------------------------------
+    //                               Errors
+    // ------------------------------------------------------------------------
 
-    // Mapping from account addresses to another account's allowances.
-    // This allows an account to authorize another account to spend tokens on its behalf.
-    mapping(address => mapping(address => uint256)) private allowances;
+    /// Attempting to transfer to the zero address.
+    error TransferToZeroAddress();
+    /// Attempting to transfer from the zero address.
+    error TransferFromZeroAddress();
+    /// Account does not have enough balance. Requested:`requsted` Available:`available`
+    error InsufficientBalance(uint256 requested, uint256 available);
+    /// Attempting to approve the zero address as a spender.
+    error ApproveToZeroAddress();
+    /// Attempting to increase allowance for the zero address.
+    error IncreaseAllowanceForZeroAddress();
+    /// Attempting to decrease allowance for the zero address.
+    error DecreaseAllowanceForZeroAddress();
+    /// Attempting to decrease allowance=`requested` below the current value=`current`.
+    error DecreasedAllowanceBelowZero(uint256 requested, uint256 current);
+    
+    // TODO: Implement the TransferExceedsAllowance error to handle cases where the transfer amount exceeds the current allowance.
+    //
+    // @dev Error thrown when attempting to transfer an amount that exceeds the current allowance.
+    // `requested` is the amount requested to transfer.
+    // `allowance` is the current allowance available.
+    //
+    // @param requested The amount of tokens requested to transfer.
+    // @param allowance The current allowance available.
+
+    // ------------------------------------------------------------------------
+    //                               Constructor
+    // ------------------------------------------------------------------------
 
     /**
      * @dev Constructor that assigns the entire supply to the contract deployer.
@@ -60,6 +104,10 @@ contract CTUToken {
     constructor() {
         // TODO: Assign total supply to the contract deployer
     }
+
+    // ------------------------------------------------------------------------
+    //                          ERC-20 Standard Functions
+    // ------------------------------------------------------------------------
 
     /**
      * @dev Returns the name of the token.

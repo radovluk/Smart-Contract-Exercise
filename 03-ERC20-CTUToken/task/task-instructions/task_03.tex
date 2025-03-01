@@ -157,6 +157,8 @@ This will install all the necessary dependencies for the project. Your implement
 
 The ERC-20 standard was first proposed by Fabian Vogelsteller and Vitalik Buterin in November 2015. The token specification defines the interface that a smart contract must implement to be ERC-20 compliant. It is important to note that it \textbf{does not specify the actual implementation}. It is the most widely used standard with more than 1.5 million smart contracts on the mainnet implementing it.
 
+\medskip
+\noindent
 Example functionalities ERC-20 provides:
 
 \begin{itemize}
@@ -228,59 +230,71 @@ To complete the CTU Token contract and pass all the associated tests, you need t
 
 \subsection*{Token Details}
 \begin{itemize}
-    \item \textbf{Name}: Set the token name to \texttt{"CTU Token"}.
-    \item \textbf{Symbol}: Set the token symbol to \texttt{"CTU"}.
-    \item \textbf{Decimals}: Use \texttt{18} decimal places to align with the standard Ether denomination.
-    \item \textbf{Total Supply}: Initialize the total supply to \texttt{1,000,000} tokens.
+  \item \textbf{Name}: Set the token name to \texttt{"CTU Token"}.
+  \item \textbf{Symbol}: Set the token symbol to \texttt{"CTU"}.
+  \item \textbf{Decimals}: Use \texttt{18} decimal places to align with the standard Ether denomination.
+  \item \textbf{Total Supply}: Initialize the total supply to \texttt{1,000,000} tokens.
 \end{itemize}
 
 \subsection*{Events}
 \begin{itemize}
-    \item \textbf{Transfer Event}: Emit a \texttt{Transfer} event whenever tokens are transferred, including zero-value transfers.
-    \item \textbf{Approval Event}: Implement and emit an \texttt{Approval} event when an allowance is set via the \texttt{approve} function.
+  \item \textbf{Transfer Event}: Emit a \texttt{Transfer} event whenever tokens are transferred, including zero-value transfers.
+  \item \textbf{Approval Event}: Implement and emit an \texttt{Approval} event when an allowance is set via the \texttt{approve} function.
+\end{itemize}
+
+\subsection*{Errors}
+\begin{itemize}
+  \item \texttt{TransferToZeroAddress}: Attempting to transfer to the zero address.
+  \item \texttt{TransferFromZeroAddress}: Attempting to transfer from the zero address.
+  \item \texttt{InsufficientBalance(uint256 requested, uint256 available)}: Account does not have enough balance.
+  \item \texttt{ApproveToZeroAddress}: Attempting to approve the zero address as a spender.
+  \item \texttt{IncreaseAllowanceForZeroAddress}: Attempting to increase allowance for the zero address.
+  \item \texttt{DecreaseAllowanceForZeroAddress}: Attempting to decrease allowance for the zero address.
+  \item \texttt{DecreasedAllowanceBelowZero(uint256 requested, uint256 current)}: Attempting to decrease allowance below the current value.
+  \item \texttt{TransferExceedsAllowance(uint256 requested, uint256 allowance)}: Trying to transfer an amount exceeding the current allowance.
 \end{itemize}
 
 \subsection*{State Variables}
 \begin{itemize}
-    \item \textbf{Balances Mapping}: Maintain a \texttt{mapping(address => uint256)} to track the token balance of each account.
-    \item \textbf{Allowances Mapping}: Use a nested \texttt{mapping(address => mapping(address => uint256))} to manage allowances, enabling accounts to authorize others to spend tokens on their behalf.
+  \item \textbf{Balances Mapping}: Maintain a \texttt{mapping(address => uint256)} to track the token balance of each account.
+  \item \textbf{Allowances Mapping}: Use a nested \texttt{mapping(address => mapping(address => uint256))} to manage allowances, enabling accounts to authorize others to spend tokens on their behalf.
 \end{itemize}
 
 \subsection*{Constructor}
 \begin{itemize}
-    \item Assign the entire \texttt{totalSupply} to the contract deployer's address upon deployment.
+  \item Assign the entire \texttt{totalSupply} to the contract deployer's address upon deployment.
 \end{itemize}
 
 \subsection*{Core Functions}
 \begin{itemize}
-    \item \textbf{name()}: Return the name of the token.
-    \item \textbf{symbol()}: Return the token symbol.
-    \item \textbf{decimals()}: Return the number of decimal places (\texttt{18}).
-    \item \textbf{totalSupply()}: Return the total supply of tokens in existence.
-    \item \textbf{balanceOf(address account)}: Return the token balance of the specified account.
-    \item \textbf{transfer(address to, uint256 value)}:
-    \begin{itemize}
-        \item Ensure the recipient address is not the zero address.
-        \item Verify that the sender has a sufficient balance.
-        \item Update the sender's and recipient's balances accordingly.
-        \item Emit a \texttt{Transfer} event.
-    \end{itemize}
-    \item \textbf{approve(address spender, uint256 value)}:
-    \begin{itemize}
-        \item Ensure the spender address is not the zero address.
-        \item Set the allowance for the spender.
-        \item Emit an \texttt{Approval} event.
-    \end{itemize}
-    \item \textbf{allowance(address owner, address spender)}: Return the remaining number of tokens that the spender is allowed to spend on behalf of the owner.
-    \item \textbf{transferFrom(address from, address to, uint256 value)}:
-    \begin{itemize}
-        \item Ensure neither the sender nor the recipient is the zero address.
-        \item Verify that the source account has a sufficient balance.
-        \item Check that the caller has enough allowance.
-        \item Update the balances of the source and recipient accounts.
-        \item Decrease the allowance accordingly.
-        \item Emit a \texttt{Transfer} event.
-    \end{itemize}
+  \item \textbf{name()}: Return the name of the token.
+  \item \textbf{symbol()}: Return the token symbol.
+  \item \textbf{decimals()}: Return the number of decimal places (\texttt{18}).
+  \item \textbf{totalSupply()}: Return the total supply of tokens in existence.
+  \item \textbf{balanceOf(address account)}: Return the token balance of the specified account.
+  \item \textbf{transfer(address to, uint256 value)}:
+  \begin{itemize}
+      \item Ensure the recipient address is not the zero address.
+      \item Verify that the sender has a sufficient balance.
+      \item Update the sender's and recipient's balances accordingly.
+      \item Emit a \texttt{Transfer} event.
+  \end{itemize}
+  \item \textbf{approve(address spender, uint256 value)}:
+  \begin{itemize}
+      \item Ensure the spender address is not the zero address.
+      \item Set the allowance for the spender.
+      \item Emit an \texttt{Approval} event.
+  \end{itemize}
+  \item \textbf{allowance(address owner, address spender)}: Return the remaining number of tokens that the spender is allowed to spend on behalf of the owner.
+  \item \textbf{transferFrom(address from, address to, uint256 value)}:
+  \begin{itemize}
+      \item Ensure neither the sender nor the recipient is the zero address.
+      \item Verify that the source account has a sufficient balance.
+      \item Check that the caller has enough allowance.
+      \item Update the balances of the source and recipient accounts.
+      \item Decrease the allowance accordingly.
+      \item Emit a \texttt{Transfer} event.
+  \end{itemize}
 \end{itemize}
 
 To fulfill the exercise, you need to pass all the provided tests. You can run the tests with the following command:
@@ -328,6 +342,8 @@ The following table shows the attack vector for our CTU Token smart contract, wh
   \label{tab:attack-scenario}
 \end{table}
 
+\medskip
+\noindent
 Review the file \texttt{scripts/attack.js} where this attack is implemented and understand it. Then run the attack using the command
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
