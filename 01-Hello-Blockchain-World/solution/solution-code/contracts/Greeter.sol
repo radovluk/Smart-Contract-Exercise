@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity ^0.8.28; // Specify the Solidity compiler version
 
 /**
  * @title Greeter
  * @dev A simple smart contract that stores a greeting message.
  */
 contract Greeter {
-    // State variable to store the greeting message
-    string private greeting;
+    string private greeting; // State variable to store the greeting message
 
     /**
-     * @dev Constructor that initializes the contract with a greeting.
+     * @dev Constructor that sets the initial greeting message upon deployment.
      * @param _greeting The greeting message to be stored.
      */
     constructor(string memory _greeting) {

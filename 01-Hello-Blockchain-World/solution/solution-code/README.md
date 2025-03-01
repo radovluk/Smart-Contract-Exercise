@@ -77,28 +77,36 @@ npx hardhat compile
 
 ## Deploying to Sepolia Testnet
 
-1. Install dotenv:
+It's crucial to keep sensitive information like your private key and Infura API key secure. We recommend using environment variables to manage these credentials only for the purpose of this exercise. A Hardhat project can use configuration variables for user-specific values or for data that shouldn't be included in the code repository. These variables are set via tasks in the vars scope and can be retrieved in the config using the vars object.
+
+1. Set the `INFURA_API_KEY`:
     ```bash
-    npm install dotenv --save
+    $ npx hardhat vars set INFURA_API_KEY
+    Enter value: ********************************
     ```
-2. Create a `.env` file with your Infura API key and private key:
+
+2. Set the `SEPOLIA_PRIVATE_KEY`:
     ```bash
-    INFURA_API_KEY=your_infura_project_id
-    SEPOLIA_PRIVATE_KEY=your_metamask_private_key
+    $ npx hardhat vars set SEPOLIA_PRIVATE_KEY
+    Enter value: ********************************
     ```
+
 3. Update `hardhat.config.js`:
     ```javascript
     require("@nomicfoundation/hardhat-toolbox");
-    require("dotenv").config();
 
+    const INFURA_API_KEY = vars.get("INFURA_API_KEY");
+    const SEPOLIA_PRIVATE_KEY = vars.get("SEPOLIA_PRIVATE_KEY");
+
+    /** @type import('hardhat/config').HardhatUserConfig */
     module.exports = {
-        solidity: "0.8.0",
-        networks: {
-            sepolia: {
-                url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
-                accounts: [`0x${process.env.SEPOLIA_PRIVATE_KEY}`],
-            },
+      solidity: "0.8.28",
+      networks: {
+        sepolia: {
+          url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
+          accounts: [`0x${SEPOLIA_PRIVATE_KEY}`],
         },
+      },
     };
     ```
 4. Create a file `scripts/deploy.js` with the following content:

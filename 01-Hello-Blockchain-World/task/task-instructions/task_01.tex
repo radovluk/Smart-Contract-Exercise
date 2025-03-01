@@ -126,21 +126,20 @@ Select \codegrey{Create an empty \texttt{hardhat.config.js}} with your keyboard 
 Start by creating a new directory inside your project called \texttt{contracts} and create a file inside the directory called \texttt{Greeter.sol}. Paste the code below into the file and take a minute to read the code.
 
 \begin{lstlisting}[language=Solidity]
-// contracts/Greeter.sol
+// File: contracts/Greeter.sol
 
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity ^0.8.28; // Specify the Solidity compiler version
 
 /**
  * @title Greeter
  * @dev A simple smart contract that stores a greeting message.
  */
 contract Greeter {
-    // State variable to store the greeting message
-    string private greeting;
+    string private greeting; // State variable to store the greeting message
 
     /**
-     * @dev Constructor that initializes the contract with a greeting.
+    * @dev Constructor that sets the initial greeting message upon deployment.
      * @param _greeting The greeting message to be stored.
      */
     constructor(string memory _greeting) {
@@ -178,7 +177,7 @@ $ npm install --save-dev @nomicfoundation/hardhat-toolbox
 To include the plugin in your Hardhat project, add the following to your \texttt{hardhat.config.js} file in the project directory so that it will look like this:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
-// hardhat.config.js
+// File: hardhat.config.js
 
 require("@nomicfoundation/hardhat-toolbox");
 
@@ -187,14 +186,14 @@ module.exports = {
   solidity: "0.8.28",
 };
 \end{minted}
-For more information about plugins and how to test contracts in Hardhat, visit: \\ \href{https://hardhat.org/docs}{Hardhat Documentation}.
+For more information about plugins and how to test contracts in Hardhat, visit: \\ \href{https://hardhat.org/tutorial/testing-contracts}{Hardhat documentation}.
 
 \subsection{Writing a Simple Test}
 
 Create a new directory named \texttt{test} in your project root and add a file called \texttt{Greeter.js} with the following content:
 
 \begin{minted}[frame=lines, bgcolor=gray!5, fontsize=\footnotesize]{javascript}
-// test/Greeter.js
+// File: test/Greeter.js
 
 // Import the 'expect' function from Chai for assertions
 const { expect } = require("chai");
@@ -290,7 +289,7 @@ It's crucial to keep sensitive information like your private key and Infura API 
 Modify your \texttt{hardhat.config.js} file to include the Sepolia network configuration:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
-// hardhat.config.js
+// File: hardhat.config.js
 
 require("@nomicfoundation/hardhat-toolbox");
 
@@ -302,8 +301,8 @@ module.exports = {
   solidity: "0.8.28",
   networks: {
     sepolia: {
-      url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
-      accounts: [`0x${process.env.SEPOLIA_PRIVATE_KEY}`],
+      url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [`0x${SEPOLIA_PRIVATE_KEY}`],
     },
   },
 };
@@ -324,7 +323,7 @@ With the configuration in place, you're ready to deploy your smart contract to t
 \end{itemize}
 
 \begin{minted}[frame=lines, bgcolor=gray!5, fontsize=\footnotesize]{javascript}
-// scripts/deploy.js
+// File: scripts/deploy.js
 
 const hre = require("hardhat");
 
@@ -366,6 +365,9 @@ Contract greeting: Hello, Blockchain World!
 \end{minted}
 You can verify the deployment by visiting the Sepolia Etherscan explorer and searching for your contract address: \url{https://sepolia.etherscan.io/address/<ContractAddress>}. Search also for your account address and see your interactions with the deployed contract.
 
+\noindent
+Hardhat also includes Hardhat network, a local Ethereum network node for development. It enables you to deploy contracts, run tests, and debug code, all within your local environment. We already used it during running our test. To use it, open a separate terminal and run \codegrey{npx hardhat node} in the terminal. To deploy the contract, run \codegrey{npx hardhat run scripts/deploy.js --network hardhat} in another terminal. See \href{https://hardhat.org/hardhat-network/docs/overview\#hardhat-network}{Hardhat network} for more information.
+
 \subsection{Interacting with Your Deployed Contract}
 
 Now that your contract is live on the Sepolia testnet, you can interact with it using various tools:
@@ -387,7 +389,7 @@ $ npx hardhat run scripts/deploy.js
 For more detailed information, refer to the following resources:
 
 \begin{itemize}
-    \item \href{https://docs.soliditylang.org/en/v0.8.0/}{Solidity Documentation}
+    \item \href{https://docs.soliditylang.org/en/latest/}{Solidity Documentation}
     \item \href{https://hardhat.org/docs}{Hardhat Documentation}
     \item \href{https://solidity-by-example.org/}{Solidity by Example}
     \item \href{https://docs.ethers.org/v6/}{Ethers.js Documentation} (for scripting)
