@@ -51,7 +51,7 @@ describe("Voting Contract Test Suite", function () {
       await expect(voting.connect(owner).addCandidate("Alice")).to.not.be.reverted;
 
       // Non-owner attempts to add a candidate
-      await expect(voting.connect(nonOwner).addCandidate("Bob")).to.be.reverted;
+      await expect(voting.connect(nonOwner).addCandidate("Bob")).to.be.revertedWithCustomError(voting, "NotOwner");
     });
   });
 
@@ -80,7 +80,7 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should prevent adding candidates with empty names", async function () {
-      await expect(voting.connect(owner).addCandidate("")).to.be.reverted;
+      await expect(voting.connect(owner).addCandidate("")).to.be.revertedWithCustomError(voting, "EmptyCandidateName");
     });
 
     it("Should allow adding candidates with duplicate names", async function () {
@@ -119,7 +119,7 @@ describe("Voting Contract Test Suite", function () {
 
     it("Should not allow voting for a non-existent candidate", async function () {
       // Attempt to vote without adding any candidates
-      await expect(voting.connect(voter1).vote(0)).to.be.reverted;
+      await expect(voting.connect(voter1).vote(0)).to.be.revertedWithCustomError(voting, "InvalidCandidateIndex");
     });
 
     it("Should not allow a voter to vote more than once", async function () {
@@ -130,7 +130,7 @@ describe("Voting Contract Test Suite", function () {
       await voting.connect(voter1).vote(0);
 
       // Voter1 attempts to cast a second vote
-      await expect(voting.connect(voter1).vote(0)).to.be.reverted;
+      await expect(voting.connect(voter1).vote(0)).to.be.revertedWithCustomError(voting, "AlreadyVoted");
     });
 
     it("Should allow multiple voters to vote for different candidates", async function () {
@@ -225,7 +225,7 @@ describe("Voting Contract Test Suite", function () {
 
     it("Should revert when accessing a candidate with an invalid index", async function () {
       // Attempt to access a candidate that doesn't exist
-      await expect(voting.getCandidate(0)).to.be.reverted;
+      await expect(voting.getCandidate(0)).to.be.revertedWithCustomError(voting, "InvalidCandidateIndex");
     });
 
     it("Should return the correct total number of candidates", async function () {
@@ -247,7 +247,7 @@ describe("Voting Contract Test Suite", function () {
   describe("Edge Cases", function () {
     it("Should handle voting when no candidates are present", async function () {
       // Attempt to vote without any candidates
-      await expect(voting.connect(voter1).vote(0)).to.be.reverted;
+      await expect(voting.connect(voter1).vote(0)).to.be.revertedWithCustomError(voting, "InvalidCandidateIndex");
     });
 
     it("Should handle multiple votes and ensure accurate vote tracking", async function () {
@@ -286,7 +286,7 @@ describe("Voting Contract Test Suite", function () {
       await voting.connect(voter1).vote(0);
 
       // Voter1 attempts to vote for Bob
-      await expect(voting.connect(voter1).vote(1)).to.be.reverted;
+      await expect(voting.connect(voter1).vote(1)).to.be.revertedWithCustomError(voting, "AlreadyVoted");
     });
   });
 });

@@ -5,9 +5,9 @@ pragma solidity 0.8.28;
  * @title Voting
  * @dev A simple voting contract where the owner can add candidates
  *      and any address can vote exactly once for a candidate.
- * 
+ *
  * The contract includes the following functionalities:
- * 
+ *
  * - The contract owner can add candidates.
  * - Any address can vote exactly once for a candidate.
  * - The contract tracks the number of votes each candidate has received.
@@ -50,19 +50,36 @@ contract Voting {
     event CandidateAdded(string name);
 
     /**
-     * @dev The constructor sets the deployer as the owner.
+     * @dev Custom errors that describe the failures
+     * The triple-slash comments are for natspec comments.
+     * They will be shown when a user is asked to confirm a 
+     * transaction or when an error is thrown.
      */
-    constructor() {
-        owner = msg.sender; // The deployer is the owner
-    }
+    /// Only the owner can call this function.
+    error NotOwner();
+    /// The candidate name cannot be empty.
+    error EmptyCandidateName();
+    /// The `voter` has already voted.
+    error AlreadyVoted(address voter);
+    /// The candidate index `index` is invalid.
+    error InvalidCandidateIndex(uint index);
+    /// No candidates have been added yet.
+    error NoCandidates();
 
     /**
      * @dev Modifier to restrict function access to only the contract owner.
      *      Reverts with "Not the contract owner" if the caller is not the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == owner, "Not the contract owner");
+        require(msg.sender == owner, NotOwner());
         _;
+    }
+
+    /**
+     * @dev The constructor sets the deployer as the owner.
+     */
+    constructor() {
+        owner = msg.sender; // The deployer is the owner
     }
 
     /**
@@ -74,7 +91,8 @@ contract Voting {
      * - The candidate name cannot be empty.
      */
     function addCandidate(string memory name) public onlyOwner {
-        require(bytes(name).length > 0, "Candidate name cannot be empty");
+        // Check if the candidate name is empty
+        require(bytes(name).length > 0, EmptyCandidateName());
         // Create a new Candidate struct and push it to the candidates array
         candidates.push(Candidate({name: name, voteCount: 0}));
         // Emit the CandidateAdded event
@@ -91,9 +109,9 @@ contract Voting {
      */
     function vote(uint candidateIndex) public {
         // Ensure the caller hasn't voted yet
-        require(!hasVoted[msg.sender], "Already voted");
+        require(!hasVoted[msg.sender], AlreadyVoted(msg.sender));
         // Ensure the candidate index is valid
-        require(candidateIndex < candidates.length, "Invalid candidate index");
+        require(candidateIndex < candidates.length, InvalidCandidateIndex(candidateIndex));
 
         // Increment the vote count for the chosen candidate
         candidates[candidateIndex].voteCount += 1;
@@ -121,9 +139,11 @@ contract Voting {
      * Requirements:
      * - The candidate index must be within bounds.
      */
-    function getCandidate(uint index) public view returns (string memory name, uint voteCount) {
+    function getCandidate(
+        uint index
+    ) public view returns (string memory name, uint voteCount) {
         // Ensure the index is valid
-        require(index < candidates.length, "Index out of range");
+        require(index < candidates.length, InvalidCandidateIndex(index));
         // Retrieve the candidate from the array
         Candidate storage candidate = candidates[index];
         return (candidate.name, candidate.voteCount);
@@ -138,7 +158,8 @@ contract Voting {
      * - There must be at least one candidate in the array.
      */
     function winningCandidate() public view returns (uint) {
-        require(candidates.length > 0, "No candidates available");
+        // Revert of no candidates are added
+        require(candidates.length > 0, NoCandidates());
 
         uint winningVoteCount = candidates[0].voteCount;
         uint winnerIndex = 0;
@@ -154,4 +175,3 @@ contract Voting {
         return winnerIndex; // Return the index of the winning candidate
     }
 }
-

@@ -5,9 +5,9 @@ pragma solidity 0.8.28;
  * @title Voting
  * @dev A simple voting contract where the owner can add candidates
  *      and any address can vote exactly once for a candidate.
- * 
+ *
  * The contract includes the following functionalities:
- * 
+ *
  * - The contract owner can add candidates.
  * - Any address can vote exactly once for a candidate.
  * - The contract tracks the number of votes each candidate has received.
@@ -50,12 +50,21 @@ contract Voting {
     event CandidateAdded(string name);
 
     /**
-     * @dev The constructor sets the deployer as the owner.
+     * @dev Custom errors that describe the failures
+     * The triple-slash comments are for natspec comments.
+     * They will be shown when a user is asked to confirm a
+     * transaction or when an error is thrown.
      */
-    constructor() {
-        // TODO: Set the deployer of the contract as the owner
-        // Tip: to get the deployer address use msg.sender
-    }
+    /// Only the owner can call this function.
+    error NotOwner();
+    /// The candidate name cannot be empty.
+    error EmptyCandidateName();
+    /// The `voter` has already voted.
+    error AlreadyVoted(address voter);
+    /// The candidate index `index` is invalid.
+    error InvalidCandidateIndex(uint index);
+    /// No candidates have been added yet.
+    error NoCandidates();
 
     /**
      * @dev Modifier to restrict function access to only the contract owner.
@@ -65,6 +74,14 @@ contract Voting {
         // TODO: Implement access control to ensure only the owner can execute the function
         // Tip: Use a require statement to check if the caller is the owner
         _;
+    }
+
+    /**
+     * @dev The constructor sets the deployer as the owner.
+     */
+    constructor() {
+        // TODO: Set the deployer of the contract as the owner
+        // Tip: to get the deployer address use msg.sender
     }
 
     /**
@@ -118,7 +135,9 @@ contract Voting {
      * Requirements:
      * - The candidate index must be within bounds.
      */
-    function getCandidate(uint index) public view returns (string memory name, uint voteCount) {
+    function getCandidate(
+        uint index
+    ) public view returns (string memory name, uint voteCount) {
         // TODO: Ensure the index is within the valid range
         // TODO: Retrieve the candidate's name and vote count from the candidates array
     }
@@ -138,4 +157,3 @@ contract Voting {
         // TODO: Return the index of the winning candidate
     }
 }
-

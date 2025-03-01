@@ -170,25 +170,20 @@ Structs are custom data types that allow you to group related data together. The
   }
 \end{lstlisting}
 
-\subsubsection*{Modifiers}
+\subsubsection*{Constructor}
 
-Modifiers are used to change the behavior of functions in a declarative way. They can enforce rules or conditions before executing a function's code.
+The constructor is a special function that runs once during the contract's deployment and cannot be invoked later.
 
 \begin{lstlisting}[language=Solidity]
-  // Modifier to restrict access to the contract owner
-  modifier onlyOwner() {
-      require(msg.sender == owner, "Only the owner can call this function");
-      _; // Continue executing the function
-  }
-
-  function addCandidate(string memory name) public onlyOwner {
-    // Only the contract owner can call this function
+  constructor() {
+    // The deployer of the contract is the owner
+    owner = msg.sender;
   }
 \end{lstlisting}
 
-\subsubsection*{Functions}
+\begin{lstlisting}[language=Solidity]
 
-Functions define the behavior of the contract. They can read and modify the contract's state, perform computations, and interact with other contracts or external systems.
+\end{lstlisting}
 
 \subsubsection*{Events}
 
@@ -209,6 +204,43 @@ Events are used to log information on the blockchain that can be accessed by off
  event CandidateAdded(string name);
 \end{lstlisting}
 
+\subsubsection*{Errors}
+
+Errors allow developers to provide more information to the caller about why a condition or operation failed. Errors are used together with the revert statement or require function. On failure, they abort and revert \textbf{all} changes made by the transaction.
+
+\begin{lstlisting}[language=Solidity]
+  /// Only the owner can call this function.
+  error NotOwner();
+  /// The candidate name cannot be empty.
+  error EmptyCandidateName();
+
+  // revert if condition is not met
+  require(msg.sender == owner, NotOwner());
+
+  // revert statement
+  revert EmptyCandidateName();
+\end{lstlisting}
+
+\subsubsection*{Modifiers}
+
+Modifiers are used to change the behavior of functions in a declarative way. They can enforce rules or conditions before executing a function's code.
+
+\begin{lstlisting}[language=Solidity]
+  // Modifier to restrict access to the contract owner
+  modifier onlyOwner() {
+      require(msg.sender == owner, NotOwner());
+      _; // Continue executing the function
+  }
+
+  function addCandidate(string memory name) public onlyOwner {
+    // Only the contract owner can call this function
+  }
+\end{lstlisting}
+
+\subsubsection*{Functions}
+
+Functions define the behavior of the contract. They can read and modify the contract's state, perform computations, and interact with other contracts or external systems.
+
 \subsubsection*{Functionality Provided by Solidity}
 Here are some useful code snippets you might need:
 
@@ -220,7 +252,7 @@ address sender = msg.sender;
 uint amount = msg.value;
 
 // Enforcing conditions
-require(condition, "Error message");
+require(condition, CustomError());
 
 // Casting arbitrary data to uint
 uint number = uint(data);
@@ -232,5 +264,7 @@ address emptyAddress = address(0);
 emit EventName(parameters);
 \end{lstlisting}
 
+\noindent
+To see some more advanced smart contract examples, visit the \href{https://docs.soliditylang.org/en/latest/solidity-by-example.html}{Solidity by Example} section of the Solidity documentation.
 
 \end{document}
