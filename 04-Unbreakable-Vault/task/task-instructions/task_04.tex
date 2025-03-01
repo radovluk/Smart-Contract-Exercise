@@ -359,12 +359,14 @@ This vault cannot be opened without a crystal ball. Or can it? Implement your so
 
 \subsection*{Vault06: Explorer}
 
-EVM can store data in three different places: storage, memory, and stack.
+EVM can store data in different areas: storage, transient storage, memory, and stack.
 
 \begin{itemize}
-\item \textbf{Storage} keeps data between function calls and is persistent for every smart contract. It is the most expensive type of memory in terms of gas cost. We can think of storage as a hard drive. State variable are saved in storage by default.
+\item \textbf{Storage} is persistent between function calls and transactions. It is the most expensive type of memory in terms of gas cost. We can think of storage as a hard drive. State variables are saved in storage by default.
 
-\item \textbf{Memory} is a temporary storage location for data. Once execution is completed, memory is cleared for the next execution. It is comparable to RAM.
+\item \textbf{Transient Storage} is similar to storage, but the main difference is that it resets at the end of each transaction. The value stored in this data persists only across function calls originating from the first call of the transaction. The cost is significantly lower than storage.
+
+\item \textbf{Memory} is a temporary storage location for data. A contract obtains a freshly cleaned instance for each message call. Once execution is completed, memory is cleared for the next execution. It is comparable to RAM.
 
 \item \textbf{Stack} EVM is a stack machine rather than a register machine; all computations are done in the data region called the stack. It has a strict size limit (1024 slots), meaning complex operations often require \texttt{memory} or \texttt{storage}.
 
