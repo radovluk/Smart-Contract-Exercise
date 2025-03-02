@@ -46,6 +46,10 @@ This project contains exercises for students to learn about smart contract secur
 - **Task**: In this exercise, you will be tasked with breaching several vaults, one by one in CTF style. You will gain familiarity with the JavaScript library Ethers.js. We will also demonstrate how to work in Remix IDE, an open-source development environment accessible through a web browser. Additionally, you will learn about insecure randomness, commit and reveal scheme, blockchain data transparency, the differences between msg.sender and tx.origin.
 - **Topics**: Ethers.js, Remix IDE, insecure randomness, commit and reveal, storage, blockhash, timestamp, tx.origin, msg.sender
 
+### 05 - Re-Entrancy
+- **Task**: Re-entrancy is one of the most damaging vulnerabilities in Ethereum's history. This well-documented type of attack gained notoriety in 2016 with the infamous DAO hack. In this exercise, you will learn how to identify and exploit various types of re-entrancy attacks, as well as implement proper mitigation strategies.
+- **Topics**: single-function re-entrancy, cross-function re-entrancy, cross-contract re-entrancy, read-only re-entrancy, DAO, mutex, CEI pattern
+
 ## Getting Started
 
 1. Clone the repository.
