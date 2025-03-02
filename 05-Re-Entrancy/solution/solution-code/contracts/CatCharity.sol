@@ -1,14 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity =0.8.28;
 
-// ======== Custom Error Definitions ========
-error OnlyOwner();               // Thrown when a non-owner calls an onlyOwner function
-error CampaignAlreadyCanceled(); // Thrown when canceling an already-canceled campaign
-error CampaignNotCanceled();     // Thrown when claimRefund is called but the campaign is not canceled
-error CampaignIsCanceled();      // Thrown when donating to a canceled campaign or withdrawing after cancellation
-error NoDonationToRefund();      // Thrown when a user tries to claim a refund with no donation
-error TransferFailed();          // Thrown when an external call to transfer Ether fails
-
 /**
  * @title CatCharity
  * @notice This contract collects donations to help save kittens.
@@ -17,6 +9,11 @@ error TransferFailed();          // Thrown when an external call to transfer Eth
  *         - The owner can also withdraw all collected funds if the campaign is still active.
  */
 contract CatCharity {
+
+    // ------------------------------------------------------------------------
+    //                          Storage Variables
+    // ------------------------------------------------------------------------
+
     // Address of the contract owner who can cancel or withdraw funds.
     address public owner;
 
@@ -29,7 +26,26 @@ contract CatCharity {
     // Stores the address of the most recently refunded donor.
     address public lastRefunded;
 
-    // ======== MODIFIERS ========
+    // ------------------------------------------------------------------------
+    //                               Errors
+    // ------------------------------------------------------------------------
+
+    /// Non-owner calls an onlyOwner function.
+    error OnlyOwner();
+    /// Canceling an already-canceled campaign.
+    error CampaignAlreadyCanceled();
+    /// claimRefund is called but the campaign is not canceled.
+    error CampaignNotCanceled();
+    /// Donating to a canceled campaign or withdrawing after cancellation.
+    error CampaignIsCanceled();
+    /// User tries to claim a refund with no donation.
+    error NoDonationToRefund();
+    /// External call to transfer Ether fails.
+    error TransferFailed();
+
+    // ------------------------------------------------------------------------
+    //                               Modifiers
+    // ------------------------------------------------------------------------
 
     modifier onlyOwner() {
         if (msg.sender != owner) {
@@ -37,6 +53,10 @@ contract CatCharity {
         }
         _;
     }
+
+    // ------------------------------------------------------------------------
+    //                               Constructor
+    // ------------------------------------------------------------------------
 
     /**
      * @dev Sets the initial owner to the contract deployer
@@ -46,6 +66,10 @@ contract CatCharity {
         owner = msg.sender;
         isCanceled = false;
     }
+
+    // ------------------------------------------------------------------------
+    //                          Contract Functions
+    // ------------------------------------------------------------------------
 
     /**
      * @dev Allows anyone to donate Ether to help save kittens.
@@ -79,7 +103,7 @@ contract CatCharity {
         if (donated == 0) {
             revert NoDonationToRefund();
         }
-        
+
         (bool success, ) = payable(msg.sender).call{value: donated}("");
         if (!success) {
             revert TransferFailed();

