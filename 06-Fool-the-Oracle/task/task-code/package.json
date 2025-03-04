@@ -8,8 +8,11 @@
   "description": "Educational exercise for Solidity learning.",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "latest",
-    "hardhat": "latest"
+    "hardhat": "latest",
+    "@openzeppelin/contracts": "latest"
   },
   "scripts": {
+    "oracle01": "npx hardhat test test/FoolTheOracle01.js",
+    "oracle02": "npx hardhat test test/FoolTheOracle02.js"
   }
 }
