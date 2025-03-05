@@ -186,7 +186,7 @@ describe("Fool the Oracle Challenge 02", function () {
         console.log(`Estimated ETH needed: ${ethers.formatEther(estimatedEthNeeded)} ETH`);
         
         // Send most of our ETH to the attacker contract, keeping some for transaction fees
-        const ethToKeep = ethers.parseEther("1.6"); // Keep 0.1 ETH for gas
+        const ethToKeep = ethers.parseEther("1.6"); // Keep some ETH for gas
         const ethToSend = PLAYER_INITIAL_ETH - ethToKeep;
         await player.sendTransaction({
             to: attacker.target,

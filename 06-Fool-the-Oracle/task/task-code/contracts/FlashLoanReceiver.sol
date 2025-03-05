@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 /**
  * @title FlashLoanReceiver
  * @notice A minimal template for receiving flash loans via the ERC-3156 standard
+ * For more information see https://eips.ethereum.org/EIPS/eip-3156
  */
 contract FlashLoanReceiver is IERC3156FlashBorrower {
     // The flash loan provider contract
@@ -45,15 +46,18 @@ contract FlashLoanReceiver is IERC3156FlashBorrower {
      * @dev Executes a flash loan
      * @param token The address of the token to borrow (address(0) for ETH)
      * @param amount The amount to borrow
-     * @param data Additional data to pass to the callback function
+     * @param data Arbitrary data structure, intended to contain user-defined parameters.
      */
     function executeFlashLoan(
         address token,
         uint256 amount,
         bytes calldata data
     ) external onlyOwner {
-        // Calculate fee
-        uint256 fee = lender.flashFee(token, amount);
+
+        // This is where you initiate the flash loan
+        // =========================
+        // TODO: YOUR CODE GOES HERE
+        // =========================
         
         // Execute the flash loan
         lender.flashLoan(this, token, amount, data);
@@ -62,11 +66,11 @@ contract FlashLoanReceiver is IERC3156FlashBorrower {
     /**
      * @dev Flash loan callback function required by the ERC-3156 standard
      * @param initiator The address that initiated the flash loan
-     * @param token The token that was borrowed
+     * @param token The token that was borrowed (address(0) for ETH)
      * @param amount The amount that was borrowed
-     * @param fee The fee that needs to be paid
-     * @param data Additional data passed from the executeFlashLoan function
-     * @return bytes32 value indicating successful execution
+     * @param fee The additional amount of tokens or ETH to repay.
+     * @param data Arbitrary data structure, intended to contain user-defined parameters.
+     * @return The keccak256 hash of "ERC3156FlashBorrower.onFlashLoan"
      */
     function onFlashLoan(
         address initiator,
@@ -79,9 +83,12 @@ contract FlashLoanReceiver is IERC3156FlashBorrower {
         if (msg.sender != address(lender)) revert UntrustedLender();
         if (initiator != address(this)) revert UnauthorizedInitiator();
         
-        // TODO: Add your flash loan logic here
         // This is where you implement your custom logic using the borrowed funds
-        
+        // =========================
+        // TODO: YOUR CODE GOES HERE
+        // Add your flash loan logic here
+        // =========================
+
         // For example:
         // 1. Use the borrowed funds for your operation (arbitrage, liquidation, etc.)
         // 2. Ensure you have enough tokens to repay the loan plus fee
