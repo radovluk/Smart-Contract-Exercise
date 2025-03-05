@@ -269,7 +269,22 @@ To learn more about DEXes, oracles and stablecoins we recommend Berkeley RDI Cen
 
 \subsection*{Task 1: Fool the Oracle 01}
 
-The new rare NFT collection "FEL students" is finally on the market! The first three unique pieces are now available: Sleep-deprived IO student learning from skripta for 5000 USD, BIO pulling-all-nighter female student addicted to energy drinks for 8000 USD, and Caffeinated KYR student who will graduate only thanks to ChatGPT for 3000 USD. They are so unique and cool! You must have them all! Unfortunately, as a student, you can't afford them and start with only 3000 USDC tokens and 0.8 ETH, which is barely enough for the Caffeinated KYR student. Your goal, however, is to get them all!
+The new rare NFT collection "FEL students" is finally on the market! The first three unique pieces are now available: Sleep-deprived OI student learning from skripta for 5000 USD, BIO pulling-all-nighter female student addicted to energy drinks for 8000 USD, and Caffeinated KYR student who will graduate only thanks to ChatGPT for 3000 USD. They are so unique and cool! You must have them all! Unfortunately, as a student, you can't afford them and start with only 3000 USDC tokens and 0.8 ETH, which is barely enough for the Caffeinated KYR student. Your goal, however, is to get them all!
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{NFTs/nft-sleep-deprived-io.pdf}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{NFTs/nft-bio-pulling-allnighter.pdf}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{NFTs/nft-caffeinated-kyr.pdf}
+  \end{minipage}
+\end{figure}
 
 \medskip
 \noindent
@@ -314,6 +329,21 @@ This pattern is implemented in our \texttt{FlashLoanProvider.sol} and \texttt{Fl
 \subsection*{Task 2: Fool the Oracle 02}
 
 The success of the first FEL Student NFT collection was tremendous! The same marketplace now lists three new, even more valuable NFTs: EEM student pulling an all-nighter on Stackoverflow - 3,500 USD, SIT student dreaming of Statnice while listening to headphones - 7,500 USD and UEK power napper with a Tahak - 5,000 USD.
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{NFTs/nft-eem-stackoverflow.pdf}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{NFTs/nft-sit-dreaming.pdf}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{NFTs/nft-uek-power-napper.pdf}
+  \end{minipage}
+\end{figure}
 
 This time, the marketplace has become more resilient. The SimpleDEX now has a much larger liquidity pool containing 100 ETH and 200,000 USDC, making direct price manipulation much more difficult. At the current exchange rate of 1 ETH = 2,000 USDC, the total value of all NFTs is approximately 8 ETH. As a student, you only have 3 ETH to your name (and no USDC). Buying all three NFTs legitimately is impossible with your current funds. However, you have a secret weapon: Flash Loans! For this challenge, you can use the Flash Loan Provider, which has a pool of 200,000 USDC available for flash loans. The provider charges a minimal fee of just 0.01\% (1 basis point) on all loans.
 

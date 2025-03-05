@@ -62,7 +62,7 @@ describe("Fool the Oracle Challenge 01", function () {
 
         // Create custom trait combinations for variety
         const nftTraits = [
-            { program: 4, sleep: 1, tool: 1 },  // IO, Sleep Deprived, Skripta
+            { program: 4, sleep: 1, tool: 1 },  // OI, Sleep Deprived, Skripta
             { program: 2, sleep: 3, tool: 2 },  // BIO, Pulling All-Nighter, Energy Drink
             { program: 3, sleep: 0, tool: 6 }   // KYR, Caffeinated, ChatGPT
         ];

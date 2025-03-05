@@ -202,4 +202,9 @@ function onFlashLoan(
 }
 \end{lstlisting}
 
+\section*{Comment on Mitigation Strategies}
+Smart contracts relying on price oracles require robust protection against manipulation attacks like those demonstrated in these exercises. Effective mitigation approaches focus on making these attacks economically unfeasible.
+Time-Weighted Average Prices offer significant protection by averaging prices over extended periods, greatly increasing the capital required for manipulation. Rather than trusting a single source, projects should aggregate data from multiple independent oracles, taking median values to neutralize outliers.
+Implementing volume and liquidity monitoring helps detect suspicious activities. When unusually large trades occur relative to pool size, the system can temporarily pause or flag transactions for review. Similarly, setting reasonable price deviation bounds prevents acceptance of manipulated values that fall outside historical volatility patterns.
+Many production DeFi applications now rely on professional oracle networks like \href{https://chain.link/}{Chainlink}, which aggregate data from numerous off-chain sources with built-in manipulation safeguards. For systems potentially vulnerable to flash loan attacks, transaction context analysis can identify and block operations initiated within flash loan transactions by examining the call stack.
 \end{document}
