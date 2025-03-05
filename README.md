@@ -50,6 +50,10 @@ This project contains exercises for students to learn about smart contract secur
 - **Task**: Re-entrancy is one of the most damaging vulnerabilities in Ethereum's history. This well-documented type of attack gained notoriety in 2016 with the infamous DAO hack. In this exercise, you will learn how to identify and exploit various types of re-entrancy attacks, as well as implement proper mitigation strategies.
 - **Topics**: single-function re-entrancy, cross-function re-entrancy, cross-contract re-entrancy, read-only re-entrancy, DAO, mutex, CEI pattern
 
+### 06 - Fool the Oracle
+- **Task**: Oracles are essential components in decentralized applications that require external data. In this exercise, you will become familiar with both synchronous and asynchronous types of oracles, learn about the concept of decentralized exchanges, and understand their use as on-chain oracles. Finally, you will practically implement a price oracle manipulation attack using a flash loan.
+- **Topics**: asynchronous oracle, synchronous oracle, AMMs, DEX, liquidity pool, stable coin, USDC, constant product, slippage, flashloan
+
 ## Getting Started
 
 1. Clone the repository.
