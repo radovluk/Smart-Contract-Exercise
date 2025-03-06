@@ -45,9 +45,10 @@ contract Voting {
 
     /**
      * @dev Event emitted when a new candidate is added.
-     * @param name The name of the candidate to be added.
+     * @param name The name of the candidate added.
+     * @param index The index of the newly added candidate.
      */
-    event CandidateAdded(string name);
+    event CandidateAdded(string name, uint index);
 
     /**
      * @dev Custom errors that describe the failures
@@ -96,7 +97,7 @@ contract Voting {
         // Create a new Candidate struct and push it to the candidates array
         candidates.push(Candidate({name: name, voteCount: 0}));
         // Emit the CandidateAdded event
-        emit CandidateAdded(name);
+        emit CandidateAdded(name, candidates.length - 1);
     }
 
     /**

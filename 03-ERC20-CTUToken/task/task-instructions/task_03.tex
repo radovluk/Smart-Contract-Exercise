@@ -82,7 +82,7 @@
 \maketitle
 \section{Introduction}
 
-Tokens in the Ethereum ecosystem are smart contracts that implement a standardized interface. They are designed to represent various assets virtually. These assets can range from financial instruments like company shares and stablecoins (e.g., USDC, DAI) to governance tokens that allow holders to vote on decisions in decentralized projects (e.g., Uniswap's UNI). Tokens can also enable artists to tokenize their works and sell them as unique digital items (NFTs), represent collectibles in games, or are used for digital identity or access to services. Depending on the use case, there are different types of tokens, each serving distinct purposes. Below are three common types of tokens:
+Tokens in the Ethereum ecosystem are smart contracts that implement a standardized interface. They are designed to represent various assets digitaly. These assets can range from financial instruments like company shares and stablecoins (e.g., USDC, DAI) to governance tokens that allow holders to vote on decisions in decentralized projects (e.g., Uniswap's UNI). Tokens can also enable artists to tokenize their works and sell them as unique digital items (NFTs), represent collectibles in games, or are used for digital identity or access to services. Depending on the use case, there are different types of tokens, each serving distinct purposes. Below are three common types of tokens:
 
 \begin{enumerate}
   \item \textbf{Fungible Tokens}
@@ -188,7 +188,7 @@ Example functionalities ERC-20 provides:
   \item Approve whether an amount of token from an account can be spent by a third-party account.
 \end{itemize}
 
-If a Smart Contract implements the following methods and events, it can be called an ERC-20 Token Contract. Once deployed, it will be responsible for keeping track of the created tokens on Ethereum. To see the full specification, visit \href{https://eips.ethereum.org/EIPS/eip-20}{EIP20 documentation}.
+If a Smart Contract implements the following methods and events, it can be called an ERC-20 Token Contract. Once deployed, it will be responsible for keeping track of the created tokens on Ethereum. To see the full specification, visit \href{https://eips.ethereum.org/EIPS/eip-20}{EIP20 proposal}.
 
 \subsubsection*{Methods}
 
@@ -215,7 +215,7 @@ If a Smart Contract implements the following methods and events, it can be calle
 
 \subsection*{OpenZeppelin}
 
-\href{https://www.openzeppelin.com/}{OpenZeppelin} provides a open-source library for secure smart contract development. It is built on a solid
+\href{https://www.openzeppelin.com/}{OpenZeppelin} provides an open-source library for secure smart contract development. It is built on a solid
 foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by OpenZeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official EIP20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
 
 \begin{lstlisting}[language=Solidity]
@@ -321,7 +321,7 @@ To fulfill the exercise, you need to pass all the provided tests. You can run th
 
 \section{Frontrunning Attack}
 
-Did your contract pass all the tests? Congratulations! It is now fully tested and it is time to deploy your brand new CTU token to the mainnet. But is it really?
+Did your contract pass all the tests? Congratulations! It is now fully tested and ready for deployment to the mainnet. But is it really?
 
 When you initiate a transaction, it is first sent to the public mempool, where it becomes visible to everyone. To have your transaction included in the blockchain by a miner or validator, you must offer a fee. Miners or validators typically select transactions based on the potential profit rather than the order of initiation. As a result, transactions submitted earlier may be included later, and those submitted later may be included sooner.
 

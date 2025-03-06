@@ -5,7 +5,7 @@ const { expect } = require("chai");
 describe("Greeter contract says Hello, Blockchain World!", function () {
 
     // Test to ensure the initial greeting is set correctly upon deployment
-    it("Deployment should set the initial greeting correctly.", async function () {
+    it("Should set the initial greeting correctly.", async function () {
 
         // Define the initial greeting message
         const initialGreeting = "Hello, Blockchain World!";

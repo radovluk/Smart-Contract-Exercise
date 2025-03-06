@@ -99,7 +99,7 @@ describe("Voting Contract Test Suite", function () {
     it("Should emit a CandidateAdded event upon successful addition", async function () {
       await expect(voting.connect(owner).addCandidate("Alice"))
         .to.emit(voting, 'CandidateAdded')
-        .withArgs("Alice");
+        .withArgs("Alice", 0);
     });
   });
 

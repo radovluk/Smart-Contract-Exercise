@@ -45,15 +45,13 @@ contract Voting {
 
     /**
      * @dev Event emitted when a new candidate is added.
-     * @param name The name of the candidate to be added.
+     * @param name The name of the candidate added.
+     * @param index The index of the newly added candidate.
      */
-    event CandidateAdded(string name);
+    // TODO: Create an event to emit when a new candidate is added
 
     /**
-     * @dev Custom errors that describe the failures
-     * The triple-slash comments are for natspec comments.
-     * They will be shown when a user is asked to confirm a
-     * transaction or when an error is thrown.
+     * @dev Custom errors for descriptive failure messages
      */
     /// Only the owner can call this function.
     error NotOwner();
@@ -71,9 +69,7 @@ contract Voting {
      *      Reverts with "Not the contract owner" if the caller is not the owner.
      */
     modifier onlyOwner() {
-        // TODO: Implement access control to ensure only the owner can execute the function
-        // Tip: Use a require statement to check if the caller is the owner
-        _;
+        _; // this line represents where the modified function's code executes
     }
 
     /**
@@ -81,7 +77,7 @@ contract Voting {
      */
     constructor() {
         // TODO: Set the deployer of the contract as the owner
-        // Tip: to get the deployer address use msg.sender
+        // HINT: Use msg.sender to get the address of the deployer
     }
 
     /**
@@ -96,8 +92,7 @@ contract Voting {
         // TODO: Ensure that the candidate name is not empty
         // TODO: Create a new Candidate struct with the provided name and zero votes
         // TODO: Add the new candidate to the candidates array
-        // TODO: Uncomment the line below to emit the CandidateAdded event
-        // emit CandidateAdded(name);
+        // TODO: Emit the CandidateAdded event with the candidate's name and index
     }
 
     /**
@@ -114,7 +109,7 @@ contract Voting {
         // TODO: Check if the candidate index is within the valid range
         // TODO: Increment the vote count for the chosen candidate
         // TODO: Mark the sender as having voted
-        // TODO: Emit the Voted event with the voter's address and candidate index\
+        // TODO: Emit the Voted event with the voter's address and candidate index
         // This will allow clients to listen for the event and react to it
     }
 
