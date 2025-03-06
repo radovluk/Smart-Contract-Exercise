@@ -73,7 +73,7 @@
 
 % Define header and footer
 \fancyhf{} % Clear current settings
-\fancyhead[L]{Smart Contracts 06} % Left header
+\fancyhead[L]{Smart Contracts Exercise 06} % Left header
 \fancyhead[R]{\thepage} % Right header with page number
 
 \renewcommand{\headrulewidth}{0.4pt} % Line below header
@@ -86,16 +86,41 @@
 
 Oracles are essential components in decentralized applications that require external data. In this exercise, you will become familiar with both synchronous and asynchronous types of oracles, learn about the concept of decentralized exchanges, and understand their use as on-chain oracles. Finally, you will practically implement a price oracle manipulation attack using a flash loan. This will be by far the most challenging exercise in the series, with many new concepts introduced, so buckle up!
 
-\subsection*{Prerequisites}
+\subsection*{Project Setup}
 
-Ensure that you have already installed the following on your system:
+You have two options for working with this exercise. Using docker container or local installation. Choose the one that best fits your preferences.
+
+\subsection{Using Docker with VS Code}
+
+This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
+
+\subsubsection*{Prerequisites:}
 
 \begin{itemize}
-    \item \textbf{Node.js} - \url{https://nodejs.org/en/}
-    An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser. 
+    \item \textbf{\href{https://www.docker.com/products/docker-desktop}{Docker}} - A platform for developing, shipping, and running applications in containers.
+    \item \textbf{\href{https://code.visualstudio.com/}{Visual Studio Code}} - A lightweight but powerful source code editor.
+    \item \textbf{\href{https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers}{Dev Containers}} - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
+\end{itemize}
+
+\subsubsection*{Setting Up the Project:}
+
+\begin{enumerate}
+  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/05-Re-Entrancy/task/task-code}{GitLab repository} and clone it to your local machine.
+  \item Open the repository folder in VS Code.
+  \item When prompted, click "Reopen in Container" or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
+\end{enumerate}
+
+\subsection{Local Setup}
+
+If you prefer working directly on your machine without Docker, you can set up the development environment locally.
+
+\subsubsection*{Prerequisites}
+\begin{itemize}
+    \item \textbf{Node.js} - \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
     \item \textbf{NPM}: Node Package Manager, which comes with Node.js.
 \end{itemize}
 
+\noindent
 Open your terminal and run the following commands to verify the installations:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
@@ -103,22 +128,15 @@ $ node -v
 $ npm -v
 \end{minted}
 
-Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development. It is recommended that you use NPM 7 or higher.
+Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
 
-% For the purposes of this exercise, you will need an Infura API key and a configured wallet. If you do not have this set up yet, we recommend going through the Smart Contracts Exercise 01: Hello, Blockchain World! where everything is explained. Ensure that configuration variables are set for your Hardhat projects. You can verify this by running:
+\subsubsection*{Setting Up the Project}
 
-% \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-% $ npx hardhat vars get INFURA_API_KEY
-% $ npx hardhat vars get SEPOLIA_PRIVATE_KEY
-% \end{minted}
-
-\subsection*{Project Set Up}
-
-To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/06-Fool-the-Oracle/task/task-code}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. After you clone the repository, start with the following command within your project folder:
-
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ npm install
-\end{minted}
+\begin{enumerate}
+    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/05-Re-Entrancy/task/task-code}{GitLab repository} and clone it to your local machine.
+    \item Open a terminal and navigate to the project directory.
+    \item Install the project dependencies by running \codegrey{npm install}.
+\end{enumerate}
 
 \section{Oracles}
 Smart contracts cannot access data outside the blockchain on their own. They lack HTTP or similar network methods to access external sources. This is intentional to prevent non-deterministic behavior once a function is called. The blockchain does not have an internet connection! However, various Dapp applications often need external information, such as lending platforms, insurance contracts, betting contracts, wrapped cryptocurrencies, synthetics, and others. Whenever a smart contract relies on external data to compute future states, an oracle pattern is required. The disadvantages of oracles include the cost in terms of gas consumption and the risk of dependence on third parties in terms of data manipulation and data availability.
@@ -174,7 +192,7 @@ An asynchronous oracle provides data in a separate transaction after an initial 
 DEXes like \href{https://app.uniswap.org/}{Uniswap} or \href{https://www.sushi.com/ethereum/swap}{SushiSwap} can serve as price on-chain price oracles because they contain pools of tokens with real-time price information determined by market forces. For example, an ETH/USDC pool on a DEX can be queried to determine the current market price of ETH in USDC. More about DEXes and AMMs is provided in the next section.
 
 \newpage
-\section{Automated Market Makers (AMMs)}
+\section{Automated Market Makers}
 
 Imagine you want to exchange your valuable token for another token or buy or sell some token with ETH. The service you are looking for is an exchange. Traditional centralized exchanges use order books where buyers and sellers are matched. Examples of such centralized services include Binance, Coinbase, Kraken etc. However, the web3 world is about decentralization, right? What if we told you that you could exchange your assets simply with a smart contract? Decentralized Exchanges (DEXes) often use Automated Market Makers (AMMs), which are smart contracts that create markets for any pair of tokens by using liquidity pools. They rely on a mathematical formula to price assets instead of using an order book. The most commonly used formula is the \textbf{Constant Product}, which follows the equation:
 

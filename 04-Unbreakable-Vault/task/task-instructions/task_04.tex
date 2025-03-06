@@ -83,16 +83,41 @@
 \section{Introduction}
 In this exercise, you will be tasked with breach several vaults, one by one. You will gain familiarity with the JavaScript library \href{https://docs.ethers.org/v6}{Ethers.js}, which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in \href{https://remix.ethereum.org/}{Remix IDE}, an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, storage, randomness pattern and the differences between \texttt{msg.sender} and \texttt{tx.origin}.
 
-\subsection*{Prerequisites}
+\subsection*{Project Setup}
 
-Ensure that you have already installed the following on your system:
+You have two options for working with this exercise. Using docker container or local installation. Choose the one that best fits your preferences.
+
+\subsection{Using Docker with VS Code}
+
+This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
+
+\subsubsection*{Prerequisites:}
 
 \begin{itemize}
-    \item \textbf{Node.js} - \url{https://nodejs.org/en/}
-    An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser. 
+    \item \textbf{\href{https://www.docker.com/products/docker-desktop}{Docker}} - A platform for developing, shipping, and running applications in containers.
+    \item \textbf{\href{https://code.visualstudio.com/}{Visual Studio Code}} - A lightweight but powerful source code editor.
+    \item \textbf{\href{https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers}{Dev Containers}} - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
+\end{itemize}
+
+\subsubsection*{Setting Up the Project:}
+
+\begin{enumerate}
+  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/04-Unbreakable-Vault/task/task-code}{GitLab repository} and clone it to your local machine.
+  \item Open the repository folder in VS Code.
+  \item When prompted, click "Reopen in Container" or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
+\end{enumerate}
+
+\subsection{Local Setup}
+
+If you prefer working directly on your machine without Docker, you can set up the development environment locally.
+
+\subsubsection*{Prerequisites}
+\begin{itemize}
+    \item \textbf{Node.js} - \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
     \item \textbf{NPM}: Node Package Manager, which comes with Node.js.
 \end{itemize}
 
+\noindent
 Open your terminal and run the following commands to verify the installations:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
@@ -100,25 +125,38 @@ $ node -v
 $ npm -v
 \end{minted}
 
-Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development. It is recommended that you use NPM 7 or higher.
+Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
 
-For the purposes of this exercise, you will need an Infura API key and a configured wallet. If you do not have this set up yet, we recommend going through the Smart Contracts Exercise 01: Hello, Blockchain World! where everything is explained. Ensure that configuration variables are set for your Hardhat projects. You can verify this by running:
+\subsubsection*{Setting Up the Project}
+
+\begin{enumerate}
+    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/04-Unbreakable-Vault/task/task-code}{GitLab repository} and clone it to your local machine.
+    \item Open a terminal and navigate to the project directory.
+    \item Install the project dependencies by running \codegrey{npm install}.
+\end{enumerate}
+
+\subsection{Testing Your Solution}
+
+For the purposes of this exercise, you will need an Infura API key and a configured wallet. If you do not have this set up yet, we recommend going through the Smart Contracts Exercise 01: Hello, Blockchain World! where everything is explained. Ensure that configuration variables are set for your Hardhat projects.
+You can verify this by running:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ npx hardhat vars get INFURA_API_KEY
 $ npx hardhat vars get SEPOLIA_PRIVATE_KEY
 \end{minted}
 
-
-
-\subsection*{Project Set Up}
-
-To get started, visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/04-Unbreakable-Vault/task/task-code}{GitLab repository} and clone it to your local machine. This repository contains a template in which you will complete this exercise. After you clone the repository, start with the following command within your project folder:
+\noindent
+If you are using Docker, set them in your current container by running:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ npm install
+$ npx hardhat vars set INFURA_API_KEY
+Enter value: ********************************
+
+$ npx hardhat vars set SEPOLIA_PRIVATE_KEY
+Enter value: ********************************
 \end{minted}
-This will install all the necessary dependencies for the project. Your implementation will be in the \texttt{contracts} and \texttt{test} folders.
+
+Your implementation will be in the \texttt{contracts} and \texttt{test} folders.
 There will be multiple vaults in this exercise that you need to breach, each one having a separate test. To see if you have completed the task successfully, run \texttt{npm run vaultXX} where \texttt{XX} is the number of the vault you are trying to breach. For example, to test the first vault, run:
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ npm run vault01

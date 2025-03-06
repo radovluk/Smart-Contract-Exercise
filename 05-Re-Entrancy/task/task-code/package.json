@@ -7,8 +7,8 @@
   "license": "MIT",
   "description": "Educational exercise for Solidity learning.",
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "latest",
-    "@openzeppelin/contracts": "latest",
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@openzeppelin/contracts": "5.2.0",
     "hardhat": "^2.22.19"
   },
   "scripts": {

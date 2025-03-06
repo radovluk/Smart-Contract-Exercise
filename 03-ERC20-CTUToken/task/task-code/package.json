@@ -7,7 +7,7 @@
   "license": "MIT",
   "description": "Educational exercise for Solidity learning.",
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "latest",
-    "hardhat": "latest"
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "hardhat": "2.22.19"
   }
 }

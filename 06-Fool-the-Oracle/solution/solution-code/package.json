@@ -7,9 +7,9 @@
   "license": "MIT",
   "description": "Educational exercise for Solidity learning.",
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "latest",
-    "hardhat": "latest",
-    "@openzeppelin/contracts": "latest"
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@openzeppelin/contracts": "5.2.0",
+    "hardhat": "^2.22.19"
   },
   "scripts": {
     "oracle01": "npx hardhat test test/FoolTheOracle01.js",

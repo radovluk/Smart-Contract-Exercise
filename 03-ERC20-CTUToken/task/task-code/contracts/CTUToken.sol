@@ -72,18 +72,10 @@ contract CTUToken {
 
     /// Attempting to transfer to the zero address.
     error TransferToZeroAddress();
-    /// Attempting to transfer from the zero address.
-    error TransferFromZeroAddress();
     /// Account does not have enough balance. Requested:`requsted` Available:`available`
     error InsufficientBalance(uint256 requested, uint256 available);
     /// Attempting to approve the zero address as a spender.
     error ApproveToZeroAddress();
-    /// Attempting to increase allowance for the zero address.
-    error IncreaseAllowanceForZeroAddress();
-    /// Attempting to decrease allowance for the zero address.
-    error DecreaseAllowanceForZeroAddress();
-    /// Attempting to decrease allowance=`requested` below the current value=`current`.
-    error DecreasedAllowanceBelowZero(uint256 requested, uint256 current);
     
     // TODO: Implement the TransferExceedsAllowance error to handle cases where the transfer amount exceeds the current allowance.
     //
