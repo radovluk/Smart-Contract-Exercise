@@ -1,9 +1,10 @@
 # Smart Contracts Exercise 04: Unbreakable Vault
 
 ## Introduction
+
 In this exercise, you will be tasked with breach several vaults, one by one. You will gain familiarity with the JavaScript library [Ethers.js](https://docs.ethers.org/v6), which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in [Remix IDE](https://remix.ethereum.org/), an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, storage, randomness pattern and the differences between `msg.sender` and `tx.origin`.
 
-## Project Setup
+### Project Setup
 
 You have two options for working with this exercise. Using docker container or local installation. Choose the one that best fits your preferences.
 
@@ -28,6 +29,7 @@ This option uses Docker to create a development environment with all the necessa
 If you prefer working directly on your machine without Docker, you can set up the development environment locally.
 
 **Prerequisites**
+
 - **Node.js** - https://nodejs.org/en/ - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
 - **NPM**: Node Package Manager, which comes with Node.js.
 
@@ -68,16 +70,21 @@ Enter value: ********************************
 
 Your implementation will be in the `contracts` and `test` folders.
 There will be multiple vaults in this exercise that you need to breach, each one having a separate test. To see if you have completed the task successfully, run `npm run vaultXX` where `XX` is the number of the vault you are trying to breach. For example, to test the first vault, run:
+
 ```bash
 $ npm run vault01
 ```
+
 To run all tests at once, run:
+
 ```bash
 $ npx hardhat test
 ```
 
 ## Task: Breach the Vaults
+
 ### Vault01: A Password Password
+
 The first vault is quite straightforward. To complete this challenge, you need to call the `breachVault` function with the correct password and become the `lastSolver`. Implement your solution in `test/Vault01.js`. Do not alter the contract code. Use only the `player` account to breach the vault.
 
 ```solidity
@@ -95,7 +102,7 @@ contract Vault01 {
         lastSolver = tx.origin;
         return true;
     }
-}  
+}
 ```
 
 Sources you might want to use:
@@ -152,7 +159,6 @@ EOAs are managed by private keys, SCAs are governed by smart contract code.
 
 To breach the third vault, you need to understand the difference between `msg.sender` and `tx.origin`. The key distinction is that `tx.origin` always refers to the original external account that initiated the transaction, while `msg.sender` can be any contract or account that called the current function. As illustrated in the graph below, smart contracts can call other smart contracts, but only an externally owned account can initiate a transaction and forward the gas. It is important to never use `tx.origin` for authentication. For this challenge, you cannot implement the solution directly in `test/Vault03`. Instead, you need to use a proxy contract. Implement your solution in `contracts/AttackVault03.sol`.
 
-
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
@@ -191,11 +197,12 @@ Oracles are typically used to access external data from outside the blockchain. 
 
 #### Commit and Reveal Scheme
 Another solution might be commit and reveal scheme. The proccess involves two steps:
+
 1. **Commit**: Users (more than one) hash their random number concatenated with a secret value. They commit to this number by publishing the hash to the smart contract.
 2. **Reveal**: Users reveal their random number and the secret value. The smart contract verifies the hash and calculates the random number from these commits:
-
-   (Σ ri) mod N
-
+   
+   ( Σ ri ) mod N
+   
    where ri is the random number from user i and N is the number of users.
 
 A potential limitation is that it requires user interaction, and users can withhold their reveals.
@@ -342,3 +349,108 @@ contract Vault07 {
 [Vault07 in Remix IDE](https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault07.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js)
 
 **Hint:** [Exploring the Storage Layout in Solidity and How to Access State Variables](https://medium.com/@flores.eugenio03/exploring-the-storage-layout-in-solidity-and-how-to-access-state-variables-bf2cbc6f8018)
+
+### Vault 08: Tokens for Free
+
+In older versions of Solidity (prior to 0.8.0), there was no built-in protection against integer overflow and underflow. This led to many security vulnerabilities in smart contracts, where numeric calculations could wrap around in unexpected ways:
+
+- **Integer Overflow**: Occurs when a number exceeds its maximum value and wraps around to its minimum value. For example, incrementing a `uint8` with value 255 by 1 would result in 0, not 256.
+- **Integer Underflow**: Occurs when a number goes below its minimum value and wraps around to its maximum value. For example, decrementing a `uint8` with value 0 by 1 would result in 255, not -1.
+
+For a `uint256` type:
+- Maximum value: 2^256 - 1 (a number with 78 digits)
+- If it exceeds this maximum → wraps around to 0
+- If decremented below 0 → wraps around to 2^256 - 1
+
+Starting with Solidity 0.8.0, arithmetic operations automatically include overflow and underflow checks, which will cause transactions to revert if they would result in overflow or underflow. However, if you're working with contracts using older Solidity versions, or if you specifically need to bypass these checks in newer versions, you can use the `unchecked` keyword:
+
+```solidity
+// In Solidity 0.8.0+
+function unsafeAdd(uint256 a, uint256 b) public pure returns (uint256) {
+    // This block disables overflow/underflow checks
+    unchecked {
+        return a + b; // Can overflow without reverting
+    }
+}
+```
+
+The `unchecked` keyword tells the compiler to skip the overflow/underflow checks for the code inside the block, which can save gas but potentially introduces vulnerabilities if not used carefully.
+
+This challenge involves a token vault running on Solidity 0.7.6. Your goal is to obtain 1,000,000 tokens without paying the required amount of ETH. The price of each token is 1 ETH and you (player) start only with 1 ETH. Implement your solution in `test/Vault08.js`.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity 0.7.6;
+
+contract Vault08 {
+    address public lastSolver;
+    mapping(address => uint256) public tokenBalances;
+    uint256 public constant TOKEN_PRICE = 1 ether;
+    
+    function buyTokens(uint256 numTokens) public payable {
+        require(msg.value == numTokens * TOKEN_PRICE, "Incorrect payment amount");
+        tokenBalances[msg.sender] += numTokens;
+    }
+    
+    function breachVault() public returns (bool) {
+        require(tokenBalances[msg.sender] >= 1_000_000, 
+        "You don't have enough tokens");
+        lastSolver = tx.origin;
+        return true;
+    }
+    
+    // Allow the contract to receive ether
+    receive() external payable {}
+}
+```
+
+[Vault08 in Remix IDE](https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault08.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.7.6+commit.7338295f.js)
+
+Verify your solution with:
+```bash
+$ npm run vault08
+```
+
+### Vault09: Less Is More
+
+For this challenge, you'll need to gain more than 1,000,000 tokens. The vault is initialized with 1,000,000 tokens given to the deployer, and you start with just 1 token. You'll need to implement your attack in `contracts/Vault09Attack.sol` and then use the attack contract from `test/Vault09.js`. This time you are allowed to code your solution also in the designated part of the test file.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity 0.7.6;
+
+contract Vault09 {
+    address public lastSolver;
+    mapping(address => uint256) public tokenBalances;
+    mapping(address => mapping(address => uint256)) public allowances;
+    
+    constructor() {
+        tokenBalances[msg.sender] = 1_000_000;
+    }
+    
+    function approve(address spender, uint256 amount) external {
+        allowances[msg.sender][spender] = amount;
+    }
+    
+    function transferFrom(address from, address to, uint256 amount) external {
+        require(tokenBalances[msg.sender] >= amount, "Not enough tokens");
+        require(allowances[from][to] >= amount, "Not approved");
+        allowances[from][to] -= amount;
+        tokenBalances[from] -= amount;
+        tokenBalances[to] += amount;
+    }
+    
+    function breachVault() external returns (bool) {
+        require(tokenBalances[msg.sender] >= 1_000_000, "You need at least 1,000,000 tokens");
+        lastSolver = tx.origin;
+        return true;
+    }
+}
+```
+
+[Vault09 in Remix IDE](https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault09.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.7.6+commit.7338295f.js)
+
+Verify your solution with:
+```bash
+$ npm run vault09
+```

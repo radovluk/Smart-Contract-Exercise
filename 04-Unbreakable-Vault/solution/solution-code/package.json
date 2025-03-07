@@ -9,7 +9,7 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "hardhat": "2.22.19",
-    "hardhat-switch-network": "^1.2.0"
+    "hardhat-switch-network": "1.2.0"
   },
   "scripts": {
     "vault01": "npx hardhat test test/Vault01.js",
@@ -19,6 +19,8 @@
     "vault05": "npx hardhat test test/Vault05.js",
     "vault06": "npx hardhat test test/Vault06.js --network sepolia",
     "vault07": "npx hardhat test test/Vault07.js --network sepolia",
-    "all": "npm run vault01 && npm run vault02 && npm run vault03 && npm run vault04 && npm run vault05 && npm run vault06 && npm run vault07"
+    "vault08": "npx hardhat test test/Vault08.js",
+    "vault09": "npx hardhat test test/Vault09.js",
+    "all": "npm run vault01 && npm run vault02 && npm run vault03 && npm run vault04 && npm run vault05 && npm run vault06 && npm run vault07 && npm run vault08 && npm run vault09"
   }
 }

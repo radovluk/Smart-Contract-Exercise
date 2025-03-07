@@ -491,4 +491,126 @@ In this exercise, you will not be able to find the solution just by inspecting E
 \noindent
 \textbf{Hint:} \href{https://medium.com/@flores.eugenio03/exploring-the-storage-layout-in-solidity-and-how-to-access-state-variables-bf2cbc6f8018}{Exploring the Storage Layout in Solidity and How to Access State Variables}
 
+\subsection*{Vault 08: Tokens for Free}
+
+In older versions of Solidity (prior to 0.8.0), there was no built-in protection against integer overflow and underflow. This led to many security vulnerabilities in smart contracts, where numeric calculations could wrap around in unexpected ways:
+
+\begin{itemize}
+    \item \textbf{Integer Overflow}: Occurs when a number exceeds its maximum value and wraps around to its minimum value. For example, incrementing a \texttt{uint8} with value 255 by 1 would result in 0, not 256.
+    \item \textbf{Integer Underflow}: Occurs when a number goes below its minimum value and wraps around to its maximum value. For example, decrementing a \texttt{uint8} with value 0 by 1 would result in 255, not -1.
+\end{itemize}
+
+\noindent
+For a \texttt{uint256} type:
+\begin{itemize}
+    \item Maximum value: $2^{256} - 1$ (a number with 78 digits)
+    \item If it exceeds this maximum → wraps around to 0
+    \item If decremented below 0 → wraps around to $2^{256} - 1$
+\end{itemize}
+
+\noindent
+Starting with Solidity 0.8.0, arithmetic operations automatically include overflow and underflow checks, which will cause transactions to revert if they would result in overflow or underflow. However, if you're working with contracts using older Solidity versions, or if you specifically need to bypass these checks in newer versions, you can use the \texttt{unchecked} keyword:
+
+\begin{lstlisting}[language=Solidity]
+    // In Solidity 0.8.0+
+    function unsafeAdd(uint256 a, uint256 b) public pure returns (uint256) {
+        // This block disables overflow/underflow checks
+        unchecked {
+            return a + b; // Can overflow without reverting
+        }
+    }
+\end{lstlisting}
+
+\noindent
+The \texttt{unchecked} keyword tells the compiler to skip the overflow/underflow checks for the code inside the block, which can save gas but potentially introduces vulnerabilities if not used carefully.
+
+\medskip
+\noindent
+This challenge involves a token vault running on Solidity 0.7.6. Your goal is to obtain 1,000,000 tokens without paying the required amount of ETH. The price of each token is 1 ETH and you (player) start only with 1 ETH. Implement your solution in \texttt{test/Vault08.js}.
+
+\begin{lstlisting}[language=Solidity]
+// SPDX-License-Identifier: MIT
+pragma solidity 0.7.6;
+
+contract Vault08 {
+    address public lastSolver;
+    mapping(address => uint256) public tokenBalances;
+    uint256 public constant TOKEN_PRICE = 1 ether;
+    
+    function buyTokens(uint256 numTokens) public payable {
+        require(msg.value == numTokens * TOKEN_PRICE, "Incorrect payment amount");
+        tokenBalances[msg.sender] += numTokens;
+    }
+    
+    function breachVault() public returns (bool) {
+        require(tokenBalances[msg.sender] >= 1_000_000, 
+        "You don't have enough tokens");
+        lastSolver = tx.origin;
+        return true;
+    }
+    
+    // Allow the contract to receive ether
+    receive() external payable {}
+}
+\end{lstlisting}
+
+\medskip
+\noindent
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault08.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.7.6+commit.7338295f.js}{Vault08 in Remix IDE}
+
+\medskip
+\noindent
+Verify your solution with:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ npm run vault08
+\end{minted}
+
+\subsection*{Vault09: Less Is More}
+
+For this challenge, you'll need to gain more than 1,000,000 tokens. The vault is initialized with 1,000,000 tokens given to the deployer, and you start with just 1 token. You'll need to implement your attack in \texttt{contracts/Vault09Attack.sol} and then use the attack contract from \texttt{test/Vault09.js}. This time you are allowed to code your solution also in the designated part of the test file.
+
+\begin{lstlisting}[language=Solidity]
+// SPDX-License-Identifier: MIT
+pragma solidity 0.7.6;
+
+contract Vault09 {
+    address public lastSolver;
+    mapping(address => uint256) public tokenBalances;
+    mapping(address => mapping(address => uint256)) public allowances;
+    
+    constructor() {
+        tokenBalances[msg.sender] = 1_000_000;
+    }
+    
+    function approve(address spender, uint256 amount) external {
+        allowances[msg.sender][spender] = amount;
+    }
+    
+    function transferFrom(address from, address to, uint256 amount) external {
+        require(tokenBalances[msg.sender] >= amount, "Not enough tokens");
+        require(allowances[from][to] >= amount, "Not approved");
+        allowances[from][to] -= amount;
+        tokenBalances[from] -= amount;
+        tokenBalances[to] += amount;
+    }
+    
+    function breachVault() external returns (bool) {
+        require(tokenBalances[msg.sender] >= 1_000_000, "You need at least 1,000,000 tokens");
+        lastSolver = tx.origin;
+        return true;
+    }
+}
+\end{lstlisting}
+
+\medskip
+\noindent
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/Vault09.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.7.6+commit.7338295f.js}{Vault09 in Remix IDE}
+
+\medskip
+\noindent
+Verify your solution with:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ npm run vault09
+\end{minted}
+
 \end{document}
