@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In this exercise, you will be tasked with breach several vaults, one by one. You will gain familiarity with the JavaScript library [Ethers.js](https://docs.ethers.org/v6), which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in [Remix IDE](https://remix.ethereum.org/), an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, storage, randomness pattern and the differences between `msg.sender` and `tx.origin`.
+In this exercise, you will be tasked with breach several vaults, one by one. You will gain familiarity with the JavaScript library [Ethers.js](https://docs.ethers.org/v6), which is designed to facilitate interaction with the Ethereum blockchain and its ecosystem. We will also demonstrate how to work in [Remix IDE](https://remix.ethereum.org/), an open-source development environment accessible through a web browser. Additionally, you will learn about blockchain data transparency, storage, randomness pattern and the differences between `msg.sender` and `tx.origin` and integer underflow and overflow problem.
 
 ### Project Setup
 

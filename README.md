@@ -43,8 +43,8 @@ This project contains exercises for students to learn about smart contract secur
 - **Topics**: Frontrunning Attack, ERC-20, ERC-1155, ERC-721, OpenZeppelin
 
 ### 04 - Unbreakable Vault
-- **Task**: In this exercise, you will be tasked with breaching several vaults, one by one in CTF style. You will gain familiarity with the JavaScript library Ethers.js. We will also demonstrate how to work in Remix IDE, an open-source development environment accessible through a web browser. Additionally, you will learn about insecure randomness, commit and reveal scheme, blockchain data transparency, the differences between msg.sender and tx.origin.
-- **Topics**: Ethers.js, Remix IDE, insecure randomness, commit and reveal, storage, blockhash, timestamp, tx.origin, msg.sender
+- **Task**: In this exercise, you will be tasked with breaching several vaults, one by one in CTF style. You will gain familiarity with the JavaScript library Ethers.js. We will also demonstrate how to work in Remix IDE, an open-source development environment accessible through a web browser. Additionally, you will learn about insecure randomness, commit and reveal scheme, blockchain data transparency, the differences between msg.sender and tx.origin and integer underflow and overflow problem.
+- **Topics**: Ethers.js, Remix IDE, insecure randomness, commit and reveal, storage, blockhash, timestamp, tx.origin, msg.sender, integer underflow, integer overflow
 
 ### 05 - Re-Entrancy
 - **Task**: Re-entrancy is one of the most damaging vulnerabilities in Ethereum's history. This well-documented type of attack gained notoriety in 2016 with the infamous DAO hack. In this exercise, you will learn how to identify and exploit various types of re-entrancy attacks, as well as implement proper mitigation strategies.
