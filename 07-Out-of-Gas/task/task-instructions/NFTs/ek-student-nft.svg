@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- Background with border -->
+  <rect width="400" height="400" fill="#e6f9ff" stroke="#333" stroke-width="4"/>
+  
+  <!-- NFT Frame -->
+  <rect x="20" y="20" width="360" height="310" rx="10" fill="#fff" stroke="#666" stroke-width="2"/>
+  
+  <!-- Student head -->
+  <circle cx="200" cy="120" r="60" fill="#f8d5c0"/>
+  
+  <!-- Slightly messy hair -->
+  <path d="M160 75 Q200 55 240 75" stroke="#663300" stroke-width="15" fill="none"/>
+  <path d="M155 90 Q180 75 200 85" stroke="#663300" stroke-width="12" fill="none"/>
+  <path d="M200 85 Q220 75 245 90" stroke="#663300" stroke-width="12" fill="none"/>
+  
+  <!-- Closed eyes (dozed off) -->
+  <path d="M175 115 Q185 120 195 115" stroke="#000" stroke-width="2" fill="none"/>
+  <path d="M205 115 Q215 120 225 115" stroke="#000" stroke-width="2" fill="none"/>
+  
+  <!-- Mouth (slightly open, dozing) -->
+  <ellipse cx="200" cy="140" rx="8" ry="5" fill="#000" opacity="0.7"/>
+  
+  <!-- Head slightly tilted (dozed off) -->
+  <circle cx="185" cy="100" r="5" fill="#ffaaaa" opacity="0.5"/>
+  <circle cx="215" cy="100" r="5" fill="#ffaaaa" opacity="0.5"/>
+  
+  <!-- Little drool -->
+  <path d="M193 145 q2 10 5 15" stroke="#6ab7ff" stroke-width="1.5" fill="none"/>
+  <circle cx="198" cy="163" r="2" fill="#6ab7ff"/>
+  
+  <!-- Body/Shirt -->
+  <path d="M140 180 v80 h120 v-80 q-60 40 -120 0" fill="#4db8ff"/>
+  
+  <!-- ZZZs to indicate dozing -->
+  <text x="255" y="90" font-family="Arial" font-weight="bold" font-size="18" fill="#333">Z</text>
+  <text x="270" y="75" font-family="Arial" font-weight="bold" font-size="14" fill="#555">Z</text>
+  <text x="280" y="60" font-family="Arial" font-weight="bold" font-size="10" fill="#777">z</text>
+  
+  <!-- Desk -->
+  <rect x="120" y="260" width="160" height="10" fill="#8B4513"/>
+  
+  <!-- Textbooks -->
+  <rect x="130" y="200" width="60" height="50" fill="#ffcc99" stroke="#000" stroke-width="1"/>
+  <rect x="132" y="202" width="56" height="46" fill="#fff2e6" stroke="#000" stroke-width="0.5"/>
+  <text x="145" y="225" font-family="Arial" font-size="6" fill="#000">ELECTRONIC</text>
+  <text x="150" y="235" font-family="Arial" font-size="6" fill="#000">CIRCUITS</text>
+  
+  <!-- Calculator (Kalkulacka) -->
+  <rect x="200" y="210" width="40" height="60" rx="3" fill="#333" stroke="#000" stroke-width="1"/>
+  <rect x="205" y="215" width="30" height="15" rx="1" fill="#eee" stroke="#000" stroke-width="0.5"/>
+  <text x="208" y="227" font-family="Arial" font-size="8" fill="#000">0.34782</text>
+  
+  <!-- Calculator buttons -->
+  <rect x="205" y="235" width="7" height="7" rx="1" fill="#f44336"/>
+  <rect x="214" y="235" width="7" height="7" rx="1" fill="#4CAF50"/>
+  <rect x="223" y="235" width="7" height="7" rx="1" fill="#2196F3"/>
+  
+  <rect x="205" y="244" width="7" height="7" rx="1" fill="#eee"/>
+  <rect x="214" y="244" width="7" height="7" rx="1" fill="#eee"/>
+  <rect x="223" y="244" width="7" height="7" rx="1" fill="#eee"/>
+  
+  <rect x="205" y="253" width="7" height="7" rx="1" fill="#eee"/>
+  <rect x="214" y="253" width="7" height="7" rx="1" fill="#eee"/>
+  <rect x="223" y="253" width="7" height="7" rx="1" fill="#eee"/>
+  
+  <!-- Coffee cup (half empty) -->
+  <rect x="280" y="210" width="25" height="35" rx="3" fill="#fff" stroke="#000" stroke-width="1"/>
+  <rect x="280" y="230" width="25" height="15" rx="0" fill="#8B4513"/>
+  <path d="M290 210 v-10" stroke="#8B4513" stroke-width="2"/>
+  <path d="M288 200 h4" stroke="#8B4513" stroke-width="2"/>
+  
+  <!-- Circuit diagram doodle nearby -->
+  <path d="M260 180 h30" stroke="#000" stroke-width="1" fill="none"/>
+  <path d="M275 180 v10" stroke="#000" stroke-width="1" fill="none"/>
+  <path d="M275 190 l-5 0 l5 5 l5 -5 l-5 0" fill="#000"/>
+  <path d="M275 195 v10" stroke="#000" stroke-width="1" fill="none"/>
+  <circle cx="275" cy="170" r="5" fill="none" stroke="#000" stroke-width="1"/>
+  <path d="M275 165 v-10" stroke="#000" stroke-width="1" fill="none"/>
+  <path d="M260 155 h30" stroke="#000" stroke-width="1" fill="none"/>
+  
+  <!-- Digital clock -->
+  <rect x="320" y="150" width="40" height="25" rx="3" fill="#000"/>
+  <text x="325" y="168" font-family="Arial" font-size="12" fill="#0f0">15:47</text>
+  
+  <!-- Label at bottom -->
+  <rect x="20" y="340" width="360" height="40" rx="5" fill="#333"/>
+  <text x="35" y="365" font-family="Arial" font-size="14" fill="#fff">EK Student • Dozed Off • Kalkulacka</text>
+  
+  <!-- EK Program Badge -->
+  <circle cx="55" cy="70" r="25" fill="#4d94ff" stroke="#fff" stroke-width="2"/>
+  <text x="55" y="75" font-family="Arial" font-weight="bold" font-size="14" fill="#fff" text-anchor="middle">EK</text>
+  
+  <!-- Small text explaining program -->
+  <text x="55" y="90" font-family="Arial" font-size="6" fill="#000" text-anchor="middle">Electronics &amp;</text>
+  <text x="55" y="98" font-family="Arial" font-size="6" fill="#000" text-anchor="middle">Communications</text>
+  
+  <!-- Electronics symbol -->
+  <circle cx="320" cy="70" r="20" fill="none" stroke="#000" stroke-width="1"/>
+  <path d="M310 60 l20 20" stroke="#000" stroke-width="1.5"/>
+  <path d="M330 60 l-20 20" stroke="#000" stroke-width="1.5"/>
+</svg>

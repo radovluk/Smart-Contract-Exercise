@@ -1,0 +1,17 @@
+{
+  "name": "07-out-of-gas",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Lukas Radovansky",
+  "license": "MIT",
+  "description": "Educational exercise for Solidity learning.",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@openzeppelin/contracts": "5.2.0",
+    "hardhat": "2.22.19"
+  },
+  "scripts": {
+    "auction": "npx hardhat test test/NFTAuction.js"
+  }
+}
