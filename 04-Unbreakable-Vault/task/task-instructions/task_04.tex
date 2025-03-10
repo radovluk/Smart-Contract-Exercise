@@ -294,7 +294,7 @@ Optional deep dive:
 
 \subsection*{Vault04: Pseudo-Random Trap}
 
-Generating a random number in Ethereum can be tricky. The Ethereum Virtual Machine executes smart contracts in a deterministic environment, ensuring consistent outputs for identical inputs. Solidity does not provide anu function that generate random numbers. To work around this, some developers use pseudo-random number generators (PRNGs) based on \href{https://docs.soliditylang.org/en/latest/cheatsheet.html\#block-and-transaction-properties}{block properties} like:
+Generating a random number in Ethereum can be tricky. The Ethereum Virtual Machine executes smart contracts in a deterministic environment, ensuring consistent outputs for identical inputs. Solidity does not provide any function that generate random numbers. To work around this, some developers use pseudo-random number generators (PRNGs) based on \href{https://docs.soliditylang.org/en/latest/cheatsheet.html\#block-and-transaction-properties}{block properties} like:
 
 \begin{itemize}
     \item \texttt{blockhash(uint blockNumber)}: Hash of a recent block.
@@ -567,7 +567,7 @@ $ npm run vault08
 
 \subsection*{Vault09: Less Is More}
 
-For this challenge, you'll need to gain more than 1,000,000 tokens. The vault is initialized with 1,000,000 tokens given to the deployer, and you start with just 1 token. You'll need to implement your attack in \texttt{contracts/Vault09Attack.sol} and then use the attack contract from \texttt{test/Vault09.js}. This time you are allowed to code your solution also in the designated part of the test file.
+For this challenge, you'll need to gain at least 1,000,000 tokens. The vault is initialized with 1,000,000 tokens given to the deployer, and you start with just 1 token. You'll need to implement your attack in \texttt{contracts/Vault09Attack.sol} and then use the attack contract from \texttt{test/Vault09.js}. This time you are allowed to code your solution also in the designated part of the test file.
 
 \begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT

@@ -184,7 +184,7 @@ Optional deep dive:
 
 ### Vault04: Pseudo-Random Trap
 
-Generating a random number in Ethereum can be tricky. The Ethereum Virtual Machine executes smart contracts in a deterministic environment, ensuring consistent outputs for identical inputs. Solidity does not provide anu function that generate random numbers. To work around this, some developers use pseudo-random number generators (PRNGs) based on [block properties](https://docs.soliditylang.org/en/latest/cheatsheet.html#block-and-transaction-properties) like:
+Generating a random number in Ethereum can be tricky. The Ethereum Virtual Machine executes smart contracts in a deterministic environment, ensuring consistent outputs for identical inputs. Solidity does not provide any function that generate random numbers. To work around this, some developers use pseudo-random number generators (PRNGs) based on [block properties](https://docs.soliditylang.org/en/latest/cheatsheet.html#block-and-transaction-properties) like:
 
 - `blockhash(uint blockNumber)`: Hash of a recent block.
 - `block.number`: Current block number.
