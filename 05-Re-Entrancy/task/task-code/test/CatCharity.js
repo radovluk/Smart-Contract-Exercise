@@ -12,7 +12,7 @@ describe("CatCharity Challenge", function () {
     const PLAYER_INITIAL_ETH_BALANCE = 1n * 10n ** 18n; // 1 ETH
 
     before("Set up the challenge", async function () {
-         /** DO NOT CHANGE ANYTHING HERE */
+        /** DO NOT CHANGE ANYTHING HERE */
 
         [deployer, player] = await ethers.getSigners();
 
@@ -40,7 +40,7 @@ describe("CatCharity Challenge", function () {
     });
 
     after("Success conditions", async function () {
-         /** DO NOT CHANGE ANYTHING HERE */
+        /** DO NOT CHANGE ANYTHING HERE */
 
         // The CatCharity contract balance should now be 0
         const finalBalance = await ethers.provider.getBalance(catCharity.target);
@@ -48,6 +48,7 @@ describe("CatCharity Challenge", function () {
 
         // The player should have more then the initial charity balance
         // He has less then (10 ETH) + the initial player balance (1 ETH) because of gas costs
-        expect(await ethers.provider.getBalance(player.address)).to.gt(CHARITY_INITIAL_BALANCE);
+        expect(await ethers.provider.getBalance(player.address), 
+        "The player should have more then the initial charity balance").to.gt(CHARITY_INITIAL_BALANCE);
     });
 });
