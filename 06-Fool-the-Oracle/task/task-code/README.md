@@ -20,7 +20,7 @@ This option uses Docker to create a development environment with all the necessa
 
 **Setting Up the Project:**
 
-1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/05-Re-Entrancy/task/task-code) and clone it to your local machine.
+1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/06-Fool-the-Oracle/task/task-code) and clone it to your local machine.
 2. Open the repository folder in VS Code.
 3. When prompted, click "Reopen in Container" or use the command palette (F1) and run `Dev Containers: Reopen in Container`.
 
@@ -43,7 +43,7 @@ Both commands should return the installed version numbers of Node.js and NPM res
 
 **Setting Up the Project**
 
-1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/05-Re-Entrancy/task/task-code) and clone it to your local machine.
+1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/06-Fool-the-Oracle/task/task-code) and clone it to your local machine.
 2. Open a terminal and navigate to the project directory.
 3. Install the project dependencies by running `npm install`.
 
