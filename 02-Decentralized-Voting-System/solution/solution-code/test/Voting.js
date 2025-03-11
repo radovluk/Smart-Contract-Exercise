@@ -1,16 +1,19 @@
 // `LoadFixture` is used to share common setups between tests.
 // Using this simplifies the tests and makes them run faster.
-const { loadFixture } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
+const {
+  loadFixture,
+} = require("@nomicfoundation/hardhat-toolbox/network-helpers");
 
 // Importing Chai to use its asserting functions.
 const { expect } = require("chai");
 
 // Describe the test suite for the Voting contract
 describe("Voting Contract Test Suite", function () {
-   // Fixture to deploy the Voting contract.
+  // Fixture to deploy the Voting contract.
   async function deployVotingFixture() {
     // Retrieve a list of accounts provided by Hardhat
-    const [owner, voter1, voter2, voter3, voter4, voter5, nonOwner] = await ethers.getSigners();
+    const [owner, voter1, voter2, voter3, voter4, voter5, nonOwner] =
+      await ethers.getSigners();
 
     // Deploy the Voting contract
     const Voting = await ethers.deployContract("Voting");
@@ -24,7 +27,7 @@ describe("Voting Contract Test Suite", function () {
 
   // Load the fixture before each test
   beforeEach(async function () {
-    ({ voting, owner, voter1, voter2, voter3, voter4, voter5, nonOwner } = 
+    ({ voting, owner, voter1, voter2, voter3, voter4, voter5, nonOwner } =
       await loadFixture(deployVotingFixture));
   });
 
@@ -48,10 +51,13 @@ describe("Voting Contract Test Suite", function () {
   describe("Access Control", function () {
     it("Only owner can add candidates", async function () {
       // Owner adds a candidate
-      await expect(voting.connect(owner).addCandidate("Alice")).to.not.be.reverted;
+      await expect(voting.connect(owner).addCandidate("Alice")).to.not.be
+        .reverted;
 
       // Non-owner attempts to add a candidate
-      await expect(voting.connect(nonOwner).addCandidate("Bob")).to.be.revertedWithCustomError(voting, "NotOwner");
+      await expect(
+        voting.connect(nonOwner).addCandidate("Bob")
+      ).to.be.revertedWithCustomError(voting, "NotOwner");
     });
   });
 
@@ -80,7 +86,9 @@ describe("Voting Contract Test Suite", function () {
     });
 
     it("Should prevent adding candidates with empty names", async function () {
-      await expect(voting.connect(owner).addCandidate("")).to.be.revertedWithCustomError(voting, "EmptyCandidateName");
+      await expect(
+        voting.connect(owner).addCandidate("")
+      ).to.be.revertedWithCustomError(voting, "EmptyCandidateName");
     });
 
     it("Should allow adding candidates with duplicate names", async function () {
@@ -98,7 +106,7 @@ describe("Voting Contract Test Suite", function () {
 
     it("Should emit a CandidateAdded event upon successful addition", async function () {
       await expect(voting.connect(owner).addCandidate("Alice"))
-        .to.emit(voting, 'CandidateAdded')
+        .to.emit(voting, "CandidateAdded")
         .withArgs("Alice", 0);
     });
   });
@@ -110,7 +118,9 @@ describe("Voting Contract Test Suite", function () {
       await voting.connect(owner).addCandidate("Alice");
 
       // Voter1 casts a vote
-      await expect(voting.connect(voter1).vote(0)).to.emit(voting, 'Voted').withArgs(voter1.address, 0);
+      await expect(voting.connect(voter1).vote(0))
+        .to.emit(voting, "Voted")
+        .withArgs(voter1.address, 0);
 
       // Verify vote count
       const candidate = await voting.getCandidate(0);
@@ -119,7 +129,9 @@ describe("Voting Contract Test Suite", function () {
 
     it("Should not allow voting for a non-existent candidate", async function () {
       // Attempt to vote without adding any candidates
-      await expect(voting.connect(voter1).vote(0)).to.be.revertedWithCustomError(voting, "InvalidCandidateIndex");
+      await expect(
+        voting.connect(voter1).vote(0)
+      ).to.be.revertedWithCustomError(voting, "InvalidCandidateIndex");
     });
 
     it("Should not allow a voter to vote more than once", async function () {
@@ -130,7 +142,9 @@ describe("Voting Contract Test Suite", function () {
       await voting.connect(voter1).vote(0);
 
       // Voter1 attempts to cast a second vote
-      await expect(voting.connect(voter1).vote(0)).to.be.revertedWithCustomError(voting, "AlreadyVoted");
+      await expect(
+        voting.connect(voter1).vote(0)
+      ).to.be.revertedWithCustomError(voting, "AlreadyVoted");
     });
 
     it("Should allow multiple voters to vote for different candidates", async function () {
@@ -155,7 +169,7 @@ describe("Voting Contract Test Suite", function () {
 
       // Voter1 casts a vote and expects an event
       await expect(voting.connect(voter1).vote(0))
-        .to.emit(voting, 'Voted')
+        .to.emit(voting, "Voted")
         .withArgs(voter1.address, 0);
     });
   });
@@ -225,7 +239,10 @@ describe("Voting Contract Test Suite", function () {
 
     it("Should revert when accessing a candidate with an invalid index", async function () {
       // Attempt to access a candidate that doesn't exist
-      await expect(voting.getCandidate(0)).to.be.revertedWithCustomError(voting, "InvalidCandidateIndex");
+      await expect(voting.getCandidate(0)).to.be.revertedWithCustomError(
+        voting,
+        "InvalidCandidateIndex"
+      );
     });
 
     it("Should return the correct total number of candidates", async function () {
@@ -247,7 +264,9 @@ describe("Voting Contract Test Suite", function () {
   describe("Edge Cases", function () {
     it("Should handle voting when no candidates are present", async function () {
       // Attempt to vote without any candidates
-      await expect(voting.connect(voter1).vote(0)).to.be.revertedWithCustomError(voting, "InvalidCandidateIndex");
+      await expect(
+        voting.connect(voter1).vote(0)
+      ).to.be.revertedWithCustomError(voting, "InvalidCandidateIndex");
     });
 
     it("Should handle multiple votes and ensure accurate vote tracking", async function () {
@@ -286,7 +305,9 @@ describe("Voting Contract Test Suite", function () {
       await voting.connect(voter1).vote(0);
 
       // Voter1 attempts to vote for Bob
-      await expect(voting.connect(voter1).vote(1)).to.be.revertedWithCustomError(voting, "AlreadyVoted");
+      await expect(
+        voting.connect(voter1).vote(1)
+      ).to.be.revertedWithCustomError(voting, "AlreadyVoted");
     });
   });
 });

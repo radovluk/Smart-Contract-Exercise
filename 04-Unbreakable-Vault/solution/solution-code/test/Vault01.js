@@ -5,42 +5,44 @@ const { expect } = require("chai");
  * Test Suite for the Vault01: A Password Password
  */
 describe("Vault01: A Password Password Test Suite", function () {
-    let vault;
-    let player;
+  let vault;
+  let player;
 
-    before("Set up the challenge", async function () {
-         /** DO NOT CHANGE ANYTHING HERE */
+  before("Set up the challenge", async function () {
+    /** DO NOT CHANGE ANYTHING HERE */
 
-        // Get test accounts
-        [deployer, player] = await ethers.getSigners();
+    // Get test accounts
+    [deployer, player] = await ethers.getSigners();
 
-        // Deploy Vault contract
-        vault = await ethers.deployContract("Vault01");
-        await vault.waitForDeployment();
-    });
+    // Deploy Vault contract
+    vault = await ethers.deployContract("Vault01");
+    await vault.waitForDeployment();
+  });
 
-    /**
-     * Here's where you try to breach the vault.
-     * Fill in your logic to figure out the password and call the breachVault function.
-     */
-    it("Execution of the player's code", async function () {
-        // id(value: string) => string
-        // A simple hashing function which operates on UTF-8 strings to compute an 32-byte identifier.
-        // This simply computes the UTF-8 bytes and computes the keccak256.
-        // See https://docs.ethers.org/v6/api/hashing/#id for more.
+  /**
+   * Here's where you try to breach the vault.
+   * Fill in your logic to figure out the password and call the breachVault function.
+   */
+  it("Execution of the player's code", async function () {
+    // id(value: string) => string
+    // A simple hashing function which operates on UTF-8 strings to compute an 32-byte identifier.
+    // This simply computes the UTF-8 bytes and computes the keccak256.
+    // See https://docs.ethers.org/v6/api/hashing/#id for more.
 
-        // Hash the "password" string using Keccak256
-        const hash = ethers.id("password");
-        console.log("Hash of the password is: ", hash);
+    // Hash the "password" string using Keccak256
+    const hash = ethers.id("password");
+    console.log("Hash of the password is: ", hash);
 
-        // Breach the vault
-        await vault.connect(player).breachVault(hash);
-    });
+    // Breach the vault
+    await vault.connect(player).breachVault(hash);
+  });
 
-    after("Success conditions", async function () {
-         /** DO NOT CHANGE ANYTHING HERE */
+  after("Success conditions", async function () {
+    /** DO NOT CHANGE ANYTHING HERE */
 
-        // Expect the last solver to be the player
-        expect(await vault.lastSolver(), "Last solver is not the player").to.equal(player.address);
-    });
+    // Expect the last solver to be the player
+    expect(await vault.lastSolver(), "Last solver is not the player").to.equal(
+      player.address
+    );
+  });
 });

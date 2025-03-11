@@ -3,23 +3,21 @@ const { expect } = require("chai");
 
 // Test suite for the Greeter contract
 describe("Greeter contract says Hello, Blockchain World!", function () {
+  // Test to ensure the initial greeting is set correctly upon deployment
+  it("Should set the initial greeting correctly.", async function () {
+    // Define the initial greeting message
+    const initialGreeting = "Hello, Blockchain World!";
 
-    // Test to ensure the initial greeting is set correctly upon deployment
-    it("Should set the initial greeting correctly.", async function () {
+    // Deploy the Greeter contract with the initial greeting
+    const greeter = await ethers.deployContract("Greeter", [initialGreeting]);
 
-        // Define the initial greeting message
-        const initialGreeting = "Hello, Blockchain World!";
+    // Wait for the deployment to complete
+    await greeter.waitForDeployment();
 
-        // Deploy the Greeter contract with the initial greeting
-        const greeter = await ethers.deployContract("Greeter", [initialGreeting]);
+    // Retrieve the stored greeting from the contract
+    const greeting = await greeter.greet();
 
-        // Wait for the deployment to complete
-        await greeter.waitForDeployment();
-
-        // Retrieve the stored greeting from the contract
-        const greeting = await greeter.greet();
-
-        // Verify that the retrieved greeting matches the initial greeting
-        expect(greeting).to.equal(initialGreeting);
-    });
+    // Verify that the retrieved greeting matches the initial greeting
+    expect(greeting).to.equal(initialGreeting);
+  });
 });
