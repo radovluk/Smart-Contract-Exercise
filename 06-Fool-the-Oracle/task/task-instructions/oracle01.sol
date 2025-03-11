@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
 contract SimpleSynchronousOracle {
     // Stored ETH/USDC price
     int256 public price;
