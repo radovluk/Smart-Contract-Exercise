@@ -10,7 +10,7 @@ describe("NFT Auction Challenge", function () {
   let felStudentNFT, tokenId;
 
   const INITIAL_PRICE = ethers.parseEther("0.5"); // 0.5 ETH initial price
-  const PLAYER_INITIAL_ETH_BALANCE = ethers.parseEther("2"); // 2 ETH
+  const PLAYER_INITIAL_ETH_BALANCE = ethers.parseEther("3"); // 3 ETH
   const BIDDER1_INITIAL_ETH_BALANCE = ethers.parseEther("4"); // 4 ETH
   const BIDDER2_INITIAL_ETH_BALANCE = ethers.parseEther("5"); // 5 ETH
 

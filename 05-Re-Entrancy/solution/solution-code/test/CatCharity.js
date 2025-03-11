@@ -8,8 +8,8 @@ describe("CatCharity Challenge", function () {
   let catCharity;
   let deployer, player;
 
-  const CHARITY_INITIAL_BALANCE = 10n * 10n ** 18n; // 10 ETH
-  const PLAYER_INITIAL_ETH_BALANCE = 1n * 10n ** 18n; // 1 ETH
+  const CHARITY_INITIAL_BALANCE = ethers.parseEther("10");  // 10 ETH
+  const PLAYER_INITIAL_ETH_BALANCE = ethers.parseEther("1");  // 1 ETH
 
   before("Set up the challenge", async function () {
     /** DO NOT CHANGE ANYTHING HERE */
@@ -47,7 +47,7 @@ describe("CatCharity Challenge", function () {
 
     // 2) The player calls `attack()` with a small donation to set up re-entrancy
     //    We'll donate 0.5 ETH
-    await catAttacker.connect(player).attack({ value: 5n * 10n ** 17n });
+    await catAttacker.connect(player).attack({ value: ethers.parseEther("0.5") });
 
     // By the end of this transaction, the attacker contract's fallback
     // will keep calling `claimRefund()` in a loop until the charity is drained.

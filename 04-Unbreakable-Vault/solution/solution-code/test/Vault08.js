@@ -15,6 +15,8 @@ describe("Vault08 Test Suite", function () {
 
     // Get test accounts
     [deployer, player] = await ethers.getSigners();
+
+    // Get the player's address
     playerAddress = await player.getAddress();
 
     // Deploy Vault contract

@@ -104,5 +104,8 @@ describe("Vault07 Test Suite", function () {
     expect(await vault.lastSolver(), "Last solver is not the player").to.equal(
       playerAddress
     );
+
+    // Switch back to Hardhat Network
+    await hre.switchNetwork("hardhat");
   });
 });

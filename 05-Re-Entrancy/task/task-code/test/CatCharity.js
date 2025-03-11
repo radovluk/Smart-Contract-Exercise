@@ -8,8 +8,8 @@ describe("CatCharity Challenge", function () {
   let catCharity;
   let deployer, player;
 
-  const CHARITY_INITIAL_BALANCE = 10n * 10n ** 18n; // 10 ETH
-  const PLAYER_INITIAL_ETH_BALANCE = 1n * 10n ** 18n; // 1 ETH
+  const CHARITY_INITIAL_BALANCE = ethers.parseEther("10");  // 10 ETH
+  const PLAYER_INITIAL_ETH_BALANCE = ethers.parseEther("1");  // 1 ETH
 
   before("Set up the challenge", async function () {
     /** DO NOT CHANGE ANYTHING HERE */
