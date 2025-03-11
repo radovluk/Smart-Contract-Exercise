@@ -54,6 +54,10 @@ This project contains exercises for students to learn about smart contract secur
 - **Task**: Oracles are essential components in decentralized applications that require external data. In this exercise, you will become familiar with both synchronous and asynchronous types of oracles, learn about the concept of decentralized exchanges, and understand their use as on-chain oracles. Finally, you will practically implement a price oracle manipulation attack using a flash loan.
 - **Topics**: asynchronous oracle, synchronous oracle, AMMs, DEX, liquidity pool, stable coin, USDC, constant product, slippage, flashloan
 
+### 07 - Out of Gas
+Denial of Service attacks in smart contracts aim to render a contract temporarily or permanently unusable by manipulating its execution flow or exploiting resource limitations. In this exercise, you will learn about several types of DoS attacks on blockchain and try to implement them in practical exercises. You will also become familiar with the concept of decentralized autonomous organization.
+- **Topics**: DoS with block gas limit, DoS with unexpected revert, pull-over-push pattern, unbounded operations, DAO (Decentralized Autonomous Organizations)
+
 ## Getting Started
 
 1. Clone the repository.

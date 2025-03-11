@@ -12,6 +12,8 @@
     "hardhat": "2.22.19"
   },
   "scripts": {
-    "auction": "npx hardhat test test/NFTAuction.js"
+    "auction": "npx hardhat test test/NFTAuction.js",
+    "dao": "npx hardhat test test/DAO.js",
+    "all": "npx hardhat test"
   }
 }

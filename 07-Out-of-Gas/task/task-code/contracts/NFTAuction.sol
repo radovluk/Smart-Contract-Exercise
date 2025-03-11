@@ -15,38 +15,37 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  *         - The previous bids are automatically refunded at the end of the auction
  */
 contract NFTAuction is Ownable {
-
     // ------------------------------------------------------------------------
     //                          Storage Variables
     // ------------------------------------------------------------------------
-    
+
     // Address of the seller who is selling the NFT
     address public seller;
-    
+
     // The current highest bidder
     address public highestBidder;
-    
+
     // The current highest bid amount
     uint256 public highestBid;
-    
+
     // The initial price of the NFT
     uint256 public initialPrice;
-    
+
     // Whether the auction has ended
     bool public ended;
-    
+
     // The NFT contract address
     IERC721 public nftContract;
-    
+
     // The ID of the NFT being auctioned
     uint256 public tokenId;
-    
+
     // Mapping of pending returns for outbid bidders
     mapping(address => uint256) public pendingReturns;
 
     // Mapping of bidders to check if they have already bid
     mapping(address => bool) public hasBid;
-    
+
     // List of all bidders for record keeping
     address[] public bidders;
 
@@ -56,15 +55,18 @@ contract NFTAuction is Ownable {
 
     // Emitted when a new bid is placed
     event BidPlaced(address indexed bidder, uint256 amount);
-    
+
     // Emitted when the auction ends
     event AuctionEnded(address indexed winner, uint256 amount);
-    
+
     // Emitted when a refund is processed
     event RefundProcessed(address indexed bidder, uint256 amount);
-    
+
     // Emitted when auction ends without NFT transfer due to lack of approval
-    event AuctionEndedWithoutTransfer(address indexed highestBidder, uint256 amount);
+    event AuctionEndedWithoutTransfer(
+        address indexed highestBidder,
+        uint256 amount
+    );
 
     // ------------------------------------------------------------------------
     //                               Errors
@@ -72,16 +74,13 @@ contract NFTAuction is Ownable {
 
     /// Auction has already ended
     error AuctionAlreadyEnded();
-    
+
     /// Bid is not high enough
     error BidNotHighEnough(uint256 highestBid);
-    
+
     /// Only the owner can call this function
     error OnlyOwner();
-    
-    /// Transfer failed
-    error TransferFailed();
-    
+
     /// Seller does not own the NFT
     error SellerNotOwner();
 
@@ -97,8 +96,8 @@ contract NFTAuction is Ownable {
      * @param _initialPrice The starting price for the NFT auction
      */
     constructor(
-        address _seller, 
-        address _nftContract, 
+        address _seller,
+        address _nftContract,
         uint256 _tokenId,
         uint256 _initialPrice
     ) Ownable(msg.sender) {
@@ -108,7 +107,7 @@ contract NFTAuction is Ownable {
         initialPrice = _initialPrice;
         highestBid = _initialPrice; // Set the minimum bid to the initial price
         ended = false;
-        
+
         // Ensure the seller owns the token
         require(nftContract.ownerOf(_tokenId) == _seller, SellerNotOwner());
     }
@@ -126,25 +125,25 @@ contract NFTAuction is Ownable {
     function bid() external payable {
         // Check if auction is still active
         require(!ended, AuctionAlreadyEnded());
-        
+
         // Check if bid is high enough
         require(msg.value > highestBid, BidNotHighEnough(highestBid));
-        
+
         // Process the previous highest bidder's refund
         if (highestBidder != address(0)) {
             pendingReturns[highestBidder] += highestBid;
         }
-        
+
         // Update highest bid information
         highestBidder = msg.sender;
         highestBid = msg.value;
-        
+
         // Add to bidders list if not already there
         if (!hasBid[msg.sender]) {
             bidders.push(msg.sender);
             hasBid[msg.sender] = true;
         }
-        
+
         emit BidPlaced(msg.sender, msg.value);
     }
 
@@ -158,11 +157,9 @@ contract NFTAuction is Ownable {
         if (amount > 0) {
             // Set pending amount to zero first to prevent re-entrancy
             pendingReturns[msg.sender] = 0;
-            
+
             // Send the refund
-            (bool success, ) = payable(msg.sender).call{value: amount}("");
-            require(success, TransferFailed());
-            
+            payable(msg.sender).transfer(amount);
             emit RefundProcessed(msg.sender, amount);
         }
         return true;
@@ -177,10 +174,10 @@ contract NFTAuction is Ownable {
     function endAuction() external onlyOwner {
         // Check if the auction has already ended
         require(!ended, AuctionAlreadyEnded());
-        
+
         // Mark the auction as ended
         ended = true;
-        
+
         // Process refunds for all bidders
         for (uint i = 0; i < bidders.length; i++) {
             address bidder = bidders[i];
@@ -188,43 +185,20 @@ contract NFTAuction is Ownable {
             if (amount > 0) {
                 // Important: Setting the pending amount to 0 before sending to prevent re-entrancy
                 pendingReturns[bidder] = 0;
-                
-                // Send the refund - vulnerable to DoS if a transfer fails
-                (bool success, ) = payable(bidder).call{value: amount}("");
-                require(success, TransferFailed());
-                
+
+                // Send the refund
+                payable(bidder).transfer(amount);
                 emit RefundProcessed(bidder, amount);
             }
         }
-        
-        // Check if this contract is approved to transfer the NFT
-        bool isApproved = (
-            nftContract.getApproved(tokenId) == address(this) || 
-            nftContract.isApprovedForAll(seller, address(this))
-        );
-        
-        if (isApproved) {
-            // Contract is approved, try to transfer the NFT to the highest bidder
-            try nftContract.safeTransferFrom(seller, highestBidder, tokenId) {
-                // NFT transfer succeeded, now transfer funds to the seller
-                (bool success, ) = payable(seller).call{value: highestBid}("");
-                require(success, TransferFailed());
-                
-                emit AuctionEnded(highestBidder, highestBid);
-            } catch {
-                // If NFT transfer fails for some reason, refund the highest bidder
-                (bool success, ) = payable(highestBidder).call{value: highestBid}("");
-                require(success, TransferFailed());
-                
-                emit AuctionEndedWithoutTransfer(highestBidder, highestBid);
-            }
-        } else {
-            // Contract is not approved, refund the highest bidder
-            (bool success, ) = payable(highestBidder).call{value: highestBid}("");
-            require(success, TransferFailed());
-            
-            emit AuctionEndedWithoutTransfer(highestBidder, highestBid);
-        }
+
+        // Contract is approved, transfer the NFT to the highest bidder
+        nftContract.transferFrom(address(this), highestBidder, tokenId);
+
+        // NFT transfer succeeded, now transfer funds to the seller
+        payable(seller).transfer(highestBid);
+
+        emit AuctionEnded(highestBidder, highestBid);
     }
 
     /**
@@ -234,7 +208,7 @@ contract NFTAuction is Ownable {
     function getBidderCount() external view returns (uint256) {
         return bidders.length;
     }
-    
+
     /**
      * @dev Returns information about the NFT being auctioned.
      * @notice You can use this function to view details about the NFT currently being auctioned,
@@ -246,27 +220,40 @@ contract NFTAuction is Ownable {
      * @return currentPrice The current highest bid (or initial price if no bids yet)
      * @return startingPrice The initial price set when the auction started
      */
-    function getAuctionedNFT() external view returns (
-        address nftAddress,
-        uint256 nftId,
-        address nftOwner,
-        string memory nftURI,
-        uint256 currentPrice,
-        uint256 startingPrice
-    ) {
+    function getAuctionedNFT()
+        external
+        view
+        returns (
+            address nftAddress,
+            uint256 nftId,
+            address nftOwner,
+            string memory nftURI,
+            uint256 currentPrice,
+            uint256 startingPrice
+        )
+    {
         nftAddress = address(nftContract);
         nftId = tokenId;
         nftOwner = nftContract.ownerOf(tokenId);
         currentPrice = highestBid;
         startingPrice = initialPrice;
-        
+
         // Try to get token URI if the contract supports metadata extension
-        try IERC721Metadata(nftAddress).tokenURI(tokenId) returns (string memory uri) {
+        try IERC721Metadata(nftAddress).tokenURI(tokenId) returns (
+            string memory uri
+        ) {
             nftURI = uri;
         } catch {
             nftURI = "";
         }
-        
-        return (nftAddress, nftId, nftOwner, nftURI, currentPrice, startingPrice);
+
+        return (
+            nftAddress,
+            nftId,
+            nftOwner,
+            nftURI,
+            currentPrice,
+            startingPrice
+        );
     }
 }
