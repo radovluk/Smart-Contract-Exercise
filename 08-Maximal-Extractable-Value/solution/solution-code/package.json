@@ -1,0 +1,19 @@
+{
+  "name": "08-maximal-extractable-value",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Lukas Radovansky",
+  "license": "MIT",
+  "description": "Educational exercise for Solidity learning.",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@openzeppelin/contracts": "5.2.0",
+    "hardhat": "2.22.19"
+  },
+  "scripts": {
+    "auction": "npx hardhat test test/NFTAuction.js",
+    "sandwich": "npx hardhat test test/SandwichAttack.js",
+    "all": "npx hardhat test"
+  }
+}
