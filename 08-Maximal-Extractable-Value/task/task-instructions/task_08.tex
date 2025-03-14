@@ -140,7 +140,7 @@ Both commands should return the installed version numbers of Node.js and NPM res
 
 \section{Maximal Extractable Value (MEV)}
 
-MEV stands for Maximal Extractable Value, which refers to the maximum value that can be extracted during block production in addition to the standard block rewards and gas fees. This value can be extracted by adding transactions to a block, removing transactions from it, or changing the order of transactions within the block. Originally, the acronym stood for "Miner Extractable Value," but since \href{https://ethereum.org/en/roadmap/merge/}{the Merge} replaced miners with validators, it's now known as "Maximal Extractable Value."
+MEV stands for Maximal Extractable Value, which refers to the maximum value that can be extracted during block production in addition to the standard block rewards and gas fees. This value can be extracted by adding transactions to a block, removing transactions from it, or changing the order of transactions within the block. Originally, the acronym stood for "Miner Extractable Value," but since \href{https://ethereum.org/en/roadmap/merge/}{the Merge} replaced miners with validators, it's now known as "Maximal Extractable Value".
 
 \subsection*{Types of MEV}
 
@@ -166,7 +166,14 @@ To better understand why these techniques are profitable for attackers, let's ex
 \subsubsection*{DEX Arbitrage} If two DEXes offer tokens at different prices, someone can include a transaction in a block that buys tokens on one DEX and sells them at a higher price on another DEX. In this situation, the block creator can exploit this opportunity to profit from the arbitrage. Here's an \href{https://etherscan.io/tx/0x5e1657ef0e9be9bc72efefe59a2528d0d730d478cfc9e6cdd09af9f997bb3ef4}{example of such transaction}.
 
 \subsubsection*{Sandwich Attack}
-If someone wants to exchange a large amount of a specific token on a DEX, an attacker can add transactions that buy tokens before the large transaction and sell them afterward. Thanks to how DEXes set prices using the constant product formula ($x \cdot y = k$), this approach can be profitable. The process is detailed in Table~\ref{tab:sandwich-attack} and illustrated in Figure~\ref{fig:sandwich}.
+If someone wants to exchange a large amount of a specific token on a DEX, an attacker can add transactions that buy tokens before the large transaction and sell them afterward. Thanks to how DEXes set prices using the constant product formula ($x \cdot y = k$), this approach can be profitable. See an example of \href{https://eigenphi.io/mev/ethereum/tx/0x90204899500606f717cacd223fc27b2be0e017032c7f41986cfb094e686630b4}{such attack}. The process is detailed in Table~\ref{tab:sandwich-attack} and illustrated in Figure~\ref{fig:sandwich}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{sandwich.pdf}
+  \caption{Sandwich Attack visualization showing how transactions are ordered in the mempool and block.}
+  \label{fig:sandwich}
+\end{figure}
 
 \begin{table}[h]
   \centering
@@ -194,23 +201,24 @@ If someone wants to exchange a large amount of a specific token on a DEX, an att
   9 & Price impact on Alice & Alice experiences negative price impact, receiving fewer tokens than expected in a fair market. \\
   \hline
   \end{tabular}
-  \caption{Sandwich Attack Mechanism on a Decentralized Exchange (DEX). The attack exploits the AMM pricing formula and transaction ordering. For visual representation, see Figure~\ref{fig:sandwich}.}
+  \caption{Sandwich Attack Mechanism on a DEX. The attack exploits the AMM pricing formula and transaction ordering. For visual representation, see Figure~\ref{fig:sandwich}.}
   \label{tab:sandwich-attack}
 \end{table}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.75\textwidth]{sandwich.pdf}
-  \caption{Sandwich Attack visualization showing how transactions are ordered in the mempool and block. The price changes follow the AMM constant product formula ($x \cdot y = k$) where $x$ and $y$ are token reserves.}
-  \label{fig:sandwich}
-\end{figure}
-
-\subsubsection*{Liquiditations} When borrowers in lending protocols fall below required collateralization ratios, their positions become eligible for liquidation. Block producers can prioritize their own liquidation transactions, allowing them to claim the liquidation rewards and discounted collateral before other participants. This gives them an advantage in capturing value from distressed positions.
+\subsubsection*{Liquiditations} When borrowers in lending protocols fall below required collateralization ratios, their positions become eligible for liquidation. Block producers can prioritize their own liquidation transactions, allowing them to claim the liquidation rewards and discounted collateral before other participants. This gives them an advantage in capturing value from distressed positions. See \href{https://eigenphi.io/mev/ethereum/liquidation}{examples of such transactions}.
 
 \subsubsection*{Other MEVs}
 MEV opportunities are derived from smart contracts and their functionalities. Consider, for example, the auction from the previous exercise. If the block creator is interested in the auctioned item, they can simply add their transaction at the end of the auction, placing it before the transaction that ends the auction.
 
-Consider this example where a MEV searcher purchased every single Cryptopunk at the floor price for \$7 million: \href{https://etherscan.io/address/0x650dCdEB6ecF05aE3CAF30A70966E2F395d5E9E5}{Searcher's address}.
+See also this example where a MEV searcher purchased every single Cryptopunk at the floor price for 7 million USD: \href{https://etherscan.io/address/0x650dCdEB6ecF05aE3CAF30A70966E2F395d5E9E5}{Searcher's address}.
+
+\subsubsection*{Generalized frontrunning}
+
+Rather than developing complicated algorithms, it's possible to simply simulate transactions in the mempool. If a transaction results in profit, a frontrunner can copy the potentially profitable transaction and replace the address with their own. If the transaction still generates profit with the modified address, the attacker can include it in the block and claim the profit for themselves.
+
+\subsection{MEV Threat and Solutions}
+
+MEV bots attempting to include their MEV transactions in blocks have led to network congestion and increased transaction fees for regular users. MEV extraction could eventually lead to gradual centralization of staking pools, as large pools will have more financial resources to develop sophisticated algorithms to extract MEV from their own MEV extraction activities. To address these MEV problems, solutions have been proposed: \href{https://ethereum.org/en/developers/docs/mev/#proposer-builder-separation}{Proposer-builder separation} and \href{https://ethereum.org/en/developers/docs/mev/#builder-api}{Builder APIs}. In proposer-builder separation, validators remain responsible for proposing new blocks, but a new entity of specialized builders has emerged who search for MEV opportunities and offer constructed blocks to validators. This reduces the risk of validator centralization. For smart contract developers, it's important to always keep MEV risks in mind and prevent them during application design when possible.
 
 \medskip
 \noindent
@@ -218,64 +226,53 @@ More about MEV:
 \begin{itemize}
   \item \textbf{Read:} \href{https://ethereum.org/en/developers/docs/mev/}{Maximal extractable value (MEV)}
   \item \textbf{Animated Video:} \href{https://www.youtube.com/watch?v=F9IuBZGseFQ}{Decoding MEV: Past, Present, Future}
-  \item \textbf{MEV Real Time Detection:} \href{https://eigenphi.io/}{https://eigenphi.io/}
+  \item \textbf{MEV Real Time Detection:} \href{https://eigenphi.io/}{https://eigenphi.io}
+  \item \textbf{Read:} \href{https://www.flashbots.net/}{Flashbots research blog}
+  \item \textbf{Block Building Visualisation:} \href{https://payload.de/data/}{https://payload.de/data}
+  \item \textbf{MEV Boost Dashboard:} \href{https://mevboost.pics/}{https://mevboost.pics}
 \end{itemize}
 
-% \section{EIP-1559: Transaction Pricing Mechanism}
+\section{Gas and Fees}
 
-% Ethereum Improvement Proposal 1559 (EIP-1559) introduced a new transaction pricing mechanism designed to make fee estimation more predictable and improve user experience.
+\textbf{Gas} is a unit that measures the computational effort required to execute a specific operation on the Ethereum network. The \textbf{gas fee} is the amount of gas used for a particular operation multiplied by the price per unit of gas. The costs of individual operations can be viewed at \href{https://ethereum.org/en/developers/docs/evm/opcodes/}{EVM Opcodes}.
 
-% \subsection{How Gas Pricing Works}
+\subsubsection*{Gas Price Determination}
 
-% Before EIP-1559, users would specify a \codegrey{gasPrice} which was a simple auction system - higher gas price meant higher priority. With EIP-1559, this changed to a more complex but predictable system.
+Previously, users would specify a \codegrey{gasprice} which operated as a simple auction system - higher gas price meant higher priority. However, this solution had several drawbacks, so Ethereum transitioned to a new transaction fee mechanism according to \href{https://eips.ethereum.org/EIPS/eip-1559}{EIP-1559}. Instead of users trying to estimate how much to bid, the Ethereum protocol now determines a \textbf{base fee} that must be paid for a transaction to be included in a block. This base fee dynamically increases or decreases by a maximum of 12.5\% with each block. Each block has a limit of 30 million gas, but the target is 15 million:
 
-% \subsubsection*{EIP-1559 Transaction Structure}
+\begin{itemize}
+    \item If a block used less than 15 million gas, the base fee decreases
+    \item If the block was congested, the base fee increases
+\end{itemize}
 
-% Under EIP-1559, transactions include:
+\noindent
+The base fee doesn't go to validators but is \textbf{burned} (removed from circulation). EIP-1559 also introduced a \textbf{priority fee}, which goes directly to validators as a tip to incentivize them to include the transaction in a block. Transaction initiators can also specify a \textbf{maximum gas price} (\codegrey{max fee}) they're willing to pay per unit of gas. The actual fee per gas paid by a transaction is calculated as:
 
-% \begin{itemize}
-%     \item \codegrey{maxFeePerGas}: The maximum total fee the user is willing to pay per unit of gas
-%     \item \codegrey{maxPriorityFeePerGas}: The maximum tip the user is willing to pay to validators
-%     \item \codegrey{gasLimit}: The maximum amount of gas the transaction can consume
-% \end{itemize}
+\begin{equation}
+\text{gasprice} = \min(\text{base fee} + \text{priority fee}, \text{max fee})
+\end{equation}
 
-% \subsubsection*{Base Fee}
+Where:
+\begin{itemize}
+    \item \codegrey{base fee} is burned (removed from circulation)
+    \item \codegrey{priority fee} (or tip) goes to the validator as an incentive
+    \item If \codegrey{base fee} + \codegrey{priority fee} \verb|>| \codegrey{max fee}, the priority fee is reduced to stay below max fee
+\end{itemize}
 
-% Every block has a \codegrey{baseFee} which is burned (removed from circulation). The base fee adjusts automatically based on network demand:
+\noindent
+Any difference between the max fee and the base fee is refunded to the transaction initiator. The total fee paid for a transaction is:
 
-% \begin{itemize}
-%     \item If blocks are more than 50\% full, the base fee increases by up to 12.5\% per block
-%     \item If blocks are less than 50\% full, the base fee decreases by up to 12.5\% per block
-% \end{itemize}
+\begin{equation}
+\text{transaction fee} = \text{gas used} \times \text{gasprice}
+\end{equation}
 
-% This mechanism helps maintain block space demand around the target gas limit.
-
-% \subsubsection*{Total Fee Calculation}
-
-% The actual fee per gas paid by a transaction is calculated as:
-% \begin{equation}
-% \text{Fee per gas} = \text{baseFee} + \min(\text{maxPriorityFeePerGas}, \text{maxFeePerGas} - \text{baseFee})
-% \end{equation}
-
-% Where:
-% \begin{itemize}
-%     \item \codegrey{baseFee} is burned (removed from circulation)
-%     \item The priority fee (or tip) goes to the validator as an incentive
-% \end{itemize}
-
-% \subsubsection*{When Transactions Fail}
-
-% \begin{itemize}
-%     \item If \codegrey{maxFeePerGas < baseFee}: Transaction becomes invalid and will be rejected
-%     \item If \codegrey{baseFee + maxPriorityFeePerGas > maxFeePerGas}: Priority fee is reduced to \codegrey{maxFeePerGas - baseFee}
-% \end{itemize}
-
-% \subsubsection*{Total Transaction Fee}
-
-% The total fee paid for a transaction is:
-% \begin{equation}
-% \text{Total Fee} = \text{Gas Used} \times (\text{Base Fee} + \text{Priority Fee})
-% \end{equation}
+\medskip
+\noindent
+More about Gas and Fees:
+\begin{itemize}
+  \item \textbf{Read:} \href{https://ethereum.org/en/developers/docs/gas/}{Gas and Fees}
+  \item \textbf{Gas tracker:} \href{https://etherscan.io/gastracker}{https://etherscan.io/gastracker}
+\end{itemize}
 
 \pagebreak
 \section{Task}
@@ -301,7 +298,7 @@ With 1.51 ETH in your wallet and a strong desire for this NFT, you're watching c
 \end{itemize}
 
 \noindent
-Code your solution in the \texttt{test/NFTAuction.js} file. Use the player account only. Verify your solution by running:
+Code your solution in the \texttt{test/NFTAuction.js} file. Use the player account only. See \href{https://docs.ethers.org/v6/api/transaction/\#Transaction}{Ethers v6 transaction documentation} to learn how to specify transaction fees. Verify your solution by running:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ npm run auction
