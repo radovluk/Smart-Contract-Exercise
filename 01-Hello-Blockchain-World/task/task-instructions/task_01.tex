@@ -82,9 +82,9 @@
 \noindent
 Welcome to the first smart contracts exercise! In this first exercise, you will become familiar with the basics of smart contract development. The goal is to create a simple smart contract. You will then compile, test, and deploy this smart contract in the local network, and subsequently deploy it to the live blockchain.
 
-\section{Task: Set Up Hardhat Environment}
+\section{Task: Set Up Foundry Environment}
 
-In this task, you will set up the Hardhat development environment. Hardhat is a development environment for Ethereum software. It provides a suite of tools for editing, compiling, debugging, and deploying your smart contracts. For this exercise, you can choose between using a Docker container or installing locally on your machine - select the option that best suits your development preferences.
+In this task, you will set up the Foundry development environment. Foundry is a fast, portable and modular toolkit for Ethereum application development. It consists of Forge (a testing framework), Cast (for interacting with EVM smart contracts), Anvil (for local Ethereum node) and Chisel (Solidity REPL). For this exercise, you can choose between using a Docker container or installing locally on your machine - select the option that best suits your development preferences.
 
 \subsection{Using Docker with VS Code}
 
@@ -111,48 +111,82 @@ Note: If you encounter permission issues when using Docker, you may need to adju
 
 \subsection{Local Setup}
 
-If you prefer working directly on your machine without Docker, you can set up the development environment locally. Before setting up Hardhat, ensure that you have the following installed on your system:
+If you prefer working directly on your machine without Docker, you can set up the development environment locally. Before setting up Foundry, ensure that you have the following installed on your system:
 
 \subsubsection*{Prerequisites}
 \begin{itemize}
-    \item \textbf{Node.js} - \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
-    \item \textbf{NPM}: Node Package Manager, which comes with Node.js.
+    \item \textbf{Rust Toolchain} - Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using \href{https://rustup.rs/}{rustup.rs}.
 \end{itemize}
 
 \noindent
-Open your terminal and run the following commands to verify the installations:
+Open your terminal and run the following command to verify the Rust installation:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ node -v
-$ npm -v
+$ rustc --version
+$ cargo --version
 \end{minted}
 
 \noindent
-Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
+Both commands should return the installed version numbers of Rust and Cargo respectively. If you don't have Rust installed, you can install it using:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+\end{minted}
+
+\subsubsection*{Installing Foundry}
+You can install Foundry using Foundryup, the official installer:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ curl -L https://foundry.paradigm.xyz | bash
+$ foundryup
+\end{minted}
+
+\noindent
+This will install the Foundry toolkit, including:
+\begin{itemize}
+    \item \textbf{Forge} - Testing framework for Ethereum
+    \item \textbf{Cast} - Command-line tool for interacting with smart contracts
+    \item \textbf{Anvil} - Local Ethereum node for development
+    \item \textbf{Chisel} - Solidity REPL
+\end{itemize}
+
+Verify the installation by running:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ forge --version
+$ cast --version
+$ anvil --version
+\end{minted}
 
 \begin{itemize}
     \item \textbf{Tip 1:} If you are using Windows, we strongly recommend using Windows Subsystem for Linux (WSL) to follow this guide. For more information, refer to the \href{https://learn.microsoft.com/en-us/windows/wsl/about}{official documentation}.
     
-    \item \textbf{Tip 2:} If you are using Visual Studio Code, consider installing the \href{https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity}{Visual Studio Code Solidity Extension}. This extension helps your development process by providing features like syntax highlighting, code completion, etc.
+    \item \textbf{Tip 2:} If you are using Visual Studio Code, consider installing the \href{https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity}{Solidity Extension}. This extension helps your development process by providing features like syntax highlighting, code completion, etc.
 \end{itemize}
 
-\subsection{Creating a New Hardhat Project}
+\subsection{Creating a New Foundry Project}
 
-Create an empty working directory and then run the following commands to initialize a Hardhat project:
+Create an empty working directory and then run the following command to initialize a Foundry project:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ npm init -y # Initialize an npm project in the directory.
-$ npm install --save-dev hardhat # Install Hardhat in the directory.
-$ npx hardhat init # Initialize a Hardhat project.
+$ forge init
 \end{minted}
-Select \codegrey{Create an empty \texttt{hardhat.config.js}} with your keyboard and hit enter.
+
+This will create a new project in the current directory with the default template, which includes:
+\begin{itemize}
+    \item A \texttt{src/} directory for your smart contracts
+    \item A \texttt{test/} directory for your test files
+    \item A \texttt{script/} directory for your deployment scripts
+    \item A \texttt{foundry.toml} configuration file
+    \item A \texttt{lib/} directory for dependencies, with forge-std pre-installed
+\end{itemize}
 
 \section{Task: Writing Your First Smart Contract}
 
-Start by creating a new directory inside your project called \texttt{contracts} and create a file inside the directory called \texttt{Greeter.sol}. Paste the code below into the file and take a minute to read the code.
+Start by creating a new file called \texttt{Greeter.sol} in the \texttt{src/} directory. Paste the code below into the file and take a minute to read the code.
 
 \begin{lstlisting}[language=Solidity]
-// File: contracts/Greeter.sol
+// File: src/Greeter.sol
 
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28; // Specify the Solidity compiler version
@@ -182,88 +216,98 @@ contract Greeter {
 }
 \end{lstlisting}
 
-The Greeter contract is a simple Solidity smart contract that stores a greeting message, initializes it during deployment, and allows users to retrieve it via a public function. To compile the contract, run \codeblack{npx hardhat compile} in your terminal.
+The Greeter contract is a simple Solidity smart contract that stores a greeting message, initializes it during deployment, and allows users to retrieve it via a public function. To compile the contract, run \codeblack{forge build} in your terminal.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ npx hardhat compile
-Compiled 1 Solidity file successfully (evm target: paris).
+$ forge build
+[] Compiling...
+[] Compiling 2 files with Solc 0.8.28
+[] Solc 0.8.28 finished in 252.53ms
+Compiler run successful!
 \end{minted}
 
-Hardhat compiled your Solidity smart contract and generated corresponding artifacts—including the contract's ABI (Application Binary Interface, which defines how to interact with the contract), bytecode (the compiled binary code that runs on the Ethereum Virtual Machine), and related metadata—which are stored in the \texttt{artifacts} folder. Take a look into \texttt{artifacts/contracts/Greeter.sol/Greeter.json} file.
+Forge compiled your Solidity smart contract and generated corresponding artifacts—including the contract's ABI (Application Binary Interface, which defines how to interact with the contract), bytecode (the compiled binary code that runs on the Ethereum Virtual Machine), and related metadata—which are stored in the \texttt{out} directory. You can take a look at the artifacts in \texttt{out/Greeter.sol/Greeter.json}.
 
-\section{Task: Test your Smart Contract with Local \\ Hardhat Network}
-
-\subsection{Set Up Hardhat-Toolbox Plugin}
-In this task, you will write and execute a simple test case for the \texttt{Greeter} contract using Hardhat's local network. For this task, we will need the \texttt{@nomicfoundation/hardhat-toolbox} plugin. It integrates testing libraries, Ethers.js, and other deployment utilities. Run the following command in the directory to install the plugin:
-
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ npm install --save-dev @nomicfoundation/hardhat-toolbox
-\end{minted}
-
-\noindent
-To include the plugin in your Hardhat project, add the following to your \texttt{hardhat.config.js} file in the project directory so that it will look like this:
-
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
-// File: hardhat.config.js
-
-require("@nomicfoundation/hardhat-toolbox");
-
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
-  solidity: "0.8.28",
-};
-\end{minted}
-For more information about plugins and how to test contracts in Hardhat, visit \\ \href{https://hardhat.org/tutorial/testing-contracts}{Hardhat documentation}.
+\section{Task: Test your Smart Contract with Forge}
 
 \subsection{Writing a Simple Test}
 
-Create a new directory named \texttt{test} in your project root and add a file called \texttt{Greeter.js} with the following content:
+Create a new file called \texttt{Greeter.t.sol} in the \texttt{test/} directory with the following content:
 
-\begin{minted}[frame=lines, bgcolor=gray!5, fontsize=\footnotesize]{javascript}
-// File: test/Greeter.js
+\begin{lstlisting}[language=Solidity]
+// File: test/Greeter.t.sol
 
-// Import the 'expect' function from Chai for assertions
-const { expect } = require("chai");
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.28;
 
-// Test suite for the Greeter contract
-describe("Greeter contract says Hello, Blockchain World!", function () {
-  
-  // Test to ensure the initial greeting is set correctly upon deployment
-  it("Should set the initial greeting correctly.", async function () {
+// Import the contract to test
+import {Greeter} from "../src/Greeter.sol";
+// Import Forge's testing utilities
+import {Test} from "forge-std/Test.sol";
+
+// Test contract that inherits from Test
+contract GreeterTest is Test {
+    // Instance of the contract to test
+    Greeter greeter;
     
-    // Define the initial greeting message
-    const initialGreeting = "Hello, Blockchain World!";
+    // The initial greeting for testing
+    string constant INITIAL_GREETING = "Hello, Blockchain World!";
     
-    // Deploy the Greeter contract with the initial greeting
-    const greeter = await ethers.deployContract("Greeter", [initialGreeting]);
+    // Set up function that runs before each test
+    function setUp() public {
+        greeter = new Greeter(INITIAL_GREETING);
+    }
     
-    // Wait for the deployment to complete
-    await greeter.waitForDeployment();
-
-    // Retrieve the stored greeting from the contract
-    const greeting = await greeter.greet();
-
-    // Verify that the retrieved greeting matches the initial greeting
-    expect(greeting).to.equal(initialGreeting);
-  });
-});
-\end{minted}
+    // Test to ensure the initial greeting is set correctly
+    function test_InitialGreeting() public view {
+        string memory greeting = greeter.greet();
+        assertEq(greeting, INITIAL_GREETING);
+    }
+}
+\end{lstlisting}
 
 \noindent
-\textbf{Note:} All exercises we will use \href{https://docs.ethers.org/v6/}{ethers.js v6}. If you're using an older version of ethers, the syntax may differ. For example, in ethers v5, you would use \\ \codegrey{await ethers.getContractFactory("Greeter")} and then \\ \codegrey{await greeterFactory.deploy(initialGreeting)} instead. Keep this in mind when encountering errors.
+In Foundry:
+\begin{itemize}
+    \item Test contracts inherit from \texttt{Test} which provides utilities like assertions
+    \item The \texttt{setUp()} function runs before each test (similar to "beforeEach" in other testing frameworks)
+    \item Test functions start with \texttt{test\_} prefix
+    \item \texttt{assertEq()} and other assertion functions verify values match expected outcomes
+\end{itemize}
 
 \subsection{Running the Test}
 
-Execute the test on Hardhat's local network by running the following commands in your terminal:
+Execute the test by running the following command in your terminal:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ npx hardhat test
+$ forge test
 \end{minted}
-Congratulations! You wrote, compiled, and tested your first smart contract!
+
+Expected output:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+[] Compiling...
+No files changed, compilation skipped
+
+Ran 1 test for test/Greeter.t.sol:GreeterTest
+[PASS] test_InitialGreeting() (gas: 11982)
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 1.01ms 
+(141.22µs CPU time)
+
+Ran 1 test suite in 14.86ms (1.01ms CPU time): 1 tests passed, 
+0 failed, 0 skipped (1 total tests)
+\end{minted}
+
+For more detailed output, including gas usage and execution traces, you can increase the verbosity by adding the \texttt{-v} flag:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ forge test -vvvv
+\end{minted}
+
+Congratulations! You wrote, compiled, and tested your first smart contract using Foundry!
 
 \section{Task: Deploying to a Live Network}
 
-Once you have programmed and tested your dApp, you want to deploy it to a public blockchain so that others can access it. For the purposes of our exercise, we will not use the Ethereum mainnet because we would have to pay with real money, but instead use a live testnet. A testnet mimics real-world scenarios without risking our own money. Ethereum has several \href{https://ethereum.org/en/developers/docs/networks/#ethereum-testnets}{testnets}; for our purposes, we will choose the \href{https://sepolia.dev/}{Sepolia testnet}. Deploying to a testnet is the same as deploying to mainnet at the software level. The only difference is the network you connect to.
+Once you have programmed and tested your smart contract, you want to deploy it to a public blockchain so that others can access it. For the purposes of our exercise, we will not use the Ethereum mainnet because we would have to pay with real money, but instead use a live testnet. A testnet mimics real-world scenarios without risking our own money. Ethereum has several \href{https://ethereum.org/en/developers/docs/networks/#ethereum-testnets}{testnets}; for our purposes, we will choose the \href{https://sepolia.dev/}{Sepolia testnet}. Deploying to a testnet is the same as deploying to mainnet at the software level. The only difference is the network you connect to.
 
 \subsection{Prerequisites}
 
@@ -272,7 +316,7 @@ In order to finish this task, you will need the following tools:
 \begin{itemize}
     \item \textbf{MetaMask}: A popular Ethereum wallet that allows you to interact with the Ethereum blockchain. You can download the MetaMask extension for your browser from the \href{https://metamask.io/}{official website} and set it up. But you can also use other Ethereum wallets or simply create your own private-public key pair.
     
-    \item \textbf{Infura API Key}: Infura provides access to Ethereum nodes without the need to run your own. Sign up at \href{https://infura.io/}{Infura} to obtain an API key.
+    \item \textbf{RPC URL}: You need access to an Ethereum node to deploy your contract. You can use services like \href{https://infura.io/}{Infura}, \href{https://www.alchemy.com/}{Alchemy}, or \href{https://chainstack.com/}{Chainstack} to get an RPC URL.
     
     \item \textbf{Sepolia Faucet}: Acquire Sepolia test Ether from a faucet to fund your deployment. Even on testnets, you'll need testnet ETH to pay for gas fees. Make sure you have enough Sepolia ETH (0.01 Sepolia ETH should be sufficent for this exercise) in your wallet before deployment. Gas prices fluctuate based on network congestion, even on testnets. Some reliable faucets include:
     \begin{itemize}
@@ -282,133 +326,151 @@ In order to finish this task, you will need the following tools:
     \end{itemize}
 \end{itemize}
 
-\subsection{Configuring Hardhat for Sepolia Deployment}
+\subsection{Creating a Deployment Script}
 
-To deploy your smart contract to the Sepolia testnet, you need to configure Hardhat with the network details and your wallet credentials.
+Foundry uses Solidity for deployment scripts. Create a new file called \texttt{DeployGreeter.s.sol} in the \texttt{script/} directory with the following content:
+
+\begin{lstlisting}[language=Solidity]
+// File: script/DeployGreeter.s.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.28;
+
+// Import the contract to deploy
+import {Greeter} from "../src/Greeter.sol";
+// Import Forge's Script utilities
+import {Script} from "forge-std/Script.sol";
+
+// Script contract that inherits from Forge's Script
+contract DeployGreeter is Script {
+    function run() public returns (Greeter) {
+        // Start recording transactions for deployment
+        vm.startBroadcast();
+        
+        // Deploy the Greeter contract with initial message
+        Greeter greeter = new Greeter("Hello, Blockchain World!");
+        
+        // Stop recording transactions
+        vm.stopBroadcast();
+        
+        // Return the deployed contract
+        return greeter;
+    }
+}
+\end{lstlisting}
+
+In Foundry:
+\begin{itemize}
+    \item Deployment scripts inherit from the \texttt{Script} contract
+    \item The \texttt{run()} function contains the deployment logic
+    \item \texttt{vm.startBroadcast()} and \texttt{vm.stopBroadcast()} wrap the transactions that should be sent to the network
+\end{itemize}
+
+\subsection{Configuring Foundry for Sepolia Deployment}
+
+To deploy your smart contract to the Sepolia testnet, you need to configure Foundry with the network details and your wallet credentials.
 
 \subsubsection*{Storing Sensitive Information}
 
-It's crucial to keep sensitive information like your private key and Infura API key secure. We recommend using configuration variables to manage these credentials only for the purpose of this exercise. A Hardhat project can use configuration variables for user-specific values or for data that shouldn't be included in the code repository. These variables are set via tasks in the vars scope and can be retrieved in the config using the vars object. 
+It’s crucial to keep sensitive information like your private key and Infura API key secure. We recommend using environment variables to manage these credentials only for the purpose of this exercise.
 
 \begin{itemize}
-    \item Set the INFURA\_API\_KEY
-    
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-    $ npx hardhat vars set INFURA_API_KEY
-    Enter value: ********************************
-\end{minted}
-
-    \item Set the SEPOLIA\_PRIVATE\_KEY
-
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-    $ npx hardhat vars set SEPOLIA_PRIVATE_KEY
-    Enter value: ********************************
-\end{minted}
-
+    \item Create a \texttt{.env} file in your project root:
 \end{itemize}
 
-\begin{itemize}
-    \item \textbf{Warning}: Configuration variables are stored in plain text on your disk. Avoid using this feature for data you wouldn’t normally save in an unencrypted file. Run \texttt{npx hardhat vars path} to find the storage's file location. Never use your private key associated with real money in plain text!
-\end{itemize}
-
-\subsubsection*{Updating \texttt{hardhat.config.js}}
-
-Modify your \texttt{hardhat.config.js} file to include the Sepolia network configuration:
-
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
-// File: hardhat.config.js
-
-require("@nomicfoundation/hardhat-toolbox");
-
-const INFURA_API_KEY = vars.get("INFURA_API_KEY");
-const SEPOLIA_PRIVATE_KEY = vars.get("SEPOLIA_PRIVATE_KEY");
-
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
-  solidity: "0.8.28",
-  networks: {
-    sepolia: {
-      url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
-      accounts: [`0x${SEPOLIA_PRIVATE_KEY}`],
-    },
-  },
-};
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY
+PRIVATE_KEY=YOUR_PRIVATE_KEY_WITHOUT_0x_PREFIX
 \end{minted}
 
-This configuration tells Hardhat how to connect to the Sepolia testnet using your Infura API key and deploy contracts using your wallet's private key.
+\medskip
+\noindent
+Replace the placeholders with your actual values. The Etherscan API key is optional but useful for verifying contracts.
+
+\noindent
+\medskip
+\textbf{Warning}: Never commit your \texttt{.env} file to version control. Add it to \texttt{.gitignore} to prevent accidental exposure of your private keys. Never use your private key associated with real money in plain text!
+
+\subsubsection*{Updating \texttt{foundry.toml}}
+
+Modify your \texttt{foundry.toml} file to include the Sepolia network configuration:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{toml}
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.28"
+
+[rpc_endpoints]
+sepolia = "${SEPOLIA_RPC_URL}"
+\end{minted}
 
 \subsection{Deploying the Smart Contract to Sepolia}
 
 With the configuration in place, you're ready to deploy your smart contract to the Sepolia testnet.
 
-\subsubsection{Creating a Deployment Script}
-
-\begin{itemize}
-\item 1. Create a \texttt{scripts} Directory: In your project root, create a new directory named \texttt{scripts}.
-
-\item 2. Add a Deployment Script: Inside the \texttt{scripts} directory, create a file named \texttt{deploy.js} and add the following content:
-\end{itemize}
-
-\begin{minted}[frame=lines, bgcolor=gray!5, fontsize=\footnotesize]{javascript}
-// File: scripts/deploy.js
-
-const hre = require("hardhat");
-
-async function main() {
-    // Set the initial greeting message
-    const initialGreeting = "Hello, Blockchain World!";
-    
-    // Deploy the Greeter contract with the initial greeting
-    const greeter = await ethers.deployContract("Greeter", [initialGreeting]);
-    console.log(`Greeter contract deployed to: ${greeter.target}`);
-
-    // Wait for the deployment to complete
-    await greeter.waitForDeployment();
-
-    // Retrieve the stored greeting from the contract
-    const greeting = await greeter.greet();
-    console.log(`Contract greeting: ${greeting}`);
-}
-
-main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize, breaklines=true]{bash}
+$ source .env
+$ forge script script/DeployGreeter.s.sol \
+    --rpc-url sepolia \
+    --private-key $PRIVATE_KEY \
+    --broadcast
 \end{minted}
-
-\subsubsection{Executing the Deployment}
-
-Run the deployment script using Hardhat with the Sepolia network specified:
-
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ npx hardhat run scripts/deploy.js --network sepolia
-\end{minted}
-Expected Output:
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-Greeter contract deployed to: <ContractAddress>
-Contract greeting: Hello, Blockchain World!
-\end{minted}
-You can verify the deployment by visiting the Sepolia Etherscan explorer and searching for your contract address: \url{https://sepolia.etherscan.io/address/<ContractAddress>}. Search also for your account address and see your interactions with the deployed contract.
 
 \noindent
-Hardhat also includes Hardhat network, a local Ethereum network node for development. It enables you to deploy contracts, run tests, and debug code, all within your local environment. We already used it during running our test. To use it, open a separate terminal and run \codegrey{npx hardhat node} in the terminal. To deploy the contract, run \codegrey{npx hardhat run scripts/deploy.js --network hardhat} in another terminal. See \href{https://hardhat.org/hardhat-network/docs/overview\#hardhat-network}{Hardhat network} for more information.
+Expected Output:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+[] Compiling...
+[] Compiling 16 files with Solc 0.8.28
+[] Solc 0.8.28 finished in 1.46s
+Compiler run successful!
+Script ran successfully.
+== Return ==
+0: contract Greeter 0xf4045726A4d561236b76AAeCD5ec80a02739B399
+## Setting up 1 EVM.
+==========================
+Chain 11155111
+Estimated gas price: 64.841239678 gwei
+Estimated total gas used for script: 218697
+Estimated amount required: 0.014180584593859566 ETH
+==========================
+##### sepolia
+[Success] Hash: 0x8954a660307996cdca34039a07579ee35adf2cf8edc95bda5e0af74c4def0eac
+Contract Address: 0xf4045726A4d561236b76AAeCD5ec80a02739B399
+Block: 7901458
+Paid: 0.005612595526892397 ETH (168229 gas * 33.362829993 gwei)
+Sequence #1 on sepolia | Total Paid: 0.005612595526892397 ETH 
+(168229 gas * avg 33.362829993 gwei)
+\end{minted}
+
+You can verify the deployment by visiting the Sepolia Etherscan explorer and searching for your contract address: \\ \url{https://sepolia.etherscan.io/address/<ContractAddress>}. \\ Search also for your account address and see your interactions with the deployed contract.
 
 \subsection{Interacting with Your Deployed Contract}
 
-Now that your contract is live on the Sepolia testnet, you can interact with it using various tools:
+Now that your contract is live on the Sepolia testnet, you can interact with it using Foundry's \texttt{cast} tool:
 
-\begin{itemize}
-    \item \textbf{Etherscan}: View contract details, read functions, and execute transactions directly from the Etherscan interface.
-    
-    \item \textbf{Web3 Interfaces}: Integrate your contract with frontend applications using libraries like \texttt{ethers.js} or \texttt{web3.js}.
-    
-    \item \textbf{Hardhat Tasks}: Write scripts or use the \href{https://hardhat.org/hardhat-runner/docs/guides/hardhat-console}{Hardhat console} to interact programmatically with your contract.
-\end{itemize}
-Tip: If you run the deployment script without specifying the \texttt{--network} parameter, it will deploy to the local Hardhat network.
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ npx hardhat run scripts/deploy.js
+$ cast call <CONTRACT_ADDRESS> "greet()" --rpc-url sepolia
+\end{minted}
+
+Expected Output:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+0x00000000000000000000000000000000000000000000000000000000000000200000000000000000 \
+00000000000000000000000000000000000000000000001848656c6c6f2c20426c6f636b636861696e \
+20576f726c64210000000000000000
+\end{minted}
+
+To decode the response:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ cast --to-ascii 0x00000000000000000000000000000000000000000000000000000000000000 \
+20000000000000000000000000000000000000000000000000000000000000001848656c6c6f2c2042 \
+6c6f636b636861696e20576f726c64210000000000000000
+\end{minted}
+
+Expected Output:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+Hello, Blockchain World!
 \end{minted}
 
 \subsection{Further Reading}
@@ -417,11 +479,9 @@ For more detailed information, refer to the following resources:
 
 \begin{itemize}
     \item \href{https://docs.soliditylang.org/en/latest/}{Solidity Documentation}
-    \item \href{https://hardhat.org/docs}{Hardhat Documentation}
+    \item \href{https://book.getfoundry.sh/}{Foundry Book}
     \item \href{https://solidity-by-example.org/}{Solidity by Example}
-    \item \href{https://docs.ethers.org/v6/}{Ethers.js Documentation} (for scripting)
-    \item \href{https://www.chaijs.com/}{Chai Assertion Library}
-
+    \item \href{https://github.com/foundry-rs/forge-std}{Forge Standard Library}
 \end{itemize}
 Congratulations! You have successfully deployed your first smart contract to the live blockchain network! Stay tuned for the upcoming exercises!
 
