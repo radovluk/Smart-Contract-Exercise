@@ -1,0 +1,86 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{graphicx} % For including graphics
+\usepackage{minted} % For advanced code listings
+\usepackage{listings-solidity}  % Include Solidity highlighting
+\usepackage{amsmath, amssymb, amsfonts} % For mathematical equations
+
+% Define a custom minted style (optional)
+\usemintedstyle{colorful} % You can choose from various styles like 'monokai', 'tango', 'colorful', etc.
+
+% Custom color setup
+\definecolor{bashtextcolor}{RGB}{0, 0, 0} % Define black color
+
+% Define a new command for inline code using minted
+\newcommand{\codeinline}[1]{\mintinline{text}{#1}}
+
+\geometry{a4paper, margin=1in}
+
+\title{Smart Contracts Exercise 09: \\ Vulnerabilities Detection}
+\author{}
+\date{}
+
+% Define a new command for inline code with a dark background
+\newcommand{\codeblack}[1]{%
+  \texttt{\colorbox{black!7}{\textcolor{black}{#1}}}%
+}
+
+% Define a new command for inline code with a dark background
+\newcommand{\codegrey}[1]{%
+  \texttt{\colorbox{black!4}{\textcolor{black}{#1}}}%
+}
+
+% Define custom colors (optional)
+\definecolor{myURLColor}{RGB}{0, 102, 204} % Example: A shade of blue
+
+\hypersetup{
+    colorlinks=true,        % Enable colored links
+    linkcolor=blue,         % Color for internal links (e.g., \ref, \cite)
+    citecolor=blue,         % Color for citations
+    filecolor=magenta,      % Color for file links
+    urlcolor=myURLColor     % Color for external URLs
+}
+
+% Define a style for code listings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{lightgray!20},   
+    commentstyle=\color{green!50!black},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{red},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+% Adding package for header and footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% Define header and footer
+\fancyhf{} % Clear current settings
+\fancyhead[L]{Smart Contracts Exercise 09} % Left header
+\fancyhead[R]{\thepage} % Right header with page number
+
+\renewcommand{\headrulewidth}{0.4pt} % Line below header
+% \renewcommand{\footrulewidth}{0.4pt} % Line above footer
+
+\begin{document}
+
+\maketitle
+\section{Introduction}
+
+\end{document}

@@ -57,10 +57,14 @@ This project contains exercises for students to learn about smart contract secur
 ### 07 - Out of Gas
 - **Task**: Denial of Service attacks in smart contracts aim to render a contract temporarily or permanently unusable by manipulating its execution flow or exploiting resource limitations. In this exercise, you will learn about several types of DoS attacks on blockchain and try to implement them in practical exercises. You will also become familiar with the concept of decentralized autonomous organization.
 - **Topics**: DoS with block gas limit, DoS with unexpected revert, pull-over-push pattern, unbounded operations, DAO
-- 
+
 ### 08 - Maximal Extractable Value
 - **Task**: In this exercise, we examine MEV (Maximal Extractable Value) in detail, exploring techniques like DEX arbitrage, liquidations, and sandwich trading. We also cover transaction fees, gas calculations, and EIP-1559. In practical tasks, you'll frontrun an NFT auction and execute a sandwich attack on a DEX. We will also mention current MEV solutions including Proposer-Builder Separation.
 - **Topics**: MEV, frontrunning, backrunning, sandwich attacks, transaction fees, gas, EIP-1559, DEX arbitrage, liquidations, proposer-builder separation
+
+### 09 - Vulnerabilities Detection
+- **Task**: Not yet implemented
+- **Topics**: fuzz testing, invariant testing, foundry, formal verification?
 
 ## Getting Started
 
