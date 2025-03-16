@@ -1,0 +1,24 @@
+{
+  "name": "Foundry Development",
+  "build": {
+      "dockerfile": "Dockerfile",
+      "context": "."
+  },
+  "customizations": {
+      "vscode": {
+          "extensions": [
+              "JuanBlanco.solidity",
+              "nomicfoundation.hardhat-solidity",
+              "esbenp.prettier-vscode"
+          ],
+          "settings": {
+              "editor.formatOnSave": true,
+              "solidity.formatter": "prettier",
+              "solidity.compileUsingRemoteVersion": "latest"
+          }
+      }
+  },
+  "forwardPorts": [],
+  "postCreateCommand": "forge --version && anvil --version && cast --version",
+  "remoteUser": "root"
+}
