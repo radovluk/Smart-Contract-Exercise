@@ -1,0 +1,10 @@
+{
+    "name": "01-hello-blockchain-world",
+    "version": "1.0.0",
+    "author": "Lukas Radovansky",
+    "license": "MIT",
+    "description": "Educational exercise for Solidity learning.",
+    "devDependencies": {
+        "forge-std": "github:foundry-rs/forge-std#v1.8.1"
+    }
+  }
