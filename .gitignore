@@ -58,6 +58,12 @@ Thumbs.db
 # Ignore all folders that start with _minted
 **/_minted*/
 
+# Ignore all lib folders
+**/lib/
+
+# Ignore all out folders
+**/out/
+
 # Ignore the reports abou the test coverage
 coverage.json
 coverage/

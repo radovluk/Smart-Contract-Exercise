@@ -161,7 +161,7 @@ $ anvil --version
 \begin{itemize}
     \item \textbf{Tip 1:} If you are using Windows, we strongly recommend using Windows Subsystem for Linux (WSL) to follow this guide. For more information, refer to the \href{https://learn.microsoft.com/en-us/windows/wsl/about}{official documentation}.
     
-    \item \textbf{Tip 2:} If you are using Visual Studio Code, consider installing the \href{https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity}{Solidity Extension}. This extension helps your development process by providing features like syntax highlighting, code completion, etc.
+    \item \textbf{Tip 2:} If you are using Visual Studio Code, consider installing the \href{https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity}{Hardhat Solidity Extension}. This extension helps your development process by providing features like syntax highlighting, code completion, etc.
 \end{itemize}
 
 \subsection{Creating a New Foundry Project}
@@ -169,22 +169,36 @@ $ anvil --version
 Create an empty working directory and then run the following command to initialize a Foundry project:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ forge init
+$ forge init --no-git --force
 \end{minted}
+
+\begin{description}
+    \item[\texttt{--force}] Create the project even if the specified root directory is not empty.
+    \item[\texttt{--no-git}] Do not create a git repository.
+\end{description}
 
 This will create a new project in the current directory with the default template, which includes:
 \begin{itemize}
-    \item A \texttt{src/} directory for your smart contracts
-    \item A \texttt{test/} directory for your test files
-    \item A \texttt{script/} directory for your deployment scripts
-    \item A \texttt{foundry.toml} configuration file
-    \item A \texttt{lib/} directory for dependencies, with forge-std pre-installed
+    \item \texttt{src/} - Directory for your smart contracts
+    \item \texttt{test/} - Directory for your test files
+    \item \texttt{script/} - Directory for your deployment scripts
+    \item \texttt{foundry.toml} - Configuration file
+    \item \texttt{lib/} - Directory for dependencies, with forge-std pre-installed
 \end{itemize}
+
+\noindent
+The initialization also creates example files: \texttt{Counter.sol} - Example smart contract, \texttt{Counter.s.sol} - Example deployment script, \texttt{Counter.t.sol} - Example test file. You can delete these example files if you want to start fresh.
+
+\smallskip
+\noindent
+For more information, see the \href{https://book.getfoundry.sh/reference/forge/forge-init}{forge init command documentation}.
 
 \section{Task: Writing Your First Smart Contract}
 
 Start by creating a new file called \texttt{Greeter.sol} in the \texttt{src/} directory. Paste the code below into the file and take a minute to read the code.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // File: src/Greeter.sol
 
@@ -215,6 +229,7 @@ contract Greeter {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 The Greeter contract is a simple Solidity smart contract that stores a greeting message, initializes it during deployment, and allows users to retrieve it via a public function. To compile the contract, run \codeblack{forge build} in your terminal.
 
@@ -234,6 +249,8 @@ Forge compiled your Solidity smart contract and generated corresponding artifact
 
 Create a new file called \texttt{Greeter.t.sol} in the \texttt{test/} directory with the following content:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // File: test/Greeter.t.sol
 
@@ -265,6 +282,7 @@ contract GreeterTest is Test {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 In Foundry:
@@ -316,20 +334,23 @@ In order to finish this task, you will need the following tools:
 \begin{itemize}
     \item \textbf{MetaMask}: A popular Ethereum wallet that allows you to interact with the Ethereum blockchain. You can download the MetaMask extension for your browser from the \href{https://metamask.io/}{official website} and set it up. But you can also use other Ethereum wallets or simply create your own private-public key pair.
     
-    \item \textbf{RPC URL}: You need access to an Ethereum node to deploy your contract. You can use services like \href{https://infura.io/}{Infura}, \href{https://www.alchemy.com/}{Alchemy}, or \href{https://chainstack.com/}{Chainstack} to get an RPC URL.
+    \item \textbf{Infura API Key}: Infura provides access to Ethereum nodes without the need to run your own. Sign up at \href{https://infura.io/}{Infura} to obtain an API key.
     
     \item \textbf{Sepolia Faucet}: Acquire Sepolia test Ether from a faucet to fund your deployment. Even on testnets, you'll need testnet ETH to pay for gas fees. Make sure you have enough Sepolia ETH (0.01 Sepolia ETH should be sufficent for this exercise) in your wallet before deployment. Gas prices fluctuate based on network congestion, even on testnets. Some reliable faucets include:
     \begin{itemize}
-        \item \href{https://cloud.google.com/application/web3/faucet/ethereum/sepolia}{Google Cloud Web3}
-        \item \href{https://docs.metamask.io/developer-tools/faucet/}{Metamask Sepolia Faucet}
-        \item \href{https://www.alchemy.com/faucets/ethereum-sepolia}{Alchemy Sepolia Faucet}
+        \item \href{https://cloud.google.com/application/web3/faucet/ethereum/sepolia}{\textbf{Google Cloud Web3}} (needs only Google account)
+        \item \href{https://docs.metamask.io/developer-tools/faucet/}{Metamask Sepolia Faucet} (needs some ETH on mainnet)
+        \item \href{https://www.alchemy.com/faucets/ethereum-sepolia}{Alchemy Sepolia Faucet} (nedds some ETH on mainer)
     \end{itemize}
 \end{itemize}
+
 
 \subsection{Creating a Deployment Script}
 
 Foundry uses Solidity for deployment scripts. Create a new file called \texttt{DeployGreeter.s.sol} in the \texttt{script/} directory with the following content:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // File: script/DeployGreeter.s.sol
 
@@ -358,6 +379,7 @@ contract DeployGreeter is Script {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 In Foundry:
 \begin{itemize}
@@ -385,11 +407,7 @@ PRIVATE_KEY=YOUR_PRIVATE_KEY_WITHOUT_0x_PREFIX
 
 \medskip
 \noindent
-Replace the placeholders with your actual values. The Etherscan API key is optional but useful for verifying contracts.
-
-\noindent
-\medskip
-\textbf{Warning}: Never commit your \texttt{.env} file to version control. Add it to \texttt{.gitignore} to prevent accidental exposure of your private keys. Never use your private key associated with real money in plain text!
+Replace the placeholders with your actual values. \textbf{Warning}: Never commit your \texttt{.env} file to version control. Add it to \texttt{.gitignore} to prevent accidental exposure of your private keys. Never use your private key associated with real money in plain text!
 
 \subsubsection*{Updating \texttt{foundry.toml}}
 
