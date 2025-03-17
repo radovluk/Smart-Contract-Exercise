@@ -9,6 +9,7 @@ RUN apt-get update && \
     libssl-dev \
     pkg-config \
     python3 \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Rust and Cargo
@@ -22,6 +23,12 @@ RUN curl -L https://foundry.paradigm.xyz | bash && \
 
 # Add Foundry to PATH
 ENV PATH="/root/.foundry/bin:${PATH}"
+
+# Install Bun
+RUN curl -fsSL https://bun.sh/install | bash -s "bun-v1.2.5"
+
+# Add Bun to PATH
+ENV PATH="/root/.bun/bin:${PATH}"
 
 # Create workdir
 WORKDIR /workspace

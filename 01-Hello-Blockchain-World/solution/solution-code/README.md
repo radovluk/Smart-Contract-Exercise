@@ -2,6 +2,8 @@
 
 Welcome to the first smart contracts exercise! In this first exercise, you will become familiar with the basics of smart contract development. The goal is to create a simple smart contract. You will then compile, test, and deploy this smart contract in the local network, and subsequently deploy it to the live blockchain.
 
+This is the solution for the first exercise from the smart contract exercises. To run this code, first install dependencies using `bun install` and then you can run `forge test`.
+
 ## Task: Set Up Foundry Environment
 
 In this task, you will set up the Foundry development environment. Foundry is a fast, portable and modular toolkit for Ethereum application development. It consists of Forge (a testing framework), Cast (for interacting with EVM smart contracts), Anvil (for local Ethereum node) and Chisel (Solidity REPL). For this exercise, you can choose between using a Docker container or installing locally on your machine - select the option that best suits your development preferences.
@@ -10,15 +12,15 @@ In this task, you will set up the Foundry development environment. Foundry is a 
 
 This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
 
-**Prerequisites:**
+#### Prerequisites:
 
-* [Docker](https://www.docker.com/products/docker-desktop) - A platform for developing, shipping, and running applications in containers.
-* [Visual Studio Code](https://code.visualstudio.com/) - A lightweight but powerful source code editor.
-* [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
+- **[Docker](https://www.docker.com/products/docker-desktop)** - A platform for developing, shipping, and running applications in containers.
+- **[Visual Studio Code](https://code.visualstudio.com/)** - A lightweight but powerful source code editor.
+- **[Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)** - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
 
-**Setting Up the Project:**
+#### Setting Up the Project:
 
-1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/01-Hello-Blockchain-World/task/task-code) and clone it to your local machine.
+1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/foundry/01-Hello-Blockchain-World/task/task-code) and clone it to your local machine.
 2. Open the repository folder in VS Code.
 3. When prompted, click "Reopen in Container" or use the command palette (F1) and run `Dev Containers: Reopen in Container`.
 
@@ -28,23 +30,30 @@ Note: If you encounter permission issues when using Docker, you may need to adju
 
 If you prefer working directly on your machine without Docker, you can set up the development environment locally. Before setting up Foundry, ensure that you have the following installed on your system:
 
-**Prerequisites**
-* **Rust Toolchain** - Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using [rustup.rs](https://rustup.rs/).
+#### Prerequisites
+- **Rust Toolchain** - Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using [rustup.rs](https://rustup.rs/).
+- **Bun** - JavaScript runtime & toolkit for installing dependencies and running scripts. Install it from [bun.sh](https://bun.sh/).
 
-Open your terminal and run the following command to verify the Rust installation:
-
-```bash
-$ rustc --version
-$ cargo --version
-```
-
-Both commands should return the installed version numbers of Rust and Cargo respectively. If you don't have Rust installed, you can install it using:
+If you don't have Rust installed, you can install it using:
 
 ```bash
 $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-**Installing Foundry**
+To install Bun, use the following command:
+```bash
+$ curl -fsSL https://bun.sh/install | bash
+```
+
+Open your terminal and run the following command to verify the Rust and Bun installation:
+
+```bash
+$ rustc --version
+$ cargo --version
+$ bun --version
+```
+
+#### Installing Foundry
 You can install Foundry using Foundryup, the official installer:
 
 ```bash
@@ -53,10 +62,10 @@ $ foundryup
 ```
 
 This will install the Foundry toolkit, including:
-* **Forge** - Testing framework for Ethereum
-* **Cast** - Command-line tool for interacting with smart contracts
-* **Anvil** - Local Ethereum node for development
-* **Chisel** - Solidity REPL
+- **Forge** - Testing framework for Ethereum
+- **Cast** - Command-line tool for interacting with smart contracts
+- **Anvil** - Local Ethereum node for development
+- **Chisel** - Solidity REPL
 
 Verify the installation by running:
 
@@ -66,9 +75,9 @@ $ cast --version
 $ anvil --version
 ```
 
-* **Tip 1:** If you are using Windows, we strongly recommend using Windows Subsystem for Linux (WSL) to follow this guide. For more information, refer to the [official documentation](https://learn.microsoft.com/en-us/windows/wsl/about).
+- **Tip 1:** If you are using Windows, we strongly recommend using Windows Subsystem for Linux (WSL) to follow this guide. For more information, refer to the [official documentation](https://learn.microsoft.com/en-us/windows/wsl/about).
     
-* **Tip 2:** If you are using Visual Studio Code, consider installing the [Hardhat Solidity Extension](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity). This extension helps your development process by providing features like syntax highlighting, code completion, etc.
+- **Tip 2:** If you are using Visual Studio Code, consider installing the [Hardhat Solidity Extension](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity). This extension helps your development process by providing features like syntax highlighting, code completion, etc.
 
 ### Creating a New Foundry Project
 
@@ -78,15 +87,15 @@ Create an empty working directory and then run the following command to initiali
 $ forge init --no-git --force
 ```
 
-* `--force` - Create the project even if the specified root directory is not empty.
-* `--no-git` - Do not create a git repository.
+- `--force` Create the project even if the specified root directory is not empty.
+- `--no-git` Do not create a git repository.
 
 This will create a new project in the current directory with the default template, which includes:
-* `src/` - Directory for your smart contracts
-* `test/` - Directory for your test files
-* `script/` - Directory for your deployment scripts
-* `foundry.toml` - Configuration file
-* `lib/` - Directory for dependencies, with forge-std pre-installed
+- `src/` - Directory for your smart contracts
+- `test/` - Directory for your test files
+- `script/` - Directory for your deployment scripts
+- `foundry.toml` - Configuration file
+- `lib/` - Directory for dependencies, with forge-std pre-installed
 
 The initialization also creates example files: `Counter.sol` - Example smart contract, `Counter.s.sol` - Example deployment script, `Counter.t.sol` - Example test file. You can delete these example files if you want to start fresh.
 
@@ -94,7 +103,7 @@ For more information, see the [forge init command documentation](https://book.ge
 
 ## Task: Writing Your First Smart Contract
 
-Start by creating a new file called `Greeter.sol` in the `src/` directory. Paste the code below into the file and take a minute to read the code.
+Start by creating a new file called `Greeter.sol` in the `src/` directory. 
 
 ```solidity
 // File: src/Greeter.sol
@@ -178,10 +187,10 @@ contract GreeterTest is Test {
 ```
 
 In Foundry:
-* Test contracts inherit from `Test` which provides utilities like assertions
-* The `setUp()` function runs before each test (similar to "beforeEach" in other testing frameworks)
-* Test functions start with `test_` prefix
-* `assertEq()` and other assertion functions verify values match expected outcomes
+- Test contracts inherit from `Test` which provides utilities like assertions
+- The `setUp()` function runs before each test (similar to "beforeEach" in other testing frameworks)
+- Test functions start with `test_` prefix
+- `assertEq()` and other assertion functions verify values match expected outcomes
 
 ### Running the Test
 
@@ -221,14 +230,14 @@ Once you have programmed and tested your smart contract, you want to deploy it t
 
 In order to finish this task, you will need the following tools:
 
-* **MetaMask**: A popular Ethereum wallet that allows you to interact with the Ethereum blockchain. You can download the MetaMask extension for your browser from the [official website](https://metamask.io/) and set it up. But you can also use other Ethereum wallets or simply create your own private-public key pair.
+- **MetaMask**: A popular Ethereum wallet that allows you to interact with the Ethereum blockchain. You can download the MetaMask extension for your browser from the [official website](https://metamask.io/) and set it up. But you can also use other Ethereum wallets or simply create your own private-public key pair.
     
-* **Infura API Key**: Infura provides access to Ethereum nodes without the need to run your own. Sign up at [Infura](https://infura.io/) to obtain an API key.
+- **Infura API Key**: Infura provides access to Ethereum nodes without the need to run your own. Sign up at [Infura](https://infura.io/) to obtain an API key.
     
-* **Sepolia Faucet**: Acquire Sepolia test Ether from a faucet to fund your deployment. Even on testnets, you'll need testnet ETH to pay for gas fees. Make sure you have enough Sepolia ETH (0.01 Sepolia ETH should be sufficent for this exercise) in your wallet before deployment. Gas prices fluctuate based on network congestion, even on testnets. Some reliable faucets include:
-  * [**Google Cloud Web3**](https://cloud.google.com/application/web3/faucet/ethereum/sepolia) (needs only Google account)
-  * [Metamask Sepolia Faucet](https://docs.metamask.io/developer-tools/faucet/) (needs some ETH on mainnet)
-  * [Alchemy Sepolia Faucet](https://www.alchemy.com/faucets/ethereum-sepolia) (needs some ETH on mainer)
+- **Sepolia Faucet**: Acquire Sepolia test Ether from a faucet to fund your deployment. Even on testnets, you'll need testnet ETH to pay for gas fees. Make sure you have enough Sepolia ETH (0.01 Sepolia ETH should be sufficent for this exercise) in your wallet before deployment. Gas prices fluctuate based on network congestion, even on testnets. Some reliable faucets include:
+  - [Google Cloud Web3](https://cloud.google.com/application/web3/faucet/ethereum/sepolia) (needs only Google account)
+  - [Metamask Sepolia Faucet](https://docs.metamask.io/developer-tools/faucet/) (needs some ETH on mainnet)
+  - [Alchemy Sepolia Faucet](https://www.alchemy.com/faucets/ethereum-sepolia) (needs some ETH on mainnet)
 
 ### Creating a Deployment Script
 
@@ -264,28 +273,28 @@ contract DeployGreeter is Script {
 ```
 
 In Foundry:
-* Deployment scripts inherit from the `Script` contract
-* The `run()` function contains the deployment logic
-* `vm.startBroadcast()` and `vm.stopBroadcast()` wrap the transactions that should be sent to the network
+- Deployment scripts inherit from the `Script` contract
+- The `run()` function contains the deployment logic
+- `vm.startBroadcast()` and `vm.stopBroadcast()` wrap the transactions that should be sent to the network
 
 ### Configuring Foundry for Sepolia Deployment
 
 To deploy your smart contract to the Sepolia testnet, you need to configure Foundry with the network details and your wallet credentials.
 
-**Storing Sensitive Information**
+#### Storing Sensitive Information
 
 It's crucial to keep sensitive information like your private key and Infura API key secure. We recommend using environment variables to manage these credentials only for the purpose of this exercise.
 
-* Create a `.env` file in your project root:
+- Create a `.env` file in your project root:
 
 ```bash
 SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY
 PRIVATE_KEY=YOUR_PRIVATE_KEY_WITHOUT_0x_PREFIX
 ```
 
-Replace the placeholders with your actual values. **Warning**: Never commit your `.env` file to version control. Add it to `.gitignore` to prevent accidental exposure of your private keys. Never use your private key associated with real money in plain text!
+**Warning**: Never commit your `.env` file to version control. Add it to `.gitignore` to prevent accidental exposure of your private keys. Never use your private key associated with real money in plain text!
 
-**Updating `foundry.toml`**
+#### Updating `foundry.toml`
 
 Modify your `foundry.toml` file to include the Sepolia network configuration:
 
@@ -337,7 +346,7 @@ Sequence #1 on sepolia | Total Paid: 0.005612595526892397 ETH
 (168229 gas * avg 33.362829993 gwei)
 ```
 
-You can verify the deployment by visiting the Sepolia Etherscan explorer and searching for your contract address: https://sepolia.etherscan.io/address/<ContractAddress>. Search also for your account address and see your interactions with the deployed contract.
+You can verify the deployment by visiting the Sepolia Etherscan explorer and searching for your contract address: [https://sepolia.etherscan.io/address/<ContractAddress>](https://sepolia.etherscan.io/address/<ContractAddress>). Search also for your account address and see your interactions with the deployed contract.
 
 ### Interacting with Your Deployed Contract
 
@@ -370,9 +379,9 @@ Hello, Blockchain World!
 
 For more detailed information, refer to the following resources:
 
-* [Solidity Documentation](https://docs.soliditylang.org/en/latest/)
-* [Foundry Book](https://book.getfoundry.sh/)
-* [Solidity by Example](https://solidity-by-example.org/)
-* [Forge Standard Library](https://github.com/foundry-rs/forge-std)
+- [Solidity Documentation](https://docs.soliditylang.org/en/latest/)
+- [Foundry Book](https://book.getfoundry.sh/)
+- [Solidity by Example](https://solidity-by-example.org/)
+- [Forge Standard Library](https://github.com/foundry-rs/forge-std)
 
 Congratulations! You have successfully deployed your first smart contract to the live blockchain network! Stay tuned for the upcoming exercises!

@@ -101,7 +101,7 @@ This option uses Docker to create a development environment with all the necessa
 \subsubsection*{Setting Up the Project:}
 
 \begin{enumerate}
-  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/01-Hello-Blockchain-World/task/task-code}{GitLab repository} and clone it to your local machine.
+  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/foundry/01-Hello-Blockchain-World/task/task-code}{GitLab repository} and clone it to your local machine.
   \item Open the repository folder in VS Code.
   \item When prompted, click "Reopen in Container" or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
@@ -116,21 +116,29 @@ If you prefer working directly on your machine without Docker, you can set up th
 \subsubsection*{Prerequisites}
 \begin{itemize}
     \item \textbf{Rust Toolchain} - Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using \href{https://rustup.rs/}{rustup.rs}.
+    \item \textbf{Bun} - JavaScript runtime \& toolkit for installing dependencies and running scripts. Install it from \href{https://bun.sh/}{bun.sh}.
 \end{itemize}
 
 \noindent
-Open your terminal and run the following command to verify the Rust installation:
+If you don't have Rust installed, you can install it using:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+\end{minted}
+
+\noindent
+To install Bun, use the following command:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ curl -fsSL https://bun.sh/install | bash
+\end{minted}
+
+\noindent
+Open your terminal and run the following command to verify the Rust and Bun installation:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ rustc --version
 $ cargo --version
-\end{minted}
-
-\noindent
-Both commands should return the installed version numbers of Rust and Cargo respectively. If you don't have Rust installed, you can install it using:
-
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+$ bun --version
 \end{minted}
 
 \subsubsection*{Installing Foundry}

@@ -1,15 +1,22 @@
 {
     "name": "01-hello-blockchain-world",
     "version": "1.0.0",
-    "directories": {
-      "test": "test",
-      "scripts": "scripts"
-    },
+    "description": "Educational exercise for Solidity smart contract development.",
     "author": "Lukas Radovansky",
     "license": "MIT",
-    "description": "Educational exercise for Solidity learning.",
+    "directories": {
+        "test": "test",
+        "scripts": "scripts"
+    },
+    "keywords": [
+        "blockchain",
+        "solidity",
+        "smart-contracts",
+        "ethereum",
+        "foundry",
+        "tutorial"
+    ],
     "devDependencies": {
         "forge-std": "github:foundry-rs/forge-std#v1.8.1"
     }
-  }
-  
+}
