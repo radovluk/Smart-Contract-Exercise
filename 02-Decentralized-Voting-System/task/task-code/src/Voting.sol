@@ -48,7 +48,7 @@ contract Voting {
      * @param name The name of the candidate added.
      * @param index The index of the newly added candidate.
      */
-    // TODO: Create an event to emit when a new candidate is added
+    event CandidateAdded(string name, uint indexed index);
 
     /**
      * @dev Custom errors for descriptive failure messages

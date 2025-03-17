@@ -106,50 +106,87 @@ This option uses Docker to create a development environment with all the necessa
 \subsubsection*{Setting Up the Project:}
 
 \begin{enumerate}
-  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads}{GitLab repository} and clone it to your local machine.
+  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/foundry/02-Decentralized-Voting-System/task/task-code}{GitLab repository} and clone it to your local machine.
   \item Open the repository folder in VS Code.
   \item When prompted, click "Reopen in Container" or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
 
 \subsection{Local Setup}
 
-If you prefer working directly on your machine without Docker, you can set up the development environment locally.
+If you prefer working directly on your machine without Docker, you can set up the development environment locally. Before setting up Foundry, ensure that you have the following installed on your system:
 
 \subsubsection*{Prerequisites}
 \begin{itemize}
-    \item \textbf{Node.js} - \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
-    \item \textbf{NPM}: Node Package Manager, which comes with Node.js.
+    \item \textbf{Rust Toolchain} - Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using \href{https://rustup.rs/}{rustup.rs}.
+    \item \textbf{Bun} - JavaScript runtime \& toolkit for installing dependencies and running scripts. Install it from \href{https://bun.sh/}{bun.sh}.
 \end{itemize}
 
 \noindent
-Open your terminal and run the following commands to verify the installations:
+If you don't have Rust installed, you can install it using:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ node -v
-$ npm -v
+$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 \end{minted}
 
-Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
+\noindent
+To install Bun, use the following command:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ curl -fsSL https://bun.sh/install | bash
+\end{minted}
+
+\noindent
+Open your terminal and run the following command to verify the Rust and Bun installation:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ rustc --version
+$ cargo --version
+$ bun --version
+\end{minted}
+
+\subsubsection*{Installing Foundry}
+You can install Foundry using Foundryup, the official installer:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ curl -L https://foundry.paradigm.xyz | bash
+$ foundryup
+\end{minted}
+
+\noindent
+This will install the Foundry toolkit, including:
+\begin{itemize}
+    \item \textbf{Forge} - Testing framework for Ethereum
+    \item \textbf{Cast} - Command-line tool for interacting with smart contracts
+    \item \textbf{Anvil} - Local Ethereum node for development
+    \item \textbf{Chisel} - Solidity REPL
+\end{itemize}
+
+Verify the installation by running:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ forge --version
+$ cast --version
+$ anvil --version
+\end{minted}
 
 \subsubsection*{Setting Up the Project}
 
 \begin{enumerate}
-    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads}{GitLab repository} and clone it to your local machine.
+    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/foundry/02-Decentralized-Voting-System/task/task-code}{GitLab repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
-    \item Install the project dependencies by running \codegrey{npm install}.
+    \item Install the project dependencies by running \codegrey{bun install}.
 \end{enumerate}
 
 \section{Task Specification: Voting Contract}
 
-Your implementation will be in the file \texttt{contracts/Voting.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To fulfill this task, you need to pass all the provided tests. You can run the tests with the following command:
+Your implementation will be in the file \texttt{src/Voting.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To fulfill this task, you need to pass all the provided tests. You can run the tests with the following command:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-  $ npx hardhat test
+  $ forge test
 \end{minted}
 
-There is also a deployment script in the \texttt{scripts} folder. You can deploy the contract to the local Hardhat network with the following command:
+There is also a deployment script in the \texttt{script} folder. You can deploy the contract to the local foundry network with the following command:
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-  $ npx hardhat run scripts/deploy.js
+  $ forge script script/Deploy.s.sol
 \end{minted}
 
 \subsection{Overview}
@@ -173,6 +210,8 @@ The \textbf{Voting} contract is designed to facilitate a decentralized voting sy
 
 State variables are used to store data permanently on the blockchain. They represent the contract's state and can be accessed and modified by the contract's functions.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   // Address of the contract owner
   address public owner;
@@ -183,11 +222,14 @@ State variables are used to store data permanently on the blockchain. They repre
   // Mapping to track whether an address has already voted
   mapping(address => bool) public hasVoted;
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Structs}
 
 Structs are custom data types that allow you to group related data together. They are useful for organizing complex data structures within the contract.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   /**
   * @dev Struct to represent a candidate.
@@ -199,22 +241,28 @@ Structs are custom data types that allow you to group related data together. The
      uint voteCount;
   }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Constructor}
 
 The constructor is a special function that runs once during the contract's deployment and cannot be invoked later.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   constructor() {
     // The deployer of the contract is the owner
     owner = msg.sender;
   }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Events}
 
 Events are used to log information on the blockchain that can be accessed by off-chain applications. They are essential for tracking contract activities and facilitating interactions with the user interface.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   /**
   * @dev Event emitted when a vote is cast.
@@ -229,11 +277,14 @@ Events are used to log information on the blockchain that can be accessed by off
   */
  event CandidateAdded(string name);
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Errors}
 
 Errors allow developers to provide more information to the caller about why a condition or operation failed. Errors are used together with the revert statement or require function. On failure, they abort and revert \textbf{all} changes made by the transaction.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   /// Only the owner can call this function.
   error NotOwner();
@@ -246,11 +297,14 @@ Errors allow developers to provide more information to the caller about why a co
   // revert statement
   revert EmptyCandidateName();
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Modifiers}
 
 Modifiers are used to change the behavior of functions in a declarative way. They can enforce rules or conditions before executing a function's code.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   // Modifier to restrict access to the contract owner
   modifier onlyOwner() {
@@ -262,6 +316,7 @@ Modifiers are used to change the behavior of functions in a declarative way. The
     // Only the contract owner can call this function
   }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Functions}
 
@@ -270,6 +325,8 @@ Functions define the behavior of the contract. They can read and modify the cont
 \subsubsection*{Useful Code Snippets}
 Here are some useful code snippets you might need:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Sender of the transaction
 address sender = msg.sender;
@@ -289,6 +346,7 @@ address emptyAddress = address(0);
 // Emit an event
 emit EventName(parameters);
 \end{lstlisting}
+\end{minipage}
 
 \section{More Solidity Concepts}
 
@@ -297,6 +355,8 @@ This extra section covers additional Solidity concepts that are useful for devel
 \subsubsection*{Function Types and Visibility}
 Functions in Solidity can have different visibility modifiers that determine how and where they can be called from:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Public functions can be called internally or via messages
 function publicFunction() public returns (uint) {
@@ -323,10 +383,14 @@ function pureFunction(uint a, uint b) public pure returns (uint) {
   return a + b;
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Function Modifiers with Parameters}
 
 Modifiers can also accept parameters, making them more flexible:
+
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Modifier with parameters
 modifier onlyRole(bytes32 role) {
@@ -341,7 +405,10 @@ function moderatorFunction() public onlyRole(MODERATOR_ROLE) {
 // Only addresses with moderator role can call this
 }
 \end{lstlisting}
+\end{minipage}
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \subsubsection*{Advanced Data Structures}
 
 Solidity supports several advanced data structures that help organize complex data:
@@ -371,6 +438,7 @@ function setStatus(Status newStatus) public {
 
 \subsubsection*{Memory Management in Solidity}
 
+
 \begin{lstlisting}[language=Solidity]
 // Storage - persisted between function calls (expensive)
 uint[] public storageArray;
@@ -396,7 +464,11 @@ function readOnlyProcess(uint[] calldata calldataArray) external {
   }
 }
 \end{lstlisting}
+\end{minipage}
 
+
+\noindent
+\begin{minipage}[c]{\textwidth}
 \subsubsection*{Error Handling}
 Solidity provides several mechanisms for error handling:
 
@@ -430,10 +502,13 @@ function withdraw(uint amount) public {
   payable(msg.sender).transfer(amount);
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Gas Optimization Techniques}
 Gas optimization is crucial for cost-effective smart contracts:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Use uint256 instead of smaller sizes (usually)
 uint256 public largeNumber; // Often cheaper than uint8, uint16, etc.
@@ -457,10 +532,13 @@ function readOnlyOperation(string calldata text) external pure returns (uint) {
   return bytes(text).length;
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Events and Logging}
 Events are crucial for offchain services and DApp frontends:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Simple event with basic data
 event Transfer(address indexed from, address indexed to, uint amount);
@@ -495,7 +573,10 @@ function runProcess(uint processId) public {
   emit ProcessCompleted(processId, true);
 }
 \end{lstlisting}
+\end{minipage}
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \subsubsection*{Inheritance and Contract Interaction}
 Solidity supports contract inheritance and interfaces:
 
@@ -549,7 +630,10 @@ contract VotingClient {
   }
 }
 \end{lstlisting}
+\end{minipage}
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \subsubsection*{Using Modifiers Effectively}
 
 Modifiers can be combined and chained for complex access control:
@@ -597,6 +681,7 @@ contract VotingWithRoles {
   }
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 To see some more advanced smart contract examples, visit the \href{https://docs.soliditylang.org/en/latest/solidity-by-example.html}{Solidity by Example} section of the Solidity documentation.

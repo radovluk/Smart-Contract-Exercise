@@ -1,21 +1,24 @@
 {
-    "name": "Smart Contract Exercise Development",
+    "name": "Foundry Development",
     "build": {
-      "dockerfile": "Dockerfile",
-      "context": "."
+        "dockerfile": "Dockerfile",
+        "context": "."
     },
     "customizations": {
-      "vscode": {
-        "extensions": [
-          "nomicfoundation.hardhat-solidity",
-          "NomicFoundation.hardhat-vscode"
-        ],
-        "settings": {
-          "solidity.compileUsingRemoteVersion": "0.8.28"
+        "vscode": {
+            "extensions": [
+                "JuanBlanco.solidity",
+                "nomicfoundation.hardhat-solidity",
+                "esbenp.prettier-vscode"
+            ],
+            "settings": {
+                "editor.formatOnSave": true,
+                "solidity.formatter": "prettier",
+                "solidity.compileUsingRemoteVersion": "latest"
+            }
         }
-      }
     },
-    "postCreateCommand": "npm install",
-    "remoteUser": "node",
-    "forwardPorts": [8545]
-  }
+    "forwardPorts": [],
+    "postCreateCommand": "forge --version && anvil --version && cast --version && node --version && npm --version && npm install",
+    "remoteUser": "root"
+}

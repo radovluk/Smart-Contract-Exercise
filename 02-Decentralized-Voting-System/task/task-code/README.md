@@ -4,60 +4,92 @@
 
 In this exercise, you will implement a smart contract of a decentralized voting system on the blockchain. The goal of this exercise is to familiarize yourself with the basics of the Solidity language.
 
-## Project Setup
+### Project Setup
 
 You have two options for working with this exercise. Using docker container or local installation. Choose the one that best fits your preferences.
 
-### Using Docker with VS Code
+## Using Docker with VS Code
 
 This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
 
-**Prerequisites:**
+### Prerequisites:
 
 - **[Docker](https://www.docker.com/products/docker-desktop)** - A platform for developing, shipping, and running applications in containers.
 - **[Visual Studio Code](https://code.visualstudio.com/)** - A lightweight but powerful source code editor.
 - **[Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)** - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
 
-**Setting Up the Project:**
+### Setting Up the Project:
 
-1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads) and clone it to your local machine.
+1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/foundry/02-Decentralized-Voting-System/task/task-code) and clone it to your local machine.
 2. Open the repository folder in VS Code.
 3. When prompted, click "Reopen in Container" or use the command palette (F1) and run `Dev Containers: Reopen in Container`.
 
-### Local Setup
+## Local Setup
 
-If you prefer working directly on your machine without Docker, you can set up the development environment locally.
+If you prefer working directly on your machine without Docker, you can set up the development environment locally. Before setting up Foundry, ensure that you have the following installed on your system:
 
-**Prerequisites:**
-- **Node.js** - https://nodejs.org/en/ - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
-- **NPM**: Node Package Manager, which comes with Node.js.
+### Prerequisites
+- **Rust Toolchain** - Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using [rustup.rs](https://rustup.rs/).
+- **Bun** - JavaScript runtime & toolkit for installing dependencies and running scripts. Install it from [bun.sh](https://bun.sh/).
 
-Open your terminal and run the following commands to verify the installations:
+If you don't have Rust installed, you can install it using:
 
 ```bash
-$ node -v
-$ npm -v
+$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
+To install Bun, use the following command:
+```bash
+$ curl -fsSL https://bun.sh/install | bash
+```
 
-**Setting Up the Project:**
+Open your terminal and run the following command to verify the Rust and Bun installation:
 
-1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads) and clone it to your local machine.
+```bash
+$ rustc --version
+$ cargo --version
+$ bun --version
+```
+
+### Installing Foundry
+You can install Foundry using Foundryup, the official installer:
+
+```bash
+$ curl -L https://foundry.paradigm.xyz | bash
+$ foundryup
+```
+
+This will install the Foundry toolkit, including:
+- **Forge** - Testing framework for Ethereum
+- **Cast** - Command-line tool for interacting with smart contracts
+- **Anvil** - Local Ethereum node for development
+- **Chisel** - Solidity REPL
+
+Verify the installation by running:
+
+```bash
+$ forge --version
+$ cast --version
+$ anvil --version
+```
+
+### Setting Up the Project
+
+1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/foundry/02-Decentralized-Voting-System/task/task-code) and clone it to your local machine.
 2. Open a terminal and navigate to the project directory.
-3. Install the project dependencies by running `npm install`.
+3. Install the project dependencies by running `bun install`.
 
 ## Task Specification: Voting Contract
 
-Your implementation will be in the file `contracts/Voting.sol`. In this file, there are #TODO comments where you should implement the required functionality. To fulfill this task, you need to pass all the provided tests. You can run the tests with the following command:
+Your implementation will be in the file `src/Voting.sol`. In this file, there are #TODO comments where you should implement the required functionality. To fulfill this task, you need to pass all the provided tests. You can run the tests with the following command:
 
 ```bash
-$ npx hardhat test
+$ forge test
 ```
 
-There is also a deployment script in the `scripts` folder. You can deploy the contract to the local Hardhat network with the following command:
+There is also a deployment script in the `script` folder. You can deploy the contract to the local foundry network with the following command:
 ```bash
-$ npx hardhat run scripts/deploy.js
+$ forge script script/Deploy.s.sol
 ```
 
 ### Overview
@@ -96,10 +128,10 @@ Structs are custom data types that allow you to group related data together. The
 
 ```solidity
 /**
-* @dev Struct to represent a candidate.
-* @param name The name of the candidate.
-* @param voteCount The number of votes the candidate has received.
-*/
+ * @dev Struct to represent a candidate.
+ * @param name The name of the candidate.
+ * @param voteCount The number of votes the candidate has received.
+ */
 struct Candidate {
     string name;
     uint voteCount;
@@ -123,16 +155,16 @@ Events are used to log information on the blockchain that can be accessed by off
 
 ```solidity
 /**
-* @dev Event emitted when a vote is cast.
-* @param voter The address of the voter.
-* @param candidateIndex The index of the candidate voted for.
-*/
+ * @dev Event emitted when a vote is cast.
+ * @param voter The address of the voter.
+ * @param candidateIndex The index of the candidate voted for.
+ */
 event Voted(address indexed voter, uint indexed candidateIndex);
 
 /**
-* @dev Event emitted when a new candidate is added.
-* @param name The name of the candidate to be added.
-*/
+ * @dev Event emitted when a new candidate is added.
+ * @param name The name of the candidate to be added.
+ */
 event CandidateAdded(string name);
 ```
 
@@ -169,12 +201,7 @@ function addCandidate(string memory name) public onlyOwner {
 }
 ```
 
-#### Functions
-
-Functions define the behavior of the contract. They can read and modify the contract's state, perform computations, and interact with other contracts or external systems.
-
 #### Useful Code Snippets
-Here are some useful code snippets you might need:
 
 ```solidity
 // Sender of the transaction
@@ -201,7 +228,6 @@ emit EventName(parameters);
 This extra section covers additional Solidity concepts that are useful for developing smart contracts, including more detailed function examples, visibility, and advanced data types. It is not needed to complete the exercise.
 
 ### Function Types and Visibility
-Functions in Solidity can have different visibility modifiers that determine how and where they can be called from:
 
 ```solidity
 // Public functions can be called internally or via messages
@@ -232,7 +258,6 @@ function pureFunction(uint a, uint b) public pure returns (uint) {
 
 ### Function Modifiers with Parameters
 
-Modifiers can also accept parameters, making them more flexible:
 ```solidity
 // Modifier with parameters
 modifier onlyRole(bytes32 role) {
@@ -249,8 +274,6 @@ function moderatorFunction() public onlyRole(MODERATOR_ROLE) {
 ```
 
 ### Advanced Data Structures
-
-Solidity supports several advanced data structures that help organize complex data:
 
 ```solidity
 // Nested mappings for complex relationships
@@ -304,7 +327,6 @@ function readOnlyProcess(uint[] calldata calldataArray) external {
 ```
 
 ### Error Handling
-Solidity provides several mechanisms for error handling:
 
 ```solidity
 // Using require for input validation
@@ -338,7 +360,6 @@ function withdraw(uint amount) public {
 ```
 
 ### Gas Optimization Techniques
-Gas optimization is crucial for cost-effective smart contracts:
 
 ```solidity
 // Use uint256 instead of smaller sizes (usually)
@@ -365,7 +386,6 @@ function readOnlyOperation(string calldata text) external pure returns (uint) {
 ```
 
 ### Events and Logging
-Events are crucial for offchain services and DApp frontends:
 
 ```solidity
 // Simple event with basic data
@@ -403,7 +423,6 @@ function runProcess(uint processId) public {
 ```
 
 ### Inheritance and Contract Interaction
-Solidity supports contract inheritance and interfaces:
 
 ```solidity
 // Base contract
@@ -457,8 +476,6 @@ contract VotingClient {
 ```
 
 ### Using Modifiers Effectively
-
-Modifiers can be combined and chained for complex access control:
 
 ```solidity
 // Multiple modifiers
