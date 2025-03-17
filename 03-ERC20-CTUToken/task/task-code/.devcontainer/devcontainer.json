@@ -19,6 +19,6 @@
         }
     },
     "forwardPorts": [],
-    "postCreateCommand": "forge --version && anvil --version && cast --version && node --version && npm --version && npm install",
+    "postCreateCommand": "forge --version && anvil --version && cast --version && bun --version && bun install",
     "remoteUser": "root"
 }

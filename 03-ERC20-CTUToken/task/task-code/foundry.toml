@@ -4,4 +4,3 @@ out = "out"
 libs = ["lib"]
 solc = "0.8.28"
 [rpc_endpoints]
-sepolia = "${SEPOLIA_RPC_URL}"
