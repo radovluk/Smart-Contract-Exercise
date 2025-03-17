@@ -2,21 +2,21 @@
 
 ## Introduction
 
-Tokens in the Ethereum ecosystem are smart contracts that implement a standardized interface. They are designed to represent various assets digitally. These assets can range from financial instruments like company shares and stablecoins (e.g., USDC, DAI) to governance tokens that allow holders to vote on decisions in decentralized projects (e.g., Uniswap's UNI). Tokens can also enable artists to tokenize their works and sell them as unique digital items (NFTs), represent collectibles in games, or are used for digital identity or access to services. Depending on the use case, there are different types of tokens, each serving distinct purposes. Below are three common types of tokens:
+Tokens in the Ethereum ecosystem are smart contracts that implement a standardized interface. They are designed to represent various assets digitaly. These assets can range from financial instruments like company shares and stablecoins (e.g., USDC, DAI) to governance tokens that allow holders to vote on decisions in decentralized projects (e.g., Uniswap's UNI). Tokens can also enable artists to tokenize their works and sell them as unique digital items (NFTs), represent collectibles in games, or are used for digital identity or access to services. Depending on the use case, there are different types of tokens, each serving distinct purposes. Below are three common types of tokens:
 
 1. **Fungible Tokens**
 
-   Fungible tokens ([ERC-20 Tokens](https://eips.ethereum.org/EIPS/eip-20)) are interchangeable and have exactly the same value. Each unit of a fungible token is identical to another unit. Examples are cryptocurrencies, utility tokens or governance tokens.
+   Fungible tokens ([*ERC-20 Tokens*](https://eips.ethereum.org/EIPS/eip-20)) are interchangeable and have exactly the same value. Each unit of a fungible token is identical to another unit. Examples are cryptocurrencies, utility tokens or governance tokens.
 
 2. **Non-Fungible Tokens (NFTs)**
 
-   Non-fungible tokens ([ERC-721 Tokens](https://eips.ethereum.org/EIPS/eip-721)) are unique and cannot be exchanged on a one-to-one basis. They are used to represent ownership of unique items such as digital art, collectibles, and real estate. Each token is uniquely identifiable by an ID.
+   Non-fungible tokens ([*ERC-721 Tokens*](https://eips.ethereum.org/EIPS/eip-721)) are unique and cannot be exchanged on a one-to-one basis. They are used to represent ownership of unique items such as digital art, collectibles, and real estate. Each token is uniquely identifiable by an ID.
 
 3. **Multi-Tokens**
 
-   Multi-tokens ([ERC-1155 Tokens](https://eips.ethereum.org/EIPS/eip-1155)) combine the properties of both fungible and non-fungible tokens. They allow for the creation of multiple token types within a single contract, providing flexibility for various use cases.
+   Multi-tokens ([*ERC-1155 Tokens*](https://eips.ethereum.org/EIPS/eip-1155)) combine the properties of both fungible and non-fungible tokens. They allow for the creation of multiple token types within a single contract, providing flexibility for various use cases.
 
-In this exercise, you will create your own ERC-20 token contract according to the specified standard, and then you will attempt to hack it.
+In this exercise, you'll create your own ERC-20 token contract following the specified standard, and then attempt to hack it. For more information about tokens, check out this animated video: [What Are NFTs and How Can They Be Used in Decentralized Finance?](https://www.youtube.com/watch?v=Xdkkux6OxfM) You'll also work with your own NFTs in future exercises.
 
 ## Project Setup
 
@@ -28,9 +28,9 @@ This option uses Docker to create a development environment with all the necessa
 
 #### Prerequisites:
 
-- [Docker](https://www.docker.com/products/docker-desktop) - A platform for developing, shipping, and running applications in containers.
-- [Visual Studio Code](https://code.visualstudio.com/) - A lightweight but powerful source code editor.
-- [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
+- **[Docker](https://www.docker.com/products/docker-desktop)** - A platform for developing, shipping, and running applications in containers.
+- **[Visual Studio Code](https://code.visualstudio.com/)** - A lightweight but powerful source code editor.
+- **[Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)** - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
 
 #### Setting Up the Project:
 
@@ -99,7 +99,8 @@ event Approval(address indexed _owner, address indexed _spender, uint256 _value)
 
 ### OpenZeppelin
 
-[OpenZeppelin](https://www.openzeppelin.com/) provides an open-source library for secure smart contract development. It is built on a solid foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by OpenZeppelin can be found [here](https://docs.openzeppelin.com/contracts/4.x/). The actual implementations of the contracts are available on [GitHub](https://github.com/OpenZeppelin/openzeppelin-contracts). OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official EIP20 documentation. You can find the implementation [here](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol). It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
+[OpenZeppelin](https://www.openzeppelin.com/) provides an open-source library for secure smart contract development. It is built on a solid
+foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by OpenZeppelin can be found [here](https://docs.openzeppelin.com/contracts/4.x/). The actual implementations of the contracts are available on [GitHub](https://github.com/OpenZeppelin/openzeppelin-contracts). OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official EIP20 documentation. You can find the implementation [here](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol). It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -187,18 +188,18 @@ $ npx hardhat test
 
 Did your contract pass all the tests? Congratulations! It is now fully tested and ready for deployment to the mainnet. But is it really?
 
-When you initiate a transaction, it is first sent to the public mempool, where it becomes visible to everyone. To have your transaction included in the blockchain by a miner or validator, you must offer a fee. Miners or validators typically select transactions based on the potential profit rather than the order of initiation. As a result, transactions submitted earlier may be included later, and those submitted later may be included sooner.
+When you submit a transaction, it first enters the public mempool where anyone can see it. To get your transaction included in the blockchain, you need to pay a fee to validators. Validators typically choose transactions that offer the highest profit rather than processing them in chronological order. This means transactions submitted earlier might be included later, while those submitted more recently could be processed sooner. Note: this is a simplified explanation - we'll cover this topic more thoroughly in a future exercise about MEV.
 
 The following table shows the attack vector for our CTU Token smart contract, where the attacker Bob manages to steal CTU tokens from Alice due to a frontrunning attack.
 
-| Step | Actor | Action | Description |
-|------|-------|--------|-------------|
-| 1 | Alice | Approve Bob | Alice approves Bob to spend 100 CTU tokens on her behalf using the `approve` function. |
+| **Step** | **Actor** | **Action** | **Description** |
+|----------|-----------|------------|-----------------|
+| 1 | Alice | Approve Bob | Alice approves Bob to spend 100 CTU tokens on her behalf using the **`approve`** function. |
 | 2 | Bob | Monitor Mempool | Bob monitors the mempool for pending transactions, specifically looking for Alice's approval transaction. |
-| 3 | Alice | Change Approval | Alice decides to change Bob's allowance from 100 CTU to 200 CTU and initiates a new `approve` transaction. |
-| 4 | Bob | Frontrun Transaction | Upon detecting Alice's new approval transaction in the mempool, Bob quickly submits a `transferFrom` transaction to utilize the existing 100 CTU allowance before Alice's transaction is mined. Bob sets a higher gas price to prioritize his transaction. |
-| 5 | Network | Transaction Ordering | Due to the higher gas price, Bob's `transferFrom` transaction is mined before Alice's new `approve` transaction. This allows Bob to transfer 100 CTU tokens before the allowance is updated. |
-| 6 | Alice | Approval Mined | Alice's `approve` transaction is mined, increasing Bob's allowance to 200 CTU. |
+| 3 | Alice | Change Approval | Alice decides to change Bob's allowance from 100 CTU to 200 CTU and initiates a new **`approve`** transaction. |
+| 4 | Bob | Frontrun Transaction | Upon detecting Alice's new approval transaction in the mempool, Bob quickly submits a **`transferFrom`** transaction to utilize the existing 100 CTU allowance before Alice's transaction is mined. Bob sets a higher gas price to prioritize his transaction. |
+| 5 | Network | Transaction Ordering | Due to the higher gas price, Bob's **`transferFrom`** transaction is mined before Alice's new **`approve`** transaction. This allows Bob to transfer 100 CTU tokens before the allowance is updated. |
+| 6 | Alice | Approval Mined | Alice's **`approve`** transaction is mined, increasing Bob's allowance to 200 CTU. |
 | 7 | Bob | Exploit Increased Allowance | Bob now has an increased allowance of 200 CTU and can transfer an additional 200 CTU from Alice's account, totaling 300 CTU gained. |
 
 Review the file `scripts/attack.js` where this attack is implemented and understand it. Then run the attack using the command

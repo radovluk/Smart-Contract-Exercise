@@ -119,7 +119,7 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
     \end{figure}
   \end{enumerate}
 
-In this exercise, you will create your own ERC-20 token contract according to the specified standard, and then you will attempt to hack it.
+In this exercise, you'll create your own ERC-20 token contract following the specified standard, and then attempt to hack it. For more information about tokens, check out this animated video: \href{https://www.youtube.com/watch?v=Xdkkux6OxfM}{What Are NFTs and How Can They Be Used in Decentralized Finance?} You'll also work with your own NFTs in future exercises.
 
 \subsection*{Project Setup}
 
@@ -218,6 +218,8 @@ If a Smart Contract implements the following methods and events, it can be calle
 \href{https://www.openzeppelin.com/}{OpenZeppelin} provides an open-source library for secure smart contract development. It is built on a solid
 foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by OpenZeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official EIP20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -243,6 +245,7 @@ contract CTUToken is ERC20 {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \section{CTU Token}
 
@@ -323,7 +326,7 @@ To fulfill the exercise, you need to pass all the provided tests. You can run th
 
 Did your contract pass all the tests? Congratulations! It is now fully tested and ready for deployment to the mainnet. But is it really?
 
-When you initiate a transaction, it is first sent to the public mempool, where it becomes visible to everyone. To have your transaction included in the blockchain by a miner or validator, you must offer a fee. Miners or validators typically select transactions based on the potential profit rather than the order of initiation. As a result, transactions submitted earlier may be included later, and those submitted later may be included sooner.
+When you submit a transaction, it first enters the public mempool where anyone can see it. To get your transaction included in the blockchain, you need to pay a fee to validators. Validators typically choose transactions that offer the highest profit rather than processing them in chronological order. This means transactions submitted earlier might be included later, while those submitted more recently could be processed sooner. Note: this is a simplified explanation - we'll cover this topic more thoroughly in a future exercise about MEV.
 
 \begin{figure}[H]
 \centering
