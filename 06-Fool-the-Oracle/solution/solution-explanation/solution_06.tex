@@ -153,6 +153,8 @@ Inside the attacker contract (FlashLoanNFTAttacker.sol), the \texttt{onFlashLoan
 \item Repays the flash loan with interest
 \end{enumerate}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Flash loan callback function where the actual attack happens
 function onFlashLoan(
@@ -201,6 +203,8 @@ function onFlashLoan(
     return keccak256("ERC3156FlashBorrower.onFlashLoan");
 }
 \end{lstlisting}
+\end{minipage}
+
 
 \section*{Comment on Mitigation Strategies}
 Smart contracts relying on price oracles require robust protection against manipulation attacks like those demonstrated in these exercises. Effective mitigation approaches focus on making these attacks economically unfeasible.

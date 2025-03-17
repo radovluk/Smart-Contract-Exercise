@@ -151,6 +151,8 @@ Select \codegrey{Create an empty \texttt{hardhat.config.js}} with your keyboard 
 
 Start by creating a new directory inside your project called \texttt{contracts} and create a file inside the directory called \texttt{Greeter.sol}. Paste the code below into the file and take a minute to read the code.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // File: contracts/Greeter.sol
 
@@ -181,6 +183,7 @@ contract Greeter {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 The Greeter contract is a simple Solidity smart contract that stores a greeting message, initializes it during deployment, and allows users to retrieve it via a public function. To compile the contract, run \codeblack{npx hardhat compile} in your terminal.
 
@@ -219,6 +222,8 @@ For more information about plugins and how to test contracts in Hardhat, visit \
 
 Create a new directory named \texttt{test} in your project root and add a file called \texttt{Greeter.js} with the following content:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{minted}[frame=lines, bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // File: test/Greeter.js
 
@@ -248,6 +253,7 @@ describe("Greeter contract says Hello, Blockchain World!", function () {
   });
 });
 \end{minted}
+\end{minipage}
 
 \noindent
 \textbf{Note:} All exercises we will use \href{https://docs.ethers.org/v6/}{ethers.js v6}. If you're using an older version of ethers, the syntax may differ. For example, in ethers v5, you would use \\ \codegrey{await ethers.getContractFactory("Greeter")} and then \\ \codegrey{await greeterFactory.deploy(initialGreeting)} instead. Keep this in mind when encountering errors.
@@ -315,6 +321,8 @@ It's crucial to keep sensitive information like your private key and Infura API 
 
 Modify your \texttt{hardhat.config.js} file to include the Sepolia network configuration:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // File: hardhat.config.js
 
@@ -334,6 +342,7 @@ module.exports = {
   },
 };
 \end{minted}
+\end{minipage}
 
 This configuration tells Hardhat how to connect to the Sepolia testnet using your Infura API key and deploy contracts using your wallet's private key.
 
@@ -349,6 +358,8 @@ With the configuration in place, you're ready to deploy your smart contract to t
 \item 2. Add a Deployment Script: Inside the \texttt{scripts} directory, create a file named \texttt{deploy.js} and add the following content:
 \end{itemize}
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{minted}[frame=lines, bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // File: scripts/deploy.js
 
@@ -377,6 +388,7 @@ main()
         process.exit(1);
     });
 \end{minted}
+\end{minipage}
 
 \subsubsection{Executing the Deployment}
 

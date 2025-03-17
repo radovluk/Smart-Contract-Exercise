@@ -192,6 +192,8 @@ If a Smart Contract implements the following methods and events, it can be calle
 
 \subsubsection*{Methods}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
   function name() public view returns (string)
   function symbol() public view returns (string)
@@ -205,13 +207,17 @@ If a Smart Contract implements the following methods and events, it can be calle
   function allowance(address _owner, address _spender) 
     public view returns (uint256 remaining)  
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Events}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
   event Transfer(address indexed _from, address indexed _to, uint256 _value)
   event Approval(address indexed _owner, address indexed _spender, uint256 _value)  
 \end{lstlisting}
+\end{minipage}
 
 \subsection*{OpenZeppelin}
 

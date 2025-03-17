@@ -170,6 +170,8 @@ $ npx hardhat test
 \subsection*{Vault01: A Password Password}
 The first vault is quite straightforward. To complete this challenge, you need to call the \texttt{breachVault} function with the correct password and become the \texttt{lastSolver}. Implement your solution in \texttt{test/Vault01.js}. Do not alter the contract code. Use only the \texttt{player} account to breach the vault.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
   // SPDX-License-Identifier: MIT
   pragma solidity 0.8.28;
@@ -187,6 +189,7 @@ The first vault is quite straightforward. To complete this challenge, you need t
       }
   }  
 \end{lstlisting}
+\end{minipage}
 
 \medskip
 \noindent
@@ -223,6 +226,8 @@ How to get started with Remix:
 
 There is nothing new here, the previous hints are enough for you to break into this vault! Solve the challenge in \texttt{test/Vault02.js}.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
@@ -240,6 +245,7 @@ contract Vault02 {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \medskip
 \noindent
@@ -265,6 +271,8 @@ To breach the third vault, you need to understand the difference between \texttt
   \label{fig:msg.sender}
 \end{figure}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
@@ -282,6 +290,7 @@ contract Vault03 {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \medskip
 \noindent
@@ -330,6 +339,8 @@ A potential limitation is that it requires user interaction, and users can withh
 \noindent
 For this vault, you will need a proxy contract as well. Implement your solution in the \texttt{contracts/AttackVault04.sol} file.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
     // SPDX-License-Identifier: MIT
     pragma solidity 0.8.28;
@@ -355,6 +366,7 @@ For this vault, you will need a proxy contract as well. Implement your solution 
         }
     }
 \end{lstlisting}
+\end{minipage}
 
 \medskip
 \noindent
@@ -364,6 +376,8 @@ For this vault, you will need a proxy contract as well. Implement your solution 
 
 This vault cannot be opened without a crystal ball. Or can it? Implement your solution in the \texttt{test/Vault05.sol} file. Look for hints here: \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Units and global variables in Solidity}.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
     // SPDX-License-Identifier: MIT
     pragma solidity 0.8.28;
@@ -390,6 +404,7 @@ This vault cannot be opened without a crystal ball. Or can it? Implement your so
     }
     
 \end{lstlisting}
+\end{minipage}
 
 \medskip
 \noindent
@@ -413,6 +428,8 @@ EVM can store data in different areas: storage, transient storage, memory, and s
 \noindent
 It's important to note that marking a variable as private only restricts access from other contracts. Private state variables and local variables remain publicly accessible. For this task, there is already a deployed contract on the Sepolia testnet. You can find the contract address and the source code below. Implement your solution in the \texttt{test/Vault06.js} file. The address of the deployed contract is \texttt{0xA3a763bF62550511A0E485d6EB16c98937609A32}.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
   // SPDX-License-Identifier: MIT
   pragma solidity 0.8.28;
@@ -436,6 +453,7 @@ It's important to note that marking a variable as private only restricts access 
       }
   }
 \end{lstlisting}
+\end{minipage}
 
 \medskip
 \noindent
@@ -454,6 +472,8 @@ You can also interact with the contract directly from the Remix IDE if you conne
 \noindent
 In this exercise, you will not be able to find the solution just by inspecting Etherscan as you did in the previous exercise. Instead, you will need to decode the storage yourself. You can find the necessary functions here: \href{https://docs.ethers.org/v6/api/providers/}{https://docs.ethers.org/v6/api/providers/}. Implement your solution in the \texttt{test/Vault07.js} file. The address of the deployed contract is \texttt{0xa81C96B2216eDFfF8945e371dd581D13f8ECfbAD}.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
     // SPDX-License-Identifier: MIT
     pragma solidity 0.8.28;
@@ -482,6 +502,7 @@ In this exercise, you will not be able to find the solution just by inspecting E
         }
     }
 \end{lstlisting}
+\end{minipage}
 
 \medskip
 \noindent
@@ -511,6 +532,8 @@ For a \texttt{uint256} type:
 \noindent
 Starting with Solidity 0.8.0, arithmetic operations automatically include overflow and underflow checks, which will cause transactions to revert if they would result in overflow or underflow. However, if you're working with contracts using older Solidity versions, or if you specifically need to bypass these checks in newer versions, you can use the \texttt{unchecked} keyword:
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
     // In Solidity 0.8.0+
     function unsafeAdd(uint256 a, uint256 b) public pure returns (uint256) {
@@ -520,6 +543,7 @@ Starting with Solidity 0.8.0, arithmetic operations automatically include overfl
         }
     }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 The \texttt{unchecked} keyword tells the compiler to skip the overflow/underflow checks for the code inside the block, which can save gas but potentially introduces vulnerabilities if not used carefully.
@@ -528,6 +552,8 @@ The \texttt{unchecked} keyword tells the compiler to skip the overflow/underflow
 \noindent
 This challenge involves a token vault running on Solidity 0.7.6. Your goal is to obtain 1,000,000 tokens without paying the required amount of ETH. The price of each token is 1 ETH and you (player) start only with 1 ETH. Implement your solution in \texttt{test/Vault08.js}.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
 pragma solidity 0.7.6;
@@ -553,6 +579,7 @@ contract Vault08 {
     receive() external payable {}
 }
 \end{lstlisting}
+\end{minipage}
 
 \medskip
 \noindent
@@ -569,6 +596,8 @@ $ npm run vault08
 
 For this challenge, you'll need to gain at least 1,000,000 tokens. The vault is initialized with 1,000,000 tokens given to the deployer, and you start with just 1 token. You'll need to implement your attack in \texttt{contracts/Vault09Attack.sol} and then use the attack contract from \texttt{test/Vault09.js}. This time you are allowed to code your solution also in the designated part of the test file.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
 pragma solidity 0.7.6;
@@ -601,6 +630,7 @@ contract Vault09 {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \medskip
 \noindent

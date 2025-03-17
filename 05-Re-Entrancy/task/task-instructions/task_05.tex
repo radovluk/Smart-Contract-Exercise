@@ -184,6 +184,8 @@ This is the simplest example of re-entrancy that you might encounter. Study the 
 \label{fig:reentrancy}
 \end{figure}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity, caption=Single-Function Re-Entrancy Vulnerable Contract]
   contract Victim {
       mapping(address => uint) private balances;
@@ -200,7 +202,10 @@ This is the simplest example of re-entrancy that you might encounter. Study the 
       }
   }
 \end{lstlisting}
-  
+\end{minipage}
+
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity, caption=Single-Function Re-Entrancy Attacker Contract]
   contract Attacker {
       Victim victim;
@@ -223,6 +228,7 @@ This is the simplest example of re-entrancy that you might encounter. Study the 
       }
   }
 \end{lstlisting}
+\end{minipage}
 
 \subsection{Re-Entrancy Mitigations}
 
@@ -236,6 +242,8 @@ It is recommended to follow CEI pattern in your contracts. CEI stands for:
     \item \textbf{Interactions} perform external calls
 \end{enumerate}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 function withdraw() public {
     // 1. Checks
@@ -250,6 +258,7 @@ function withdraw() public {
     require(success, "Transfer failed");
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 By setting the balance to zero before sending Ether, you prevent the attacker from withdrawing more than once during the same call flow.
@@ -258,6 +267,8 @@ By setting the balance to zero before sending Ether, you prevent the attacker fr
 
 A simple boolean flag, commonly known as a “\codeinline{locked}” flag or a “\codeinline{mutex},” can prevent re-entrancy if checked properly:
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 bool private locked = false;
 
@@ -275,6 +286,7 @@ function withdraw() public noReentrant {
     require(success, "Transfer failed");
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 Note: the example above still remains vulnerable to cross-function re-entrancy attacks.
@@ -283,6 +295,8 @@ Note: the example above still remains vulnerable to cross-function re-entrancy a
 
 \textbf{Cross-function/Cross-contract re-entrancy} involves two (or more) functions (contracts) that can be called in a sequence leading to undesired behavior. Even if we mitigate the single-function re-entrancy with a simple mutex, we can still be vulnerable to this type of re-entrancy in more complex scenarios.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity, caption=Cross-Function Re-Entrancy Example]
 contract Victim {
     mapping(address => uint) private balances;
@@ -333,6 +347,7 @@ contract Attacker {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 Play around with this code example in \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/reentrancy02.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared file in REMIX IDE}.

@@ -91,6 +91,8 @@ This task demonstrates a "DoS with Unexpected Revert" vulnerability in smart con
 
 The vulnerability stems from the following code in the \texttt{endAuction} function:
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Process refunds for all bidders
 for (uint i = 0; i < bidders.length; i++) {
@@ -106,6 +108,7 @@ for (uint i = 0; i < bidders.length; i++) {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 The issue is that the function uses \texttt{transfer()} to send ETH to each bidder. If any of these transfers fail (for example, if the recipient is a contract without a \texttt{receive()} or \texttt{fallback()} function that accepts ETH), the entire transaction will revert, preventing the auction from being concluded.
 
@@ -120,6 +123,8 @@ The solution exploits this vulnerability through a malicious contract that:
 
 This ensures that when the auction tries to conclude, it will attempt to refund our malicious contract, which will reject the payment and cause the entire transaction to fail.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 contract NFTAuctionAttacker {
     // Error for rejection
@@ -144,10 +149,13 @@ contract NFTAuctionAttacker {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 To execute the attack, we deploy the attacker contract and bid through it:
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // Deploy our attacker contract
 const NFTAuctionAttacker = 
@@ -161,6 +169,7 @@ await attackerContract.connect(player).attack({
     value: ethers.parseEther("2.9") // Higher than the last bid of 2.8 ETH
 });
 \end{minted}
+\end{minipage}
 
 The attack successfully locks the auction, since any attempt to call \texttt{endAuction()} will revert when trying to refund our malicious contract. As a result:
 
@@ -175,6 +184,8 @@ The attack successfully locks the auction, since any attempt to call \texttt{end
 
 To prevent this type of attack, the contract should implement the Pull-over-Push payment pattern:
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
 // Instead of pushing payments, the endAuction function should only:
 // 1. Mark the auction as ended
@@ -195,6 +206,7 @@ function withdraw() external returns (bool) {
     return true;
 }
 \end{minted}
+\end{minipage}
 
 \section*{Solution to Task 2: Save the DAO Funds From the Cats}
 
@@ -204,6 +216,8 @@ This task demonstrates a "DoS with Block Gas Limit" vulnerability. The DAO contr
 
 The vulnerability stems from the following code in the \texttt{getWinningProposals()} function:
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 function getWinningProposals() public view returns (uint256[] memory) {
     // Create a temporary array to store winning proposal IDs (max size is all proposals)
@@ -234,6 +248,7 @@ function getWinningProposals() public view returns (uint256[] memory) {
     return winningProposals;
 }
 \end{lstlisting}
+\end{minipage}
 
 The issue is that this function iterates through \textit{all} proposals. If there are too many proposals, this function will consume too much gas and eventually exceed the block gas limit, preventing the execution of any proposal.
 
@@ -241,6 +256,8 @@ The issue is that this function iterates through \textit{all} proposals. If ther
 
 The solution exploits this vulnerability by creating thousands of proposals to make the \texttt{getWinningProposals()} function too expensive to execute:
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // Create many proposals to cause a DoS attack
 console.log("Creating many proposals to trigger a DoS attack...");
@@ -275,6 +292,7 @@ for (let batchStart = 0; batchStart < NUM_PROPOSALS; batchStart += BATCH_SIZE) {
     console.log(`Progress: ${currentCount} proposals created so far`);
 }
 \end{minted}
+\end{minipage}
 
 After adding 6,000 proposals to the DAO, any attempt to call \texttt{executeProposals()} will exceed the block gas limit, making it impossible to execute the cat charity proposal. The attack doesn't even need these proposals to pass - simply having a large number of proposals forces the \texttt{getWinningProposals()} function to iterate through all of them, requiring too much gas.
 
@@ -282,6 +300,8 @@ After adding 6,000 proposals to the DAO, any attempt to call \texttt{executeProp
 
 To prevent this type of attack, smart contracts should avoid unbounded loops and implement proper pagination:
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Instead of processing all proposals at once, use batch processing:
 function executeProposalRange(uint256 startIndex, uint256 endIndex) external onlyMember {
@@ -303,5 +323,6 @@ function executeProposalRange(uint256 startIndex, uint256 endIndex) external onl
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \end{document}

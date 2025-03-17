@@ -148,6 +148,8 @@ Ethereum blocks have a maximum gas limit. If a function requires more gas than t
 
 The following code shows a contract that iterates through an unbounded array to check if someone is a member of the organization. With each additional member in the organization, the join function requires more and more gas to execute, making it increasingly expensive to run. Eventually, when the member count becomes too high, the join() function will become impossible to call at all due to exceeding the block gas limit. You can try this yourself in the \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/DoS01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared file in REMIX IDE}.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity, caption=DoS with Block Gas Limit Example]
 contract Organisation {
     mapping(uint => address) members;
@@ -170,11 +172,14 @@ contract Organisation {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsection{DoS with Unexpected Revert}
 
 When a contract requires all operations in a batch to succeed, a single rejected operation can block the entire process. See this \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/DoS02.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{example in REMIX IDE}. In this case, the successful execution of the claimThrone() function depends on the transfer operation completing successfully. If a smart contract becomes the current king and doesn't implement a receive function, it will remain king forever.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity, caption=DoS with Revert Example]
 contract KingOfEther {
     address public king;
@@ -196,17 +201,21 @@ contract MaliciousKing {
     // No receive function - will cause DoS when transfer is attempted
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsection{Owner Operations DoS}
 
 If a contract relies on an owner for critical operations, and the owner's private key is lost or the owner becomes unresponsive, the contract can become permanently unusable.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity, caption=Owner Operations DoS Example]
 function withdrawFunds() public onlyOwner {
     // What if the owner loses their private key?
     payable(owner).transfer(address(this).balance);
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 In this example, if the owner loses their private key or becomes unresponsive, the funds are permanently locked.
@@ -217,6 +226,8 @@ In this example, if the owner loses their private key or becomes unresponsive, t
 
 Instead of pushing payments to users, let users pull their own funds. This shifts the responsibility of handling failed transactions to individual users rather than affecting everyone.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity, caption=Pull Over Push Example]
 mapping(address => uint256) public pendingWithdrawals;
 
@@ -228,11 +239,14 @@ function withdraw() public {
     payable(msg.sender).transfer(amount);
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Avoid Unbounded Operations}
 
 Never iterate through unbounded arrays or perform unbounded operations that could exceed the block gas limit.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity, caption=Bounded Operations Example]
 function processBatch(uint start, uint batchSize) public {
     // Process only a limited number of items per transaction
@@ -245,11 +259,14 @@ function processBatch(uint start, uint batchSize) public {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{External Calls Handling}
 
 When making external calls, handle failures gracefully without causing the entire function to revert.
 
+\noindent
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity, caption=Safe External Call Example]
 function processPayments() public {
     for(uint i = 0; i < recipients.length; i++) {
@@ -265,6 +282,7 @@ function processPayments() public {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 \section{Decentralized Autonomous Organizations (DAOs)}
 

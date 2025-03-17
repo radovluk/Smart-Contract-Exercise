@@ -173,6 +173,8 @@ The \textbf{Voting} contract is designed to facilitate a decentralized voting sy
 
 State variables are used to store data permanently on the blockchain. They represent the contract's state and can be accessed and modified by the contract's functions.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   // Address of the contract owner
   address public owner;
@@ -183,11 +185,14 @@ State variables are used to store data permanently on the blockchain. They repre
   // Mapping to track whether an address has already voted
   mapping(address => bool) public hasVoted;
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Structs}
 
 Structs are custom data types that allow you to group related data together. They are useful for organizing complex data structures within the contract.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   /**
   * @dev Struct to represent a candidate.
@@ -199,22 +204,28 @@ Structs are custom data types that allow you to group related data together. The
      uint voteCount;
   }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Constructor}
 
 The constructor is a special function that runs once during the contract's deployment and cannot be invoked later.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   constructor() {
     // The deployer of the contract is the owner
     owner = msg.sender;
   }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Events}
 
 Events are used to log information on the blockchain that can be accessed by off-chain applications. They are essential for tracking contract activities and facilitating interactions with the user interface.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   /**
   * @dev Event emitted when a vote is cast.
@@ -229,11 +240,14 @@ Events are used to log information on the blockchain that can be accessed by off
   */
  event CandidateAdded(string name);
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Errors}
 
 Errors allow developers to provide more information to the caller about why a condition or operation failed. Errors are used together with the revert statement or require function. On failure, they abort and revert \textbf{all} changes made by the transaction.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   /// Only the owner can call this function.
   error NotOwner();
@@ -246,11 +260,14 @@ Errors allow developers to provide more information to the caller about why a co
   // revert statement
   revert EmptyCandidateName();
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Modifiers}
 
 Modifiers are used to change the behavior of functions in a declarative way. They can enforce rules or conditions before executing a function's code.
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
   // Modifier to restrict access to the contract owner
   modifier onlyOwner() {
@@ -262,6 +279,7 @@ Modifiers are used to change the behavior of functions in a declarative way. The
     // Only the contract owner can call this function
   }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Functions}
 
@@ -270,6 +288,8 @@ Functions define the behavior of the contract. They can read and modify the cont
 \subsubsection*{Useful Code Snippets}
 Here are some useful code snippets you might need:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Sender of the transaction
 address sender = msg.sender;
@@ -289,9 +309,12 @@ address emptyAddress = address(0);
 // Emit an event
 emit EventName(parameters);
 \end{lstlisting}
+\end{minipage}
 
 \section{More Solidity Concepts}
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 This extra section covers additional Solidity concepts that are useful for developing smart contracts, including more detailed function examples, visibility, and advanced data types. It is not needed to complete the exercise.
 
 \subsubsection*{Function Types and Visibility}
@@ -323,10 +346,14 @@ function pureFunction(uint a, uint b) public pure returns (uint) {
   return a + b;
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Function Modifiers with Parameters}
 
 Modifiers can also accept parameters, making them more flexible:
+
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Modifier with parameters
 modifier onlyRole(bytes32 role) {
@@ -341,7 +368,10 @@ function moderatorFunction() public onlyRole(MODERATOR_ROLE) {
 // Only addresses with moderator role can call this
 }
 \end{lstlisting}
+\end{minipage}
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \subsubsection*{Advanced Data Structures}
 
 Solidity supports several advanced data structures that help organize complex data:
@@ -371,6 +401,7 @@ function setStatus(Status newStatus) public {
 
 \subsubsection*{Memory Management in Solidity}
 
+
 \begin{lstlisting}[language=Solidity]
 // Storage - persisted between function calls (expensive)
 uint[] public storageArray;
@@ -396,7 +427,11 @@ function readOnlyProcess(uint[] calldata calldataArray) external {
   }
 }
 \end{lstlisting}
+\end{minipage}
 
+
+\noindent
+\begin{minipage}[c]{\textwidth}
 \subsubsection*{Error Handling}
 Solidity provides several mechanisms for error handling:
 
@@ -430,10 +465,13 @@ function withdraw(uint amount) public {
   payable(msg.sender).transfer(amount);
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Gas Optimization Techniques}
 Gas optimization is crucial for cost-effective smart contracts:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Use uint256 instead of smaller sizes (usually)
 uint256 public largeNumber; // Often cheaper than uint8, uint16, etc.
@@ -457,10 +495,13 @@ function readOnlyOperation(string calldata text) external pure returns (uint) {
   return bytes(text).length;
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection*{Events and Logging}
 Events are crucial for offchain services and DApp frontends:
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // Simple event with basic data
 event Transfer(address indexed from, address indexed to, uint amount);
@@ -495,7 +536,10 @@ function runProcess(uint processId) public {
   emit ProcessCompleted(processId, true);
 }
 \end{lstlisting}
+\end{minipage}
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \subsubsection*{Inheritance and Contract Interaction}
 Solidity supports contract inheritance and interfaces:
 
@@ -549,7 +593,10 @@ contract VotingClient {
   }
 }
 \end{lstlisting}
+\end{minipage}
 
+\noindent
+\begin{minipage}[c]{\textwidth}
 \subsubsection*{Using Modifiers Effectively}
 
 Modifiers can be combined and chained for complex access control:
@@ -597,6 +644,7 @@ contract VotingWithRoles {
   }
 }
 \end{lstlisting}
+\end{minipage}
 
 \noindent
 To see some more advanced smart contract examples, visit the \href{https://docs.soliditylang.org/en/latest/solidity-by-example.html}{Solidity by Example} section of the Solidity documentation.
