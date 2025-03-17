@@ -1,11 +1,25 @@
 {
   "name": "08-maximal-extractable-value",
   "version": "1.0.0",
-  "main": "index.js",
-  "keywords": [],
+  "description": "Educational exercise examining MEV in detail, exploring techniques like DEX arbitrage, liquidations, and sandwich trading, as well as transaction fees, gas calculations, and EIP-1559.",
   "author": "Lukas Radovansky",
   "license": "MIT",
-  "description": "Educational exercise for Solidity learning.",
+  "directories": {
+    "test": "test",
+    "scripts": "scripts"
+  },
+  "keywords": [
+    "MEV",
+    "frontrunning",
+    "backrunning",
+    "sandwich-attacks",
+    "transaction-fees",
+    "gas",
+    "EIP-1559",
+    "DEX-arbitrage",
+    "liquidations",
+    "proposer-builder-separation"
+  ],
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "@openzeppelin/contracts": "5.2.0",

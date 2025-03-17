@@ -1,16 +1,24 @@
 {
   "name": "01-hello-blockchain-world",
   "version": "1.0.0",
+  "description": "Educational exercise for Solidity smart contract development.",
+  "author": "Lukas Radovansky",
+  "license": "MIT",
   "main": "index.js",
   "directories": {
     "test": "test",
     "scripts": "scripts"
   },
-  "author": "Lukas Radovansky",
-  "license": "MIT",
-  "description": "Educational exercise for Solidity learning.",
+  "keywords": [
+    "blockchain",
+    "solidity",
+    "smart-contracts",
+    "ethereum",
+    "hardhat",
+    "tutorial"
+  ],
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "latest",
-    "hardhat": "latest"
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "hardhat": "2.22.19"
   }
 }

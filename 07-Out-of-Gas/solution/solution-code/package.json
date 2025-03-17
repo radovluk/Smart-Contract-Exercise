@@ -1,11 +1,20 @@
 {
   "name": "07-out-of-gas",
   "version": "1.0.0",
-  "main": "index.js",
-  "keywords": [],
+  "description": "Educational exercise for learning about Denial of Service attacks in smart contracts that render a contract temporarily or permanently unusable by manipulating execution flow or exploiting resource limitations.",
   "author": "Lukas Radovansky",
   "license": "MIT",
-  "description": "Educational exercise for Solidity learning.",
+  "directories": {
+    "test": "test",
+    "scripts": "scripts"
+  },
+  "keywords": [
+    "DoS-with-block-gas-limit",
+    "DoS-with-unexpected-revert",
+    "pull-over-push-pattern",
+    "unbounded-operations",
+    "DAO"
+  ],
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "@openzeppelin/contracts": "5.2.0",

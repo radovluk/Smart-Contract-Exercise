@@ -1,11 +1,32 @@
 {
   "name": "04-unbreakable-vault",
   "version": "1.0.0",
-  "main": "index.js",
-  "keywords": [],
+  "description": "Educational exercise for learning blockchain data transparency, storage, randomness pattern and the differences between msg.sender and tx.origin and integer underflow and overflow problem.",
   "author": "Lukas Radovansky",
   "license": "MIT",
-  "description": "Educational exercise for Solidity learning.",
+  "directories": {
+    "test": "test",
+    "scripts": "scripts"
+  },
+  "keywords": [
+    "blockchain",
+    "solidity",
+    "smart-contracts",
+    "ethereum",
+    "hardhat",
+    "tutorial",
+    "ethers.js",
+    "remix-ide",
+    "insecure-randomness",
+    "commit-reveal",
+    "storage",
+    "blockhash",
+    "timestamp",
+    "tx.origin",
+    "msg.sender",
+    "integer-underflow",
+    "integer-overflow"
+  ],
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "hardhat": "2.22.19",

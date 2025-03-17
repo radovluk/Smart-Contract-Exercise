@@ -1,11 +1,25 @@
 {
   "name": "06-fool-the-oracle",
   "version": "1.0.0",
-  "main": "index.js",
-  "keywords": [],
+  "description": "Educational exercise for learning about oracles in decentralized applications and implementing a price oracle manipulation attack using a flash loan.",
   "author": "Lukas Radovansky",
   "license": "MIT",
-  "description": "Educational exercise for Solidity learning.",
+  "directories": {
+    "test": "test",
+    "scripts": "scripts"
+  },
+  "keywords": [
+    "asynchronous-oracle",
+    "synchronous-oracle",
+    "AMMs",
+    "DEX",
+    "liquidity-pool",
+    "stable-coin",
+    "USDC",
+    "constant-product",
+    "slippage",
+    "flashloan"
+  ],
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "@openzeppelin/contracts": "5.2.0",

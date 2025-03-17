@@ -1,14 +1,30 @@
 {
   "name": "03-erc20-ctutoken",
   "version": "1.0.0",
-  "main": "index.js",
-  "keywords": [],
+  "description": "Educational exercise for learning about tokens on Ethereum, with a particular focus on ERC-20 fungible tokens and frontrunning attacks.",
   "author": "Lukas Radovansky",
   "license": "MIT",
-  "description": "Educational exercise for Solidity learning.",
+  "main": "index.js",
+  "directories": {
+    "test": "test",
+    "scripts": "scripts"
+  },
+  "keywords": [
+    "blockchain",
+    "solidity",
+    "smart-contracts",
+    "ethereum",
+    "hardhat",
+    "tutorial",
+    "frontrunning-attack",
+    "erc-20",
+    "erc-1155",
+    "erc-721",
+    "openzeppelin",
+    "tokens"
+  ],
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
-    "hardhat": "2.22.19",
-    "@openzeppelin/contracts": "5.2.0"
+    "hardhat": "2.22.19"
   }
 }

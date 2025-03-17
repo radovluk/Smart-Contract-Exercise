@@ -1,14 +1,24 @@
 {
   "name": "02-decentralized-voting-system",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Educational exercise for implementing a decentralized voting system on the blockchain to learn the basics of the Solidity language.",
+  "author": "Lukas Radovansky",
+  "license": "MIT",
   "directories": {
     "test": "test",
     "scripts": "scripts"
   },
-  "author": "Lukas Radovansky",
-  "license": "MIT",
-  "description": "Educational exercise for Solidity learning.",
+  "keywords": [
+    "blockchain",
+    "solidity",
+    "smart-contracts",
+    "ethereum",
+    "hardhat",
+    "tutorial",
+    "voting-system",
+    "decentralized",
+    "solidity-basics"
+  ],
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "hardhat": "2.22.19"

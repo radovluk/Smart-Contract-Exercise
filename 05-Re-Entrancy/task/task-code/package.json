@@ -1,11 +1,22 @@
 {
   "name": "05-re-entrancy",
   "version": "1.0.0",
-  "main": "index.js",
-  "keywords": [],
+  "description": "Educational exercise for learning how to identify and exploit various types of re-entrancy attacks, as well as implement proper mitigation strategies.",
   "author": "Lukas Radovansky",
   "license": "MIT",
-  "description": "Educational exercise for Solidity learning.",
+  "directories": {
+    "test": "test",
+    "scripts": "scripts"
+  },
+  "keywords": [
+    "single-function-re-entrancy",
+    "cross-function-re-entrancy", 
+    "cross-contract-re-entrancy",
+    "read-only-re-entrancy",
+    "DAO",
+    "mutex",
+    "CEI-pattern"
+  ],
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "@openzeppelin/contracts": "5.2.0",
