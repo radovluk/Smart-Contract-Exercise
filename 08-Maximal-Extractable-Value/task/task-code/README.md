@@ -137,6 +137,7 @@ transaction fee = gas used × gasprice
 More about Gas and Fees:
 - **Read:** [Gas and Fees](https://ethereum.org/en/developers/docs/gas/)
 - **Gas tracker:** [https://etherscan.io/gastracker](https://etherscan.io/gastracker)
+- **Video:** [Can ETH Become DEFLATIONARY? EIP 1559 Explained](https://www.youtube.com/watch?v=MGemhK9t44Q)
 
 ## Task
 
