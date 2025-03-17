@@ -3,15 +3,17 @@
 ## Project Structure
 
 ```
-├── contracts
-│   └── Voting.sol
-├── hardhat.config.js
-├── package.json
-├── README.md
-├── scripts
-│   └── deploy.js
-└── test
-    └── Voting.js
+├── src
+│   └── Voting.sol           # Main contract
+├── test
+│   └── Voting.t.sol         # Tests for the Voting contract
+├── script
+│   └── Deploy.s.sol         # Deployment script
+├── foundry.toml             # Foundry configuration
+├── .env                     # For environment variables (optional)
+├── README.md                # Project documentation
+└── remappings.txt           # For import remappings
+└── package.json             # Dependecy specification
 ```
 
 ## Overview
@@ -22,17 +24,17 @@ This project implements a decentralized voting system using Solidity. The contra
 
 1. Install dependencies:
     ```bash
-    npm install
+    bun install
     ```
 
 2. Run tests:
     ```bash
-    npx hardhat test
+    forge test
     ```
 
 3. Deploy the contract:
     ```bash
-    npx hardhat run scripts/deploy.js
+    forge script script/Deploy.s.sol --rpc-url <your-rpc-url> --private-key <your-private-key> --broadcast
     ```
 
 For more details, refer to the inline comments and documentation within the code files.
