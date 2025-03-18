@@ -168,8 +168,8 @@ contract Greeter {
 
     /**
     * @dev Constructor that sets the initial greeting message upon deployment.
-     * @param _greeting The greeting message to be stored.
-     */
+    * @param _greeting The greeting message to be stored.
+    */
     constructor(string memory _greeting) {
         greeting = _greeting;
     }
@@ -185,7 +185,7 @@ contract Greeter {
 \end{lstlisting}
 \end{minipage}
 
-The Greeter contract is a simple Solidity smart contract that stores a greeting message, initializes it during deployment, and allows users to retrieve it via a public function. To compile the contract, run \codeblack{npx hardhat compile} in your terminal.
+The Greeter contract is a simple Solidity smart contract that stores a greeting message, initializes it during deployment, and allows users to retrieve it via a public function. To compile the contract, run \codegrey{npx hardhat compile} in your terminal.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ npx hardhat compile
@@ -224,7 +224,7 @@ Create a new directory named \texttt{test} in your project root and add a file c
 
 \noindent
 \begin{minipage}[c]{\textwidth}
-\begin{minted}[frame=lines, bgcolor=gray!5, fontsize=\footnotesize]{javascript}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // File: test/Greeter.js
 
 // Import the 'expect' function from Chai for assertions
@@ -256,7 +256,7 @@ describe("Greeter contract says Hello, Blockchain World!", function () {
 \end{minipage}
 
 \noindent
-\textbf{Note:} All exercises we will use \href{https://docs.ethers.org/v6/}{ethers.js v6}. If you're using an older version of ethers, the syntax may differ. For example, in ethers v5, you would use \\ \codegrey{await ethers.getContractFactory("Greeter")} and then \\ \codegrey{await greeterFactory.deploy(initialGreeting)} instead. Keep this in mind when encountering errors.
+\textbf{Note:} For all exercises we will use \href{https://docs.ethers.org/v6/}{ethers.js v6}. If you're using an older version of ethers, the syntax may differ. For example, in ethers v5, you would use \\ \codegrey{await ethers.getContractFactory("Greeter")} and then \\ \codegrey{await greeterFactory.deploy(initialGreeting)} instead. Keep this in mind when encountering errors.
 
 \subsection{Running the Test}
 
@@ -280,11 +280,11 @@ In order to finish this task, you will need the following tools:
     
     \item \textbf{Infura API Key}: Infura provides access to Ethereum nodes without the need to run your own. Sign up at \href{https://infura.io/}{Infura} to obtain an API key.
     
-    \item \textbf{Sepolia Faucet}: Acquire Sepolia test Ether from a faucet to fund your deployment. Even on testnets, you'll need testnet ETH to pay for gas fees. Make sure you have enough Sepolia ETH (0.01 Sepolia ETH should be sufficent for this exercise) in your wallet before deployment. Gas prices fluctuate based on network congestion, even on testnets. Some reliable faucets include:
+    \item \textbf{Sepolia Faucet}: Acquire Sepolia test Ether from a faucet to fund your deployment. Even on testnets, you'll need testnet ETH to pay for gas fees. Make sure you have enough Sepolia ETH (0.01 Sepolia ETH should be sufficient for this exercise) in your wallet before deployment. Gas prices fluctuate based on network congestion, even on testnets. Some reliable faucets include:
     \begin{itemize}
-        \item \href{https://cloud.google.com/application/web3/faucet/ethereum/sepolia}{Google Cloud Web3}
-        \item \href{https://docs.metamask.io/developer-tools/faucet/}{Metamask Sepolia Faucet}
-        \item \href{https://www.alchemy.com/faucets/ethereum-sepolia}{Alchemy Sepolia Faucet}
+        \item \href{https://cloud.google.com/application/web3/faucet/ethereum/sepolia}{\textbf{Google Cloud Web3}} (needs only Google account)
+        \item \href{https://docs.metamask.io/developer-tools/faucet/}{Metamask Sepolia Faucet} (needs some ETH on mainnet)
+        \item \href{https://www.alchemy.com/faucets/ethereum-sepolia}{Alchemy Sepolia Faucet}  (nedds some ETH on mainnet)
     \end{itemize}
 \end{itemize}
 
@@ -344,6 +344,7 @@ module.exports = {
 \end{minted}
 \end{minipage}
 
+\noindent
 This configuration tells Hardhat how to connect to the Sepolia testnet using your Infura API key and deploy contracts using your wallet's private key.
 
 \subsection{Deploying the Smart Contract to Sepolia}
@@ -360,7 +361,7 @@ With the configuration in place, you're ready to deploy your smart contract to t
 
 \noindent
 \begin{minipage}[c]{\textwidth}
-\begin{minted}[frame=lines, bgcolor=gray!5, fontsize=\footnotesize]{javascript}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // File: scripts/deploy.js
 
 const hre = require("hardhat");
