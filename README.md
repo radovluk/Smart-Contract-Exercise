@@ -63,8 +63,8 @@ This project contains exercises for students to learn about smart contract secur
 - **Topics**: MEV, frontrunning, backrunning, sandwich attacks, transaction fees, gas, EIP-1559, DEX arbitrage, liquidations, proposer-builder separation
 
 ### 09 - Vulnerabilities Detection
-- **Task**: Not yet implemented
-- **Topics**: fuzz testing, invariant testing, foundry, formal verification?
+- **Task**: Not yet implemented. Writing tests for smart contracts, discovering vulnerabilities using invariant tests and tools, competitive audits, what to do next
+- **Topics**: unit testing, stateless fuzz testing, invariant testing, foundry, static analysis, Slither, Mythril
 
 ## Getting Started
 
