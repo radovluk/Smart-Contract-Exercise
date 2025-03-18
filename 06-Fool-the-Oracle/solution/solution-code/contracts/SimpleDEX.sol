@@ -288,6 +288,11 @@ contract SimpleDEX is ERC20, ReentrancyGuard {
         // Ensure the swap produces a meaningful amount of output tokens
         require(ethBought > 0, InsufficientEthPurchase());
 
+        // Update the reserves to reflect the new state after the swap
+        // The full usdcAmount is added to reserves, which includes the fee portion
+        usdcReserve += usdcAmount;
+        ethReserve -= ethBought;
+
         // Transfer USDC from the user to the contract
         bool success = usdcToken.transferFrom(
             msg.sender,
@@ -299,11 +304,6 @@ contract SimpleDEX is ERC20, ReentrancyGuard {
         // Transfer ETH to the user and check for successful transfer
         (success, ) = msg.sender.call{value: ethBought}("");
         require(success, EthTransferFailed());
-
-        // Update the reserves to reflect the new state after the swap
-        // The full usdcAmount is added to reserves, which includes the fee portion
-        usdcReserve += usdcAmount;
-        ethReserve -= ethBought;
 
         emit TokenPurchase(msg.sender, ethBought, usdcAmount);
         return ethBought;
@@ -333,12 +333,13 @@ contract SimpleDEX is ERC20, ReentrancyGuard {
         // Ensure the swap produces a meaningful amount of output tokens
         require(usdcBought > 0, InsufficientUsdcPurchase());
 
+        // Update the reserves
+        usdcReserve -= usdcBought;
+        ethReserve += ethSold;
+
         // Transfer the USDC tokens to the user
         bool success = usdcToken.transfer(msg.sender, usdcBought);
         require(success, USDCTransferFailed());
-
-        usdcReserve -= usdcBought;
-        ethReserve += ethSold;
 
         // Emit event for off-chain tracking and transparency
         emit EthPurchase(msg.sender, usdcBought, ethSold);
