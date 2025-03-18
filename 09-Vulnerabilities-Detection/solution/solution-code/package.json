@@ -1,0 +1,34 @@
+{
+  "name": "09-vulnerabilities-detection",
+  "version": "1.0.0",
+  "description": "Educational exercise focused on smart contract vulnerabilities detection using fuzz testing and invariant testing",
+  "author": "Lukas Radovansky",
+  "license": "MIT",
+  "directories": {
+    "test": "test",
+    "src": "src"
+  },
+  "scripts": {
+    "test": "forge test",
+    "test:unit": "forge test test/UnitTests.t.sol -v",
+    "test:fuzz": "forge test test/StatelessFuzzTests.t.sol -v",
+    "test:invariant": "forge test test/InvariantStatefulFuzzTests.t.sol --fuzz-runs 100 --fuzz-depth 50 -v",
+    "coverage": "forge coverage"
+  },
+  "keywords": [
+    "blockchain",
+    "solidity",
+    "smart-contracts",
+    "ethereum",
+    "foundry",
+    "vulnerabilities",
+    "security",
+    "fuzz-testing",
+    "invariant-testing",
+    "formal-verification"
+  ],
+  "devDependencies": {
+    "forge-std": "github:foundry-rs/forge-std#v1.8.1",
+    "@openzeppelin/contracts": "5.2.0"
+  }
+}

@@ -4,6 +4,12 @@
 # Ignore package-lock.json files in all subfolders
 **/package-lock.json
 
+# Ignore bun.lock files in all subfolders
+**/bun.lock
+
+# Ignore out folders in all subfolders
+**/out
+
 # Node.js dependencies
 **/node_modules/
 
