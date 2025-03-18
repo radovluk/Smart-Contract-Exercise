@@ -3,6 +3,7 @@ pragma solidity =0.8.28;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
  * @title SimpleDEX
@@ -14,19 +15,19 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  *         - Rewards liquidity providers with LP tokens representing their share
  *           and fees collected from swaps
  */
-contract SimpleDEX is ERC20 {
+contract SimpleDEX is ERC20, ReentrancyGuard {
     // ------------------------------------------------------------------------
     //                          Storage Variables
     // ------------------------------------------------------------------------
 
     // The USDC token contract interface (for our example same ERC20 interface)
-    IERC20 public usdcToken;
+    IERC20 public immutable usdcToken;
 
     // Reserve amount of USDC in the pool
-    uint public usdcReserve;
+    uint public usdcReserve = 0;
 
     // Reserve amount of ETH in the pool
-    uint public ethReserve;
+    uint public ethReserve = 0;
 
     // Minimum liquidity to prevent division by zero and lock initial liquidity forever
     uint private constant MINIMUM_LIQUIDITY = 1000;
@@ -80,6 +81,9 @@ contract SimpleDEX is ERC20 {
     /// ETH transfer failed
     error EthTransferFailed();
 
+    /// USDC transfer failed
+    error USDCTransferFailed();
+
     /// USDC amount purchased is too small
     error InsufficientUsdcPurchase();
 
@@ -121,7 +125,12 @@ contract SimpleDEX is ERC20 {
     ) external payable returns (uint256 liquidity) {
         if (usdcReserve == 0 && ethReserve == 0) {
             // Initial liquidity provision
-            usdcToken.transferFrom(msg.sender, address(this), _usdcAmount);
+            bool success = usdcToken.transferFrom(
+                msg.sender,
+                address(this),
+                _usdcAmount
+            );
+            require(success, USDCTransferFailed());
 
             usdcReserve = _usdcAmount;
             ethReserve = msg.value;
@@ -188,7 +197,7 @@ contract SimpleDEX is ERC20 {
      */
     function removeLiquidity(
         uint liquidity
-    ) external returns (uint usdcAmount, uint ethAmount) {
+    ) external nonReentrant returns (uint usdcAmount, uint ethAmount) {
         // Check user's balance of LP Tokens
         uint balance = balanceOf(msg.sender);
 
@@ -217,7 +226,7 @@ contract SimpleDEX is ERC20 {
         // Transfer assets back to provider
         usdcToken.transfer(msg.sender, usdcAmount);
         (bool success, ) = msg.sender.call{value: ethAmount}("");
-        require(success, EthTransferFailed());
+        require(success, USDCTransferFailed());
 
         emit RemoveLiquidity(msg.sender, usdcAmount, ethAmount, liquidity);
         return (usdcAmount, ethAmount);
@@ -269,19 +278,26 @@ contract SimpleDEX is ERC20 {
         // This approach allows the fee to remain in the pool, benefiting liquidity providers
         uint inputWithFee = usdcAmount * 997;
 
-        // Calculate ETH output using constant product formula with fee: 
+        // Calculate ETH output using constant product formula with fee:
         // (x + dx * 0.997) * (y - dy) = x * y
         // where: x = usdcReserve, y = ethReserve, dx = usdcAmount, dy = ethBought
-        ethBought = (inputWithFee * ethReserve) / ((usdcReserve * 1000) + inputWithFee);
+        ethBought =
+            (inputWithFee * ethReserve) /
+            ((usdcReserve * 1000) + inputWithFee);
 
         // Ensure the swap produces a meaningful amount of output tokens
         require(ethBought > 0, InsufficientEthPurchase());
 
         // Transfer USDC from the user to the contract
-        usdcToken.transferFrom(msg.sender, address(this), usdcAmount);
+        bool success = usdcToken.transferFrom(
+            msg.sender,
+            address(this),
+            usdcAmount
+        );
+        require(success, USDCTransferFailed());
 
         // Transfer ETH to the user and check for successful transfer
-        (bool success, ) = msg.sender.call{value: ethBought}("");
+        (success, ) = msg.sender.call{value: ethBought}("");
         require(success, EthTransferFailed());
 
         // Update the reserves to reflect the new state after the swap
@@ -307,16 +323,19 @@ contract SimpleDEX is ERC20 {
         uint ethSold = msg.value;
         uint inputWithFee = ethSold * 997;
 
-        // Calculate USDC output using constant product formula with fee: 
+        // Calculate USDC output using constant product formula with fee:
         // (x + dx * 0.997) * (y - dy) = x * y
         // where: x = ethReserve, y = usdcReserve, dx = ethSold, dy = usdcBought
-        usdcBought = (inputWithFee * usdcReserve) / ((ethReserve * 1000) + inputWithFee);
+        usdcBought =
+            (inputWithFee * usdcReserve) /
+            ((ethReserve * 1000) + inputWithFee);
 
         // Ensure the swap produces a meaningful amount of output tokens
         require(usdcBought > 0, InsufficientUsdcPurchase());
 
         // Transfer the USDC tokens to the user
-        usdcToken.transfer(msg.sender, usdcBought);
+        bool success = usdcToken.transfer(msg.sender, usdcBought);
+        require(success, USDCTransferFailed());
 
         usdcReserve -= usdcBought;
         ethReserve += ethSold;

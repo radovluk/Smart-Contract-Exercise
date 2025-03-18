@@ -15,7 +15,7 @@ contract CatCharity {
     // ------------------------------------------------------------------------
 
     // Address of the contract owner who can cancel or withdraw funds.
-    address public owner;
+    address public immutable owner;
 
     // Indicates whether the campaign is canceled (true) or still active (false).
     bool public isCanceled;
