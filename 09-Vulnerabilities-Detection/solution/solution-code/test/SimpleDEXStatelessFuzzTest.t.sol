@@ -1,10 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity =0.8.28;
 
-import "forge-std/Test.sol";
-import "../src/SimpleDEX.sol";
-import "../src/USDCToken.sol";
+import { Test, console } from "forge-std/Test.sol";
+import { SimpleDEX } from "../src/SimpleDEX.sol";
+import { USDCToken } from  "../src/USDCToken.sol";
 
+/**
+ * @title SimpleDEXStatelessFuzzTest
+ * @notice Stateless fuzzing test suite for the SimpleDEX decentralized exchange contract
+ * @dev This contract tests all core functionality of the SimpleDEX including:
+ *      - Liquidity provision (adding and removing)
+ *      - Token swaps (ETH <-> USDC)
+ *      - Price calculations
+ *      - Error handling
+ * 
+ *      The tests use a standard setup with three users:
+ *      - Owner: The test contract itself, provides initial liquidity
+ *      - Alice: Regular user who adds liquidity and swaps USDC to ETH
+ *      - Bob: Regular user who swaps ETH to USDC
+ *
+ *      Initial setup:
+ *      - 5 ETH and 10,000 USDC initial liquidity
+ *      - Each user has 10 ETH and 10,000 USDC initially
+ */
 contract SimpleDEXStatelessFuzzTest is Test {
     // Contracts
     SimpleDEX public dex;
@@ -17,13 +35,24 @@ contract SimpleDEXStatelessFuzzTest is Test {
 
     // Test values
     uint256 constant INITIAL_USDC_SUPPLY = 1_000_000 * 10 ** 6; // 1M USDC
-    uint256 constant INITIAL_USER_BALANCE = 100_000 * 10 ** 6; // 100k USDC per user
-    uint256 constant INITIAL_ETH_AMOUNT = 50 ether;
-    uint256 constant INITIAL_USDC_AMOUNT = 100_000 * 10 ** 6; // 100k USDC
+    uint256 constant INITIAL_USER_BALANCE = 10_000 * 10 ** 6; // 10k USDC per user
+    uint256 constant INITIAL_ETH_AMOUNT = 5 ether;
+    uint256 constant INITIAL_USDC_AMOUNT = 10_000 * 10 ** 6; // 10k USDC
 
     // Add receive function to allow test contract to receive ETH
     receive() external payable {}
 
+    /**
+     * @notice Sets up the test environment with users, tokens, 
+     * and initial liquidity before each test
+     * This function:
+     *  - Creates test accounts (owner, alice, bob)
+     *  - Distributes ETH to test users
+     *  - Deploys the USDC token contract
+     *  - Deploys the SimpleDEX contract
+     *  - Distributes USDC to test users
+     *  - Adds initial liquidity to the DEX (from owner)
+     */
     function setUp() public {
         // Setup accounts
         owner = address(this);
@@ -31,8 +60,8 @@ contract SimpleDEXStatelessFuzzTest is Test {
         bob = makeAddr("bob");
 
         // Give each user some ETH
-        vm.deal(alice, 100 ether);
-        vm.deal(bob, 100 ether);
+        vm.deal(alice, 10 ether);
+        vm.deal(bob, 10 ether);
 
         // Deploy USDC token
         usdc = new USDCToken(INITIAL_USDC_SUPPLY);
@@ -49,15 +78,21 @@ contract SimpleDEXStatelessFuzzTest is Test {
         dex.addLiquidity{value: INITIAL_ETH_AMOUNT}(INITIAL_USDC_AMOUNT);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                       STATELESS FUZZING TESTS
-    //////////////////////////////////////////////////////////////*/
+    // ------------------------------------------------------------------------
+    //                       STATELESS FUZZING TESTS
+    // ------------------------------------------------------------------------
 
-    /// @dev Test adding liquidity with fuzzed ETH amount
+    /**
+     * @notice Tests adding liquidity with fuzzed ETH amount
+     * @dev Verifies:
+     *  - LP tokens calculation is correct based on the provided ETH
+     *  - Alice's LP token balance is updated correctly
+     *  - ETH and USDC reserves are updated with the new liquidity
+     */
     function testFuzz_AddLiquidity(uint96 ethAmount) public {
         // Bound ETH amount to prevent unrealistic values
-        // Minimum 0.01 ETH, maximum 50 ETH
-        uint256 ethToAdd = bound(uint256(ethAmount), 0.01 ether, 50 ether);
+        // Minimum 0.01 ETH, maximum 5 ETH
+        uint256 ethToAdd = bound(uint256(ethAmount), 0.01 ether, 5 ether);
 
         // Calculate USDC amount required based on current ratio
         uint256 usdcRequired = (ethToAdd * dex.usdcReserve()) /
@@ -95,10 +130,16 @@ contract SimpleDEXStatelessFuzzTest is Test {
         assertEq(dex.balanceOf(alice), lpTokensReceived);
     }
 
-    /// @dev Test removing liquidity with fuzzed LP amount
+    /**
+     * @notice Tests the removeLiquidity function using fuzzed LP percentage to remove
+     * @dev Verifies:
+     *  - Correct calculation of ETH and USDC amounts to receive based on LP tokens burned
+     *  - Alice's ETH and USDC balances increase by the expected amounts
+     *  - DEX reserves are reduced by the correct amounts
+     */
     function testFuzz_RemoveLiquidity(uint256 lpPercentage) public {
         // First, make Alice add liquidity to have LP tokens
-        uint256 ethToAdd = 5 ether;
+        uint256 ethToAdd = 1 ether;
         uint256 usdcRequired = (ethToAdd * dex.usdcReserve()) /
             dex.ethReserve();
 
@@ -140,10 +181,21 @@ contract SimpleDEXStatelessFuzzTest is Test {
         assertEq(dex.balanceOf(alice), aliceLpTokens - lpToRemove);
     }
 
-    /// @dev Test ETH to USDC swap with fuzzed ETH amount
+    // ------------------------------------------------------------------------
+    //                          Swap Tests
+    // ------------------------------------------------------------------------
+
+    /**
+     * @notice Tests swapping ETH for USDC with fuzzed ETH amount
+     * @dev Verifies:
+     *  - Bob receives the correct amount of USDC based on the constant product formula with 0.3% fee
+     *  - Bob's USDC balance increases by the calculated amount
+     *  - DEX reserves are updated correctly (ETH increases, USDC decreases)
+     *  - Constant product invariant holds (with fee considered)
+     */
     function testFuzz_EthToUsdc(uint96 ethAmount) public {
-        // Bound ETH amount between 0.001 ETH and 10 ETH
-        uint256 ethToSwap = bound(uint256(ethAmount), 0.001 ether, 10 ether);
+        // Bound ETH amount between 0.001 ETH and 5 ETH
+        uint256 ethToSwap = bound(uint256(ethAmount), 0.001 ether, 5 ether);
 
         // Record state before swap
         uint256 usdcReserveBefore = dex.usdcReserve();
@@ -178,13 +230,20 @@ contract SimpleDEXStatelessFuzzTest is Test {
         assertGe(k2, k1);
     }
 
-    /// @dev Test USDC to ETH swap with fuzzed USDC amount
+    /**
+     * @notice Tests swapping USDC for ETH with fuzzed USDC amount
+     * @dev Verifies:
+     *  - Alice receives the correct amount of ETH based on the constant product formula with 0.3% fee
+     *  - Alice's ETH balance increases by the calculated amount
+     *  - DEX reserves are updated correctly (USDC increases, ETH decreases)
+     *  - Constant product invariant holds (with fee considered)
+     */
     function testFuzz_UsdcToEth(uint96 usdcAmount) public {
-        // Bound USDC amount between 1 USDC and 10,000 USDC
+        // Bound USDC amount between 1 USDC and 5,000 USDC
         uint256 usdcToSwap = bound(
             uint256(usdcAmount),
             1 * 10 ** 6,
-            10_000 * 10 ** 6
+            5_000 * 10 ** 6
         );
 
         // Ensure Alice has enough USDC
@@ -224,7 +283,16 @@ contract SimpleDEXStatelessFuzzTest is Test {
         assertGe(k2, k1);
     }
 
-    /// @dev Test calculating USDC to ETH price with fuzzed reserve amounts
+    // ------------------------------------------------------------------------
+    //                          Price Function Tests
+    // ------------------------------------------------------------------------
+
+    /**
+     * @notice Tests the price calculation functions with fuzzed reserve amounts
+     * @dev Verifies:
+     *  - getCurrentUsdcToEthPrice returns the correct price based on the fuzzed reserves
+     *  - Prices are calculated using the spot price formula (reserve ratio * scaling factor)
+     */
     function testFuzz_CurrentUsdcToEthPrice(
         uint128 ethReserve,
         uint128 usdcReserve
@@ -254,7 +322,17 @@ contract SimpleDEXStatelessFuzzTest is Test {
         assertEq(actualPrice, expectedPrice);
     }
 
-    /// @dev Test removing liquidity with extreme values to check for rounding errors
+    // ------------------------------------------------------------------------
+    //                          Error Tests
+    // ------------------------------------------------------------------------
+
+    /**
+     * @notice Tests removing liquidity with extreme values to check for rounding errors
+     * @dev Verifies:
+     *  - Correct calculation of ETH and USDC amounts for small percentage removals
+     *  - The exact ratio is maintained within 0.1% tolerance
+     *  - Rounding errors are minimal (within 1 unit)
+     */
     function testFuzz_RemoveLiquidityWithExtremeValues(
         uint16 lpPercentage
     ) public {

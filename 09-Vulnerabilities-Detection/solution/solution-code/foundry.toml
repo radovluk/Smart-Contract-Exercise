@@ -14,8 +14,8 @@ max_test_rejects = 100000
 seed = "0x1234"
 
 [profile.invariant]
-runs = 50
-depth = 100
+runs = 100
+depth = 200
 fail_on_revert = false
 call_delay = 0
 dictionary_weight = 50
