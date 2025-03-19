@@ -38,10 +38,10 @@ contract SimpleDEXUnitTest is Test {
     address public charlie;
 
     // Test values
-    uint256 constant INITIAL_USDC_SUPPLY = 1_000_000 * 10 ** 6; // 1M USDC
-    uint256 constant INITIAL_USER_BALANCE = 10_000 * 10 ** 6; // 10k USDC per user
+    uint256 constant INITIAL_USDC_SUPPLY = 1_000_000 * 10 ** 18; // 1M USDC
+    uint256 constant INITIAL_USER_BALANCE = 10_000 * 10 ** 18; // 10k USDC per user
     uint256 constant INITIAL_ETH_AMOUNT = 50 ether;
-    uint256 constant INITIAL_USDC_AMOUNT = 100_000 * 10 ** 6; // 100k USDC
+    uint256 constant INITIAL_USDC_AMOUNT = 100_000 * 10 ** 18; // 100k USDC
     uint256 constant MINIMUM_LIQUIDITY = 1000;
 
     // Add receive function to allow test contract to receive ETH
@@ -294,7 +294,7 @@ contract SimpleDEXUnitTest is Test {
      *  - Correct event is emitted with correct parameters
      */
     function test_UsdcToEth() public {
-        uint256 usdcToSwap = 1000 * 10 ** 6; // 1000 USDC
+        uint256 usdcToSwap = 1000 * 10 ** 18; // 1000 USDC
         uint256 usdcReserveBefore = dex.usdcReserve();
         uint256 ethReserveBefore = dex.ethReserve();
 
@@ -342,8 +342,8 @@ contract SimpleDEXUnitTest is Test {
 
         // Have Alice perform a swap
         vm.startPrank(alice);
-        usdc.approve(address(dex), 1000 * 10 ** 6);
-        dex.usdcToEth(1000 * 10 ** 6);
+        usdc.approve(address(dex), 1000 * 10 ** 18);
+        dex.usdcToEth(1000 * 10 ** 18);
         vm.stopPrank();
 
         // Calculate new constant product
@@ -500,7 +500,7 @@ contract SimpleDEXUnitTest is Test {
         vm.startPrank(alice);
 
         // Alice does NOT approve the DEX to spend her USDC
-        uint256 usdcToSwap = 1000 * 10 ** 6;
+        uint256 usdcToSwap = 1000 * 10 ** 18;
 
         // Attempt to swap without approval should revert
         vm.expectRevert();
@@ -543,9 +543,9 @@ contract SimpleDEXUnitTest is Test {
         newDex.addLiquidity{value: 1 ether}(0);
 
         // Try to add USDC but zero ETH
-        usdc.approve(address(newDex), 1000 * 10 ** 6);
+        usdc.approve(address(newDex), 1000 * 10 ** 18);
         vm.expectRevert();
-        newDex.addLiquidity{value: 0}(1000 * 10 ** 6);
+        newDex.addLiquidity{value: 0}(1000 * 10 ** 18);
     }
 
     // ------------------------------------------------------------------------

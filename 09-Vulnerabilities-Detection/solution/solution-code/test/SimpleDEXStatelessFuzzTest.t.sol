@@ -34,10 +34,10 @@ contract SimpleDEXStatelessFuzzTest is Test {
     address public bob;
 
     // Test values
-    uint256 constant INITIAL_USDC_SUPPLY = 1_000_000 * 10 ** 6; // 1M USDC
-    uint256 constant INITIAL_USER_BALANCE = 10_000 * 10 ** 6; // 10k USDC per user
+    uint256 constant INITIAL_USDC_SUPPLY = 1_000_000 * 10 ** 18; // 1M USDC
+    uint256 constant INITIAL_USER_BALANCE = 10_000 * 10 ** 18; // 10k USDC per user
     uint256 constant INITIAL_ETH_AMOUNT = 5 ether;
-    uint256 constant INITIAL_USDC_AMOUNT = 10_000 * 10 ** 6; // 10k USDC
+    uint256 constant INITIAL_USDC_AMOUNT = 10_000 * 10 ** 18; // 10k USDC
 
     // Add receive function to allow test contract to receive ETH
     receive() external payable {}
@@ -242,8 +242,8 @@ contract SimpleDEXStatelessFuzzTest is Test {
         // Bound USDC amount between 1 USDC and 5,000 USDC
         uint256 usdcToSwap = bound(
             uint256(usdcAmount),
-            1 * 10 ** 6,
-            5_000 * 10 ** 6
+            1 * 10 ** 18,
+            5_000 * 10 ** 18
         );
 
         // Ensure Alice has enough USDC
@@ -294,13 +294,13 @@ contract SimpleDEXStatelessFuzzTest is Test {
      *  - Prices are calculated using the spot price formula (reserve ratio * scaling factor)
      */
     function testFuzz_CurrentUsdcToEthPrice(
-        uint128 ethReserve,
-        uint128 usdcReserve
+        uint256 ethReserve,
+        uint256 usdcReserve
     ) public {
         // Bounds to prevent extreme values but still covering large range
-        ethReserve = uint128(bound(ethReserve, 1 ether, 1_000_000 ether));
-        usdcReserve = uint128(
-            bound(usdcReserve, 1 * 10 ** 6, 2_000_000_000 * 10 ** 6)
+        ethReserve = uint256(bound(ethReserve, 1 ether, 1_000_000 ether));
+        usdcReserve = uint256(
+            bound(usdcReserve, 1 * 10 ** 18, 2_000_000_000 * 10 ** 18)
         ); // up to 2B USDC
 
         // Since we can't directly set reserves, we'll create a new DEX and add liquidity

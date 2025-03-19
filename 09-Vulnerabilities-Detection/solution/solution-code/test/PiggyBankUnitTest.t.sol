@@ -58,7 +58,7 @@ contract PiggyBankUnitTest is Test {
     }
 
     // ------------------------------------------------------------------------
-    //                          Deposit Tests
+    //                          Deposit Unit Tests
     // ------------------------------------------------------------------------
 
     /**
@@ -131,7 +131,7 @@ contract PiggyBankUnitTest is Test {
     }
 
     // ------------------------------------------------------------------------
-    //                          Withdrawal Tests
+    //                       Withdrawal Unit Tests
     // ------------------------------------------------------------------------
 
     /**
@@ -255,7 +255,7 @@ contract PiggyBankUnitTest is Test {
     }
 
     // ------------------------------------------------------------------------
-    //                          Error Tests
+    //                        Error Unit Tests
     // ------------------------------------------------------------------------
 
     /**
@@ -269,12 +269,12 @@ contract PiggyBankUnitTest is Test {
 
         // Alice tries to withdraw (should fail)
         vm.prank(alice);
-        vm.expectRevert("Only owner can withdraw");
+        vm.expectRevert(PiggyBank.NotOwner.selector);
         piggyBank.withdraw(1 ether);
 
         // Bob tries to withdraw (should fail)
         vm.prank(bob);
-        vm.expectRevert("Only owner can withdraw");
+        vm.expectRevert(PiggyBank.NotOwner.selector);
         piggyBank.withdraw(1 ether);
     }
 
@@ -289,12 +289,12 @@ contract PiggyBankUnitTest is Test {
 
         // Owner tries to withdraw more than available (should fail)
         vm.prank(owner);
-        vm.expectRevert("Not enough funds");
+        vm.expectRevert(PiggyBank.InsufficientFunds.selector);
         piggyBank.withdraw(2 ether);
     }
 
     // ------------------------------------------------------------------------
-    //                          Integration Tests
+    //                          Integration Unit Test
     // ------------------------------------------------------------------------
 
     /**
