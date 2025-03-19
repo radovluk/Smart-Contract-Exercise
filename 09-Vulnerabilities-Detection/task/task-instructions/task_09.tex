@@ -6,6 +6,7 @@
 \usepackage{geometry}
 \usepackage{graphicx} % For including graphics
 \usepackage{minted} % For advanced code listings
+\usepackage{enumitem} % For customizing lists
 \usepackage{listings-solidity}  % Include Solidity highlighting
 \usepackage{amsmath, amssymb, amsfonts} % For mathematical equations
 
@@ -33,6 +34,8 @@
 \newcommand{\codegrey}[1]{%
   \texttt{\colorbox{black!4}{\textcolor{black}{#1}}}%
 }
+
+\setitemize{itemsep=5pt, parsep=0pt, label=\small\textbullet} % Set compact spacing and smaller bullets
 
 % Define custom colors (optional)
 \definecolor{myURLColor}{RGB}{0, 102, 204} % Example: A shade of blue
@@ -83,6 +86,364 @@
 \maketitle
 \section{Introduction}
 
-This exercise focuses on general vulnerability detection in smart contracts. We will explore static code analysis tools such as Mythril and Slither to identify vulnerabilities in contracts from previous exercises. The exercise will also cover the implementation of unit tests, stateless fuzzing tests, and stateful fuzzing tests with invariants. We will introduce the Foundry development environment (new only for students who previously used Hardhat). The primary task involves writing tests for a simple PiggyBank contract and then applying this knowledge to develop more tests for the SimpleDEX contract from earlier exercises.
+This exercise focuses on general vulnerability detection in smart contracts. We will explore static code analysis tools such as Mythril and Slither to identify vulnerabilities in contracts from previous exercises. The exercise will also cover the implementation of unit tests, stateless fuzzing tests, and stateful fuzzing tests with invariants. We will introduce the Foundry development environment (new only for students who previously used Hardhat). The primary task involves writing tests for a simple toy smart contract and then applying this knowledge to develop more complex tests for the DEX contract from earlier exercise.
+
+\subsection*{Project Setup}
+
+You have two options for working with this exercise: using a Docker container or local installation. Choose the option that best fits your preferences. For students who are accustomed to working in the Hardhat environment and using Docker, it's important to note that this exercise uses a different Docker image.
+
+\subsection{Using Docker with VS Code}
+
+This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
+
+\subsubsection*{Prerequisites:}
+
+\begin{itemize}
+    \item \textbf{\href{https://www.docker.com/products/docker-desktop}{Docker}} - A platform for developing, shipping, and running applications in containers.
+    \item \textbf{\href{https://code.visualstudio.com/}{Visual Studio Code}} - A lightweight but powerful source code editor.
+    \item \textbf{\href{https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers}{Dev Containers}} - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
+\end{itemize}
+
+\subsubsection*{Setting Up the Project:}
+
+\begin{enumerate}
+  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/foundry/09-Vulnerabilities-Detection/task/task-code}{GitLab repository} and clone it to your local machine.
+  \item Open the repository folder in VS Code.
+  \item When prompted, click "Reopen in Container" or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
+\end{enumerate}
+
+\subsection{Local Setup}
+
+If you prefer working directly on your machine without Docker, you can set up the development environment locally. Before setting up Foundry, ensure that you have the following installed on your system:
+
+\subsubsection*{Prerequisites}
+\begin{itemize}
+    \item \textbf{Rust Toolchain} - Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using \href{https://rustup.rs/}{rustup.rs}.
+    \item \textbf{Bun} - JavaScript runtime \& toolkit for installing dependencies and running scripts. Install it from \href{https://bun.sh/}{bun.sh}.
+\end{itemize}
+
+\noindent
+If you don't have Rust installed, you can install it using:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+\end{minted}
+
+\noindent
+To install Bun, use the following command:
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ curl -fsSL https://bun.sh/install | bash
+\end{minted}
+
+\noindent
+Open your terminal and run the following command to verify the Rust and Bun installation:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ rustc --version
+$ cargo --version
+$ bun --version
+\end{minted}
+
+\subsubsection*{Installing Foundry}
+You can install Foundry using Foundryup, the official installer:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ curl -L https://foundry.paradigm.xyz | bash
+$ foundryup
+\end{minted}
+
+\noindent
+This will install the Foundry toolkit, including:
+\begin{itemize}
+    \item \textbf{Forge} - Testing framework for Ethereum
+    \item \textbf{Cast} - Command-line tool for interacting with smart contracts
+    \item \textbf{Anvil} - Local Ethereum node for development
+    \item \textbf{Chisel} - Solidity REPL
+\end{itemize}
+
+\noindent
+Verify the installation by running:
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ forge --version
+$ cast --version
+$ anvil --version
+\end{minted}
+
+\subsubsection*{Setting Up the Project}
+
+\begin{enumerate}
+    \item Visit the following \href{ttps://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/foundry/09-Vulnerabilities-Detection/task/task-code}{GitLab repository} and clone it to your local machine.
+    \item Open a terminal and navigate to the project directory.
+    \item Install the project dependencies by running \codegrey{bun install}.
+\end{enumerate}
+
+\section{Static Analysis}
+
+Static analysis is a method of examining code without executing it. Unlike dynamic analysis (which examines code during execution), static analysis looks at the source code or bytecode to find patterns that match known vulnerability types. If you're using a local setup, you'll need to install Slither and Mythril first, while those using the Docker container already have these tools available in the container.
+
+
+\subsection*{Slither}
+
+\href{https://github.com/crytic/slither}{Slither} is a static analysis framework from Trail of Bits that runs a suite of vulnerability detectors, prints visual information about contract details, and provides an API to easily write custom analyses.
+
+\medskip
+\noindent
+To install Slither using pip3:
+
+\noindent \begin{minipage}{\textwidth}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ pip3 install slither-analyzer
+\end{minted}
+\end{minipage}
+
+\medskip
+\noindent
+To run Slither on a Solidity file:
+
+\noindent \begin{minipage}{\textwidth}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ slither <contract_file.sol>
+\end{minted}
+\end{minipage}
+
+\subsection*{Mythril}
+
+\href{https://github.com/ConsenSys/mythril}{Mythril} is an open-source security analysis tool for Ethereum smart contracts. It uses symbolic execution, SMT solving, and taint analysis to detect a variety of security vulnerabilities.
+
+\medskip
+\noindent
+To install Mythril using pip3:
+
+\noindent
+\noindent \begin{minipage}{\textwidth}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ pip3 install mythril
+\end{minted}
+\end{minipage}
+
+\medskip
+\noindent
+To run Mythril on a Solidity file:
+
+\noindent \begin{minipage}{\textwidth}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ myth analyze <contract_file.sol>
+\end{minted}
+\end{minipage}
+
+\subsection*{Task: Analyze the CatCharity Contract}
+
+The CatCharity contract collects donations to help save kittens. Your task is to use static analysis tools to identify potential vulnerabilities in this contract.
+
+\begin{enumerate}
+    \item Open the \texttt{src/CatCharity.sol} file and review the code
+    \item Run Mythril static analysis:
+\end{enumerate}
+
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ myth analyze src/CatCharity.sol
+\end{minted}
+
+\section{Testing in Foundry}
+
+\href{https://github.com/foundry-rs/foundry}{Foundry} provides powerful tools for testing smart contracts, with a focus on flexibility and efficiency. Unlike Hardhat (which uses JavaScript), Foundry uses Solidity for writing tests and scripts.
+
+\begin{itemize}
+    \item Test files end with \codegrey{.t.sol}
+    \item Test contracts inherit from \codegrey{forge-std/Test.sol}
+    \item Test functions start with \codegrey{test\_}
+    \item Fuzzing tests start with \codegrey{testFuzz\_}
+    \item Invariant tests start with \codegrey{invariant\_}
+\end{itemize}
+
+\subsection*{Unit Testing}
+
+Unit tests verify that individual functions or components of your contract work as expected in isolation. In Foundry, unit tests are written in Solidity and run using the Forge test framework.
+
+\noindent \begin{minipage}{\textwidth}
+\begin{lstlisting}[language=Solidity]
+function test_Deposit() public {
+    uint256 depositAmount = 1 ether;
+    
+    // Alice makes a deposit
+    vm.prank(alice);
+    piggyBank.deposit{value: depositAmount}();
+    
+    // Check totalDeposits
+    assertEq(
+        piggyBank.totalDeposits(),
+        depositAmount,
+        "totalDeposits should match deposit amount"
+    );
+}
+\end{lstlisting}
+\end{minipage}
+
+\subsection*{Fuzzing Tests}
+
+Fuzzing (or property-based testing) involves generating random inputs to test your contract's behavior under various conditions. Foundry provides built-in support for fuzzing through the \codegrey{forge test} command.
+
+\noindent \begin{minipage}{\textwidth}
+  \begin{lstlisting}[language=Solidity]
+function testFuzz_Deposit(uint96 amount) public {
+    // Bound the amount to a reasonable range
+    uint256 depositAmount = bound(uint256(amount), 0 ether, 99 ether);
+    
+    // Alice makes a deposit
+    vm.prank(alice);
+    piggyBank.deposit{value: depositAmount}();
+    
+    // Check totalDeposits
+    assertEq(
+        piggyBank.totalDeposits(),
+        depositAmount,
+        "totalDeposits should match deposit amount"
+    );
+}
+\end{lstlisting}
+\end{minipage}
+
+\subsection*{Invariant Testing}
+
+Invariant testing checks that certain properties (invariants) of your contract remain true regardless of the sequence of operations performed. Foundry supports invariant testing through specialized test functions and handlers.
+
+\noindent \begin{minipage}{\textwidth}
+\begin{lstlisting}[language=Solidity]
+function invariant_balanceMatchesAccountingDiff() public view {
+    assertEq(
+        address(piggyBank).balance,
+        piggyBank.totalDeposits() - piggyBank.totalWithdrawals(),
+        "Contract balance should equal totalDeposits - totalWithdrawals"
+    );
+}
+\end{lstlisting}
+\end{minipage}
+
+\section*{Task: PiggyBank}
+
+The PiggyBank contract is a simple savings contract where anyone can deposit ETH, but only the owner can withdraw. 
+
+\noindent \begin{minipage}{\textwidth}
+\begin{lstlisting}[language=Solidity]
+// SPDX-License-Identifier: MIT
+pragma solidity =0.8.28;
+
+contract PiggyBank {
+    address public immutable owner;
+    uint256 public totalDeposits;
+    uint256 public totalWithdrawals;
+    
+    error NotOwner();
+    error InsufficientFunds();
+    
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    function deposit() public payable {
+        totalDeposits += msg.value;
+    }
+  
+    function withdraw(uint256 amount) public {
+        if (msg.sender != owner) revert NotOwner();
+        if (amount > address(this).balance) revert InsufficientFunds();
+        totalWithdrawals += amount;
+        payable(owner).transfer(amount);
+    }
+}
+\end{lstlisting}
+\end{minipage}
+
+\subsection*{Task 1: Complete the PiggyBank Unit Tests}
+
+Your task is to complete the missing unit tests in the \texttt{PiggyBankUnitTest.t.sol} file. Look for the \codegrey{TODO} comments in the code to identify the test functions you need to implement.
+
+Follow these steps:
+\begin{enumerate}
+    \item Open the \texttt{test/PiggyBankUnitTest.t.sol} file
+    \item Locate the test functions marked with \codegrey{TODO} comments
+    \item Implement each test according to the provided instructions
+    \item Run the tests using the following command:
+\end{enumerate}
+
+\noindent \begin{minipage}{\textwidth}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ bun run test:unit
+\end{minted}
+\end{minipage}
+
+\subsection*{Task 2: Implement PiggyBank Stateless Fuzzing Tests}
+
+Stateless fuzzing tests help identify edge cases by providing random inputs to your contract functions. Your task is to implement the missing stateless fuzzing tests in the \texttt{PiggyBankStatelessFuzzTest.t.sol} file.
+
+Follow these steps:
+\begin{enumerate}
+    \item Open the \texttt{test/PiggyBankStatelessFuzzTest.t.sol} file
+    \item Locate the test functions marked with \codegrey{TODO} comments
+    \item Implement each fuzzing test according to the provided instructions
+    \item Run the fuzzing tests using the following command:
+\end{enumerate}
+
+\noindent \begin{minipage}{\textwidth}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ bun run test:fuzz:piggy
+\end{minted}
+\end{minipage}
+
+\subsection*{Task 3: Add PiggyBank Invariant Tests}
+
+Invariant tests verify that certain properties of your contract hold true regardless of the sequence of operations. Your task is to implement the missing invariant tests in the \texttt{PiggyBankInvarintTest.t.sol} file.
+
+Follow these steps:
+\begin{enumerate}
+    \item Open the \texttt{test/PiggyBankInvarintTest.t.sol} file
+    \item Locate the invariant functions marked with \codegrey{TODO} comments
+    \item Implement each invariant test according to the provided instructions
+    \item Run the invariant tests using the following command:
+\end{enumerate}
+
+\noindent \begin{minipage}{\textwidth}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ bun run test:invariant:piggy
+\end{minted}
+\end{minipage}
+
+
+\subsection*{Task 4: Implement SimpleDEX Fuzzing Tests}
+
+Apply your knowledge of fuzzing tests to the more complex SimpleDEX contract. Your task is to implement the missing fuzzing tests in the \texttt{SimpleDEXStatelessFuzzTest.t.sol} file.
+
+Follow these steps:
+\begin{enumerate}
+    \item Open the \texttt{test/SimpleDEXStatelessFuzzTest.t.sol} file
+    \item Locate the test functions marked with \codegrey{TODO} comments
+    \item Implement each fuzzing test according to the provided instructions
+    \item Run the fuzzing tests using the following command:
+\end{enumerate}
+
+\noindent \begin{minipage}{\textwidth}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ bun run test:fuzz:dex
+\end{minted}
+\end{minipage}
+
+\subsection*{Task 5: Add SimpleDEX Invariant Tests}
+
+Finally, implement the missing invariant tests for the SimpleDEX contract in the \texttt{SimpleDEXInvariantTest.t.sol} file. This is the most challenging part of the exercise, as it requires understanding the core invariants of a DEX.
+
+Follow these steps:
+\begin{enumerate}
+    \item Open the \texttt{test/SimpleDEXInvariantTest.t.sol} file
+    \item Locate the invariant functions marked with \codegrey{TODO} comments
+    \item Implement at least three custom invariants that ensure the DEX operates correctly
+    \item Run the invariant tests using the following command:
+\end{enumerate}
+
+\noindent \begin{minipage}{\textwidth}
+\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
+$ bun run test:invariant:dex
+\end{minted}
+\end{minipage}
 
 \end{document}

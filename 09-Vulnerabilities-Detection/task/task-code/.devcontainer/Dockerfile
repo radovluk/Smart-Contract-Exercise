@@ -30,6 +30,14 @@ RUN curl -fsSL https://bun.sh/install | bash -s "bun-v1.2.5"
 # Add Bun to PATH
 ENV PATH="/root/.bun/bin:${PATH}"
 
+# Install slither and myhtril
+RUN python3 -m pip install --no-cache-dir \
+    slither-analyzer \
+    mythril
+
+# Verify installations
+RUN slither --version && myth --version
+
 # Create workdir
 WORKDIR /workspace
 
