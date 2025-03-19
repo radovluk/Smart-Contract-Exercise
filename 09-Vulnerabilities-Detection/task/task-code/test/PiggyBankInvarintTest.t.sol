@@ -67,11 +67,12 @@ contract PiggyBankInvariantTest is Test {
      * @dev This verifies you can't withdraw more than was deposited
      */
     function invariant_withdrawalsLessThanDeposits() public view {
-        assertLe(
-            piggyBank.totalWithdrawals(),
-            piggyBank.totalDeposits(),
-            "Total withdrawals should never exceed total deposits"
-        );
+        // TODO: Implement this invariant
+        // ============================================================
+        // EXERCISE: Implement the invariant
+        // Include a descriptive error message
+        // ============================================================
+        assertTrue(false, "Invariant not implemented yet");
     }
 
     /**
@@ -91,11 +92,12 @@ contract PiggyBankInvariantTest is Test {
      * @dev This ensures the internal state tracking is accurate
      */
     function invariant_handlerTrackedWithdrawals() public view {
-        assertEq(
-            handler.totalWithdrawn(),
-            piggyBank.totalWithdrawals(),
-            "Handler's tracked withdrawals should match contract's totalWithdrawals"
-        );
+        // TODO: Implement this invariant
+        // ============================================================
+        // EXERCISE: Implement the handler tracked withdrawals invariant
+        // Include a descriptive error message
+        // ============================================================
+        assertTrue(false, "Invariant not implemented yet");
     }
 }
 

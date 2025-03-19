@@ -21,10 +21,8 @@
     "blockchain",
     "solidity",
     "smart-contracts",
-    "ethereum",
     "foundry",
     "vulnerabilities",
-    "security",
     "fuzz-testing",
     "invariant-testing"
   ],
