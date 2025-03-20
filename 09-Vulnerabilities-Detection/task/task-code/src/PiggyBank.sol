@@ -35,7 +35,7 @@ contract PiggyBank {
     function withdraw(uint256 amount) public {
         if (msg.sender != owner) revert NotOwner();
         if (amount > address(this).balance) revert InsufficientFunds();
-        
+
         totalWithdrawals += amount;
         payable(owner).transfer(amount);
     }

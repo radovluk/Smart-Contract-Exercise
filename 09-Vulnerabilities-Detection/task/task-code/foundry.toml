@@ -9,7 +9,7 @@ optimizer_runs = 200
 verbosity = 1
 
 [fuzz]
-runs = 500
+runs = 1000
 max_test_rejects = 100000
 seed = "0x1234"
 

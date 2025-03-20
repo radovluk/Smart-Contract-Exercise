@@ -1,7 +1,7 @@
 {
   "name": "09-vulnerabilities-detection",
   "version": "1.0.0",
-  "description": "Educational exercise focused on smart contract vulnerabilities detection using fuzz testing and invariant testing",
+  "description": "Educational exercise focused on smart contract vulnerabilities detection using fuzzing",
   "author": "Lukas Radovansky",
   "license": "MIT",
   "directories": {
@@ -10,10 +10,11 @@
   },
   "scripts": {
     "test:all": "forge test",
-    "test:unit": "forge test --match-path test/PiggyBankUnitTest.t.sol -v",
+    "test:unit:piggy": "forge test --match-path test/PiggyBankUnitTest.t.sol -v",
+    "test:unit:dex": "forge test --match-path test/SimpleDEXUnitTest.t.sol -v",
     "test:fuzz:piggy": "forge test --match-path test/PiggyBankStatelessFuzzTest.t.sol -v",
     "test:fuzz:dex": "forge test --match-path test/SimpleDEXStatelessFuzzTest.t.sol -v",
-    "test:invariant:piggy": "forge test --match-path test/PiggyBankInvarintTest.t.sol -v",
+    "test:invariant:piggy": "forge test --match-path test/PiggyBankInvariantTest.t.sol -v",
     "test:invariant:dex": "forge test --match-path test/SimpleDEXInvariantTest.t.sol -v",
     "coverage": "forge coverage"
   },
@@ -21,12 +22,12 @@
     "blockchain",
     "solidity",
     "smart-contracts",
-    "ethereum",
     "foundry",
-    "vulnerabilities",
-    "security",
-    "fuzz-testing",
-    "invariant-testing"
+    "unit testing",
+    "stateless fuzz testing",
+    "invariant testing",
+    "static analysis",
+    "Slither"
   ],
   "devDependencies": {
     "forge-std": "github:foundry-rs/forge-std#v1.8.1",
