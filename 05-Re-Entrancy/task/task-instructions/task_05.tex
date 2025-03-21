@@ -83,15 +83,24 @@
 \maketitle
 \section{Introduction}
 
-Re-entrancy is one of the most damaging vulnerabilities in Ethereum's history. This well-documented type of attack gained notoriety in 2016 with the infamous \href{https://en.wikipedia.org/wiki/The_DAO}{DAO hack}. Re-entrancy occurs when an attacker calls a vulnerable contract before the previous call completes, leading to unexpected states or unauthorized fund transfers. In this exercise, you will learn how to identify and exploit various types of re-entrancy attacks, as well as implement proper mitigation strategies.
+Re-entrancy is one of the most damaging vulnerabilities in Ethereum's history.
+This well-documented type of attack gained notoriety in 2016 with the infamous
+\href{https://en.wikipedia.org/wiki/The_DAO}{DAO hack}. Re-entrancy occurs when
+an attacker calls a vulnerable contract before the previous call completes,
+leading to unexpected states or unauthorized fund transfers. In this exercise,
+you will learn to identify and exploit various types of re-entrancy attacks and
+implement proper mitigation strategies.
 
 \subsection*{Project Setup}
 
-You have two options for working with this exercise. Using docker container or local installation. Choose the one that best fits your preferences.
+You have two options for working with this exercise: using a Docker container
+or setting up a local installation. Choose the one that best fits your
+preferences.
 
 \subsection{Using Docker with VS Code}
 
-This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
+This option uses Docker to create a development environment with all the
+necessary tools and dependencies pre-installed.
 
 \subsubsection*{Prerequisites:}
 
@@ -104,18 +113,22 @@ This option uses Docker to create a development environment with all the necessa
 \subsubsection*{Setting Up the Project:}
 
 \begin{enumerate}
-  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/05-Re-Entrancy/task/task-code}{GitLab repository} and clone it to your local machine.
-  \item Open the repository folder in VS Code.
-  \item When prompted, click "Reopen in Container" or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
+    \item Visit the following
+          \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/05-Re-Entrancy/task/task-code}{GitLab
+              repository} and clone it to your local machine.
+    \item Open the repository folder in VS Code.
+    \item When prompted, click ``Reopen in Container'' or use the command palette (F1)
+          and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
 
 \subsection{Local Setup}
 
-If you prefer working directly on your machine without Docker, you can set up the development environment locally.
+If you prefer working directly on your machine without Docker, you can set up
+the development environment locally.
 
 \subsubsection*{Prerequisites}
 \begin{itemize}
-    \item \textbf{Node.js} - \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
+    \item \textbf{Node.js}: \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
     \item \textbf{NPM}: Node Package Manager, which comes with Node.js.
 \end{itemize}
 
@@ -127,86 +140,111 @@ $ node -v
 $ npm -v
 \end{minted}
 
-Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
+Both commands should return the installed version numbers of Node.js and NPM
+respectively. Node.js provides the runtime environment required to execute
+JavaScript-based tools like Hardhat, while NPM is used to manage the packages
+and dependencies needed for development.
 
 \subsubsection*{Setting Up the Project}
 
 \begin{enumerate}
-    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/05-Re-Entrancy/task/task-code}{GitLab repository} and clone it to your local machine.
+    \item Visit the following
+          \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/05-Re-Entrancy/task/task-code}{GitLab
+              repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
     \item Install the project dependencies by running \codegrey{npm install}.
 \end{enumerate}
 
 \section{Re-Entrancy Attacks}
 
-A re-entrancy attack is a technique where an external call is used to re-enter the same function or another function in a way that disrupts the expected flow or state changes. Despite being well-known, this vulnerability remains prevalent. For more information, refer to this \href{https://github.com/pcaversaccio/reentrancy-attacks?tab=readme-ov-file}{Historical Collection of Re-entrancy Attacks}. There are several types of re-entrancy attacks, including single-function re-entrancy, cross-function re-entrancy, cross-contract re-entrancy, cross-chain re-entrancy, and read-only re-entrancy. The basic prerequisite for a re-entrancy attack is that the vulnerable contract makes an external call and allows the attacker to exploit the not-yet-updated state of the vulnerable contract during this call.
+A re-entrancy attack is a technique where an external call is used to re-enter
+the same function or another function in a way that disrupts the expected flow
+or state changes. Despite being well-known, this vulnerability remains
+prevalent. For more information, refer to this
+\href{https://github.com/pcaversaccio/reentrancy-attacks?tab=readme-ov-file}{Historical
+    Collection of Re-entrancy Attacks}. There are several types of re-entrancy
+attacks, including single-function re-entrancy, cross-function re-entrancy,
+cross-contract re-entrancy, cross-chain re-entrancy, and read-only re-entrancy.
+The basic prerequisite for a re-entrancy attack is that the vulnerable contract
+makes an external call and allows the attacker to exploit the not-yet-updated
+state of the vulnerable contract during this call.
 
 \subsection{Single-Function Re-Entrancy}
 
-This is the simplest example of re-entrancy that you might encounter. Study the code and try to understand how it works. Then replicate this attack in the \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/reentrancy01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared file in REMIX IDE}.
+This is the simplest example of re-entrancy that you might encounter. Study the
+code and try to understand how it works. Then replicate this attack in the
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/reentrancy01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared
+    file in REMIX IDE}.
 
 \begin{figure}[H]
-\centering
-\begin{minipage}{0.45\textwidth}
-  \centering
-  {\footnotesize
-  \begin{tabular}{l}
-  \textbf{Step 1:} Attacker.attack() \\
-  $\downarrow$ \\
-  \textbf{Step 2:} Victim.deposit() \\
-  \quad balances[attacker] $\mathrel{+}= $ msg.value \\
-  $\downarrow$ \\
-  \textbf{Step 3:} Attacker.attack() calls Victim.withdraw() \\
-  $\downarrow$ \\
-  \textbf{Step 4:} Victim.withdraw() execution: \\
-  \quad 1. Read balance (amount) \\
-  \quad 2. Send funds via \texttt{call(msg.sender, amount)} \\
-  $\downarrow$ \\
-  \textbf{Step 5:} Funds arrive at Attacker \\
-  \quad triggers \texttt{receive()} function \\
-  $\downarrow$ \\
-  \textbf{Step 6:} Attacker.receive() checks: \\
-  \quad if (victim.balance $>$ initialDeposit) 
-  \\ then call Victim.withdraw() \\
-  $\downarrow$ ... \\
-  \textbf{Step 7:} Re-entrancy Loop: drain funds \\
-  $\downarrow$ ... \\
-  \textbf{Step 8:} In the last \texttt{withdraw()} call \\
-  balances[attacker] is finally set 0 \\
-  \end{tabular}
-  }
-\end{minipage}\hfill
-\begin{minipage}{0.45\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{reentrancy.pdf}
-\end{minipage}
-\caption{Single-Function Re-Entrancy Attack}
-\label{fig:reentrancy}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        {\footnotesize
+            \begin{tabular}{l}
+                \textbf{Step 1}: Attacker.attack()                         \\
+                $\downarrow$                                               \\
+                \textbf{Step 2}: Victim.deposit()                          \\
+                \quad balances[attacker] $\mathrel{+}= $ msg.value         \\
+                $\downarrow$                                               \\
+                \textbf{Step 3}: Attacker.attack() calls Victim.withdraw() \\
+                $\downarrow$                                               \\
+                \textbf{Step 4}: Victim.withdraw() execution:              \\
+                \quad 1. Read balance (amount)                             \\
+                \quad 2. Send funds via call(msg.sender, amount)           \\
+                $\downarrow$                                               \\
+                \textbf{Step 5}: Funds arrive at Attacker                  \\
+                \quad triggers receive() function                          \\
+                $\downarrow$                                               \\
+                \textbf{Step 6}: Attacker.receive() checks:                \\
+                \quad if (victim.balance $>$ initialDeposit)
+                \\ then call Victim.withdraw() \\
+                $\downarrow$ ...                                           \\
+                \textbf{Step 7}: Re-entrancy Loop: drain funds             \\
+                $\downarrow$ ...                                           \\
+                \textbf{Step 8}: In the last withdraw() call               \\
+                balances[attacker] is finally set 0                        \\
+            \end{tabular}
+        }
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{reentrancy.pdf}
+    \end{minipage}
+    \caption{Single-Function Re-Entrancy Attack}
+    \label{fig:reentrancy}
 \end{figure}
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity, caption=Single-Function Re-Entrancy Vulnerable Contract]
-  contract Victim {
-      mapping(address => uint) private balances;
-  
-      function withdraw() public {
-          uint amount = balances[msg.sender];
-          (bool success, ) = msg.sender.call{value: amount}("");
-          require(success);
-          balances[msg.sender] = 0;
-      }
-  
-      function deposit() public payable {
-          balances[msg.sender] += msg.value;
-      }
-  }
+    \begin{lstlisting}[language=Solidity, caption=Single-Function Re-Entrancy --- Vulnerable Contract]
+contract Victim {
+    mapping(address => uint) private balances;
+ 
+    function withdraw() public {
+        uint amount = balances[msg.sender];
+        
+        // Send the funds to the caller using low-level call
+        // VULNERABILITY: This external call can be exploited to re-enter the contract
+        (bool success, ) = msg.sender.call{value: amount}("");
+        
+        require(success);
+        
+        // Update the state AFTER the external call (too late!)
+        // This should happen BEFORE the external call to prevent re-entrancy
+        balances[msg.sender] = 0;
+    }
+ 
+    function deposit() public payable {
+        balances[msg.sender] += msg.value;
+    }
+}
 \end{lstlisting}
 \end{minipage}
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity, caption=Single-Function Re-Entrancy Attacker Contract]
+    \begin{lstlisting}[language=Solidity, caption=Single-Function Re-Entrancy --- Attacker Contract]
   contract Attacker {
       Victim victim;
       uint256 private initialDeposit;
@@ -220,10 +258,13 @@ This is the simplest example of re-entrancy that you might encounter. Study the 
           victim.deposit{value: msg.value}();
           victim.withdraw();
       }
-  
+
+      // Fallback function that gets triggered when the victim contract sends ETH
       receive() external payable {
           if (address(victim).balance > initialDeposit) {
-              victim.withdraw();
+            // Re-enter the withdraw function before the victim updates its state
+            // This allows us to withdraw the same funds multiple times
+            victim.withdraw();
           }
       }
   }
@@ -237,14 +278,14 @@ This is the simplest example of re-entrancy that you might encounter. Study the 
 It is recommended to follow CEI pattern in your contracts. CEI stands for:
 
 \begin{enumerate}
-    \item \textbf{Check} conditions
-    \item \textbf{Effects} update internal state
-    \item \textbf{Interactions} perform external calls
+    \item \textbf{Checks}: check conditions
+    \item \textbf{Effects}: update internal state
+    \item \textbf{Interactions}: perform external calls
 \end{enumerate}
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity]
+    \begin{lstlisting}[language=Solidity]
 function withdraw() public {
     // 1. Checks
     uint amount = balances[msg.sender];
@@ -265,11 +306,12 @@ By setting the balance to zero before sending Ether, you prevent the attacker fr
 
 \subsubsection*{Mutex / Re-Entrancy Locks}
 
-A simple boolean flag, commonly known as a “\codeinline{locked}” flag or a “\codeinline{mutex},” can prevent re-entrancy if checked properly:
+A simple boolean flag, commonly known as a “\codeinline{locked}” flag or a
+“\codeinline{mutex},” can prevent re-entrancy if checked properly:
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity]
+    \begin{lstlisting}[language=Solidity]
 bool private locked = false;
 
 modifier noReentrant() {
@@ -295,9 +337,32 @@ Note: the example above still remains vulnerable to cross-function re-entrancy a
 
 \textbf{Cross-function/Cross-contract re-entrancy} involves two (or more) functions (contracts) that can be called in a sequence leading to undesired behavior. Even if we mitigate the single-function re-entrancy with a simple mutex, we can still be vulnerable to this type of re-entrancy in more complex scenarios.
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{p{1.0cm}|p{\dimexpr\textwidth-1cm\relax}}
+        \textbf{Step} & \textbf{Action}                                                                                \\
+        \hline
+        1             & Attacker calls \codegrey{Victim.withdraw()}                                                    \\
+        \hline
+        2             & \codegrey{Victim.withdraw()} sets \codegrey{locked = true} (reentry guard)                     \\
+        \hline
+        3             & Victim sends ETH to Attacker, triggering \codegrey{receive()}                                  \\
+        \hline
+        4             & Attacker's \codegrey{receive()} calls \codegrey{Victim.transfer()} (not guarded)               \\
+        \hline
+        5             & \codegrey{transfer()} runs with Attacker's balance still intact                                \\
+        \hline
+        6             & Attacker manipulates balances via \codegrey{transfer()} before \codegrey{withdraw()} completes \\
+        \hline
+        7             & \codegrey{withdraw()} completes, setting Attacker's balance = 0 too late                       \\
+    \end{tabular}
+    \caption{Cross-Function Reentrancy Attack, illustrated in Listing~\ref{lst:crossfunc}}
+    \label{tab:reentrancy}
+\end{table}
+
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity, caption=Cross-Function Re-Entrancy Example]
+    \begin{lstlisting}[language=Solidity, caption=Cross-Function Re-Entrancy Example, label=lst:crossfunc]
 contract Victim {
     mapping(address => uint) private balances;
     bool locked;
@@ -342,7 +407,7 @@ contract Attacker {
 
     receive() external payable {
         if (address(victim).balance > initialDeposit) {
-            victim.withdraw();
+            victim.transfer(tx.origin);
         }
     }
 }
@@ -354,20 +419,30 @@ Play around with this code example in \href{https://remix.ethereum.org/?#activat
 
 \subsection{Read-Only Re-Entrancy}
 
-Read-only re-entrancy is a particular case of cross-contract re-entrancy attacks. This vulnerability occurs when a smart contract's behavior depends on the state of another contract. While attackers usually target state-changing functions, view functions can also provide outdated state information during a cross-contract re-entrancy. This scenario can lead to the exploitation of third-party infrastructure.
+Read-only re-entrancy is a particular case of cross-contract re-entrancy
+attacks. This vulnerability occurs when a smart contract's behavior depends on
+the state of another contract. While attackers usually target state-changing
+functions, view functions can also provide outdated state information during a
+cross-contract re-entrancy. This scenario can lead to the exploitation of
+third-party infrastructure.
 
 \section{Task}
 
 \subsection*{Task 1: Cat Charity Hijinks}
 
-The \emph{Cat Charity} was supposed to fund the most adorable meow-a-thon in history. Generous donors (like the deployer) have already chipped in a hefty 10 ETH. You (the player), on the other hand, starts with a modest 1 ETH and a gleam in their eye. After the owner unexpectedly cancels the campaign, refunds are open—\emph{wide open}, as it turns out. 
+The \emph{Cat Charity} was supposed to fund the most adorable meow-a-thon in
+history. Generous donors (like the deployer) have already chipped in a hefty 10
+ETH. You (the player), on the other hand, start with a modest 1 ETH and a gleam
+in their eye. After the owner unexpectedly cancelled the campaign, refunds are
+open—\emph{wide open}, as it turns out.
 
 \medskip
 \noindent
-\textbf{Your Mission:}
+\textbf{Your Mission}:
 \begin{itemize}
     \item Empty the charity's balance, snatching the full 10 ETH for yourself.
-    \item End up with more than 10 ETH, turning your purr-less pockets into a chonky Ether stash.
+    \item End up with more than 10 ETH, turning your purr-less pockets into a chonky
+          Ether stash.
 \end{itemize}
 
 \noindent
@@ -382,11 +457,19 @@ Files that are relevant for this challenge: \texttt{test/CatCharity.js}, \texttt
 
 \subsection*{Task 2: CTU Token Bank}
 
-The \emph{CTU Token Bank} is a decentralized vault where users can stash their Ether, withdraw it, buy CTU Tokens with it, and sell those tokens back for Ether. This bank works hand-in-hand with the ERC-20 CTUToken contract to handle token transactions and employs a ReentrancyGuard to fend off re-entrancy attacks on crucial functions. CTU Tokens are a hot commodity, sold at a fixed rate of 1 Token per 1 ETH. Initially, the bank holds 10 ETH from anonymous clients. You start with 5.1 ETH and no CTU Tokens, while the bank owns all the CTU Tokens. You can only buy CTU Tokens if you have deposited funds in the bank.
+The \emph{CTU Token Bank} is a decentralized vault where users can stash their
+Ether, withdraw it, buy CTU Tokens with it, and sell those tokens back for
+Ether. This bank works hand-in-hand with the ERC-20 CTUToken contract to handle
+token transactions and employs a ReentrancyGuard to fend off re-entrancy
+attacks on crucial functions. CTU Tokens are a hot commodity, sold at a fixed
+rate of 1 CTU Token per 1 ETH. Initially, the bank holds 10 ETH from its
+clients. You start with 5.1 ETH and no CTU Tokens, while the bank owns all the
+CTU Tokens. You can only buy CTU Tokens if you have deposited funds in the
+bank.
 
 \medskip
 \noindent
-\textbf{Your Mission:}
+\textbf{Your Mission}:
 \begin{itemize}
     \item Drain the bank's balance to zero.
     \item End up with more than 15 ETH.

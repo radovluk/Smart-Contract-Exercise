@@ -8,8 +8,8 @@ describe("CatCharity Challenge", function () {
   let catCharity;
   let deployer, player;
 
-  const CHARITY_INITIAL_BALANCE = ethers.parseEther("10");  // 10 ETH
-  const PLAYER_INITIAL_ETH_BALANCE = ethers.parseEther("1");  // 1 ETH
+  const CHARITY_INITIAL_BALANCE = ethers.parseEther("10"); // 10 ETH
+  const PLAYER_INITIAL_ETH_BALANCE = ethers.parseEther("1"); // 1 ETH
 
   before("Set up the challenge", async function () {
     /** DO NOT CHANGE ANYTHING HERE */
@@ -47,7 +47,9 @@ describe("CatCharity Challenge", function () {
 
     // 2) The player calls `attack()` with a small donation to set up re-entrancy
     //    We'll donate 0.5 ETH
-    await catAttacker.connect(player).attack({ value: ethers.parseEther("0.5") });
+    await catAttacker
+      .connect(player)
+      .attack({ value: ethers.parseEther("0.5") });
 
     // By the end of this transaction, the attacker contract's fallback
     // will keep calling `claimRefund()` in a loop until the charity is drained.
@@ -61,7 +63,7 @@ describe("CatCharity Challenge", function () {
     expect(finalBalance, "Cat charity was not fully drained").to.equal(0);
 
     // The player should have more then the initial charity balance
-    // He has less then (10 ETH) + the initial player balance (1 ETH) because of gas costs
+    // He has less then (10 ETH) + the initial player balance (1 ETH) because of gas the costs
     expect(
       await ethers.provider.getBalance(player.address),
       "The player should have more then the initial charity balance"

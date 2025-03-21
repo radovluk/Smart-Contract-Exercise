@@ -85,7 +85,7 @@ The solved Exercise 07 - Out of Gas can be found in this \href{https://gitlab.fe
 
 \section*{Solution to Task 1: NFT Auction Sabotage}
 
-This task demonstrates a "DoS with Unexpected Revert" vulnerability in smart contracts. The vulnerability exists in the \texttt{NFTAuction} contract's \texttt{endAuction} function, which attempts to refund all previous bidders by iterating through the bidders array. 
+This task demonstrates a ``DoS with Unexpected Revert'' vulnerability in smart contracts. The vulnerability exists in the \texttt{NFTAuction} contract's \texttt{endAuction} function, which attempts to refund all previous bidders by iterating through the bidders array. 
 
 \subsection*{The Vulnerability}
 
@@ -152,7 +152,7 @@ contract NFTAuctionAttacker {
 \end{minipage}
 
 \noindent
-To execute the attack, we deploy the attacker contract and bid through it:
+To execute the attack, we deploy the attacker contract and place a bid through it:
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -186,7 +186,7 @@ To prevent this type of attack, the contract should implement the Pull-over-Push
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
+\begin{lstlisting}[language=Solidity]
 // Instead of pushing payments, the endAuction function should only:
 // 1. Mark the auction as ended
 // 2. Transfer the NFT to the highest bidder
@@ -205,7 +205,7 @@ function withdraw() external returns (bool) {
     }
     return true;
 }
-\end{minted}
+\end{lstlisting}
 \end{minipage}
 
 \section*{Solution to Task 2: Save the DAO Funds From the Cats}
@@ -250,7 +250,7 @@ function getWinningProposals() public view returns (uint256[] memory) {
 \end{lstlisting}
 \end{minipage}
 
-The issue is that this function iterates through \textit{all} proposals. If there are too many proposals, this function will consume too much gas and eventually exceed the block gas limit, preventing the execution of any proposal.
+The issue is that this function iterates through \textbf{all} proposals. If there are too many proposals, this function will consume too much gas and eventually exceed the block gas limit, preventing the execution of any proposal.
 
 \subsection*{The Attack Strategy}
 

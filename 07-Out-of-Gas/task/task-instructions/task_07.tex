@@ -84,15 +84,24 @@
 \maketitle
 \section{Introduction}
 
-Denial of Service attacks in smart contracts aim to render a contract temporarily or permanently unusable by manipulating its execution flow or exploiting resource limitations. Unlike traditional web applications where DoS attacks typically involve overwhelming a system with traffic, blockchain DoS attacks might be more sophisticated and can have permanent consequences. In this exercise, you will learn about several types of DoS attacks on blockchain and try to implement them in practical exercises. You will also become familiar with the concept of decentralized autonomous organization.
+Denial of Service attacks in smart contracts aim to render a contract
+temporarily or permanently unusable by manipulating its execution flow or
+exploiting resource limitations. Unlike traditional web applications where DoS
+attacks typically involve overwhelming a system with traffic, blockchain DoS
+attacks might be more sophisticated and can have permanent consequences. In
+this exercise, you will learn about several types of DoS attacks on blockchain
+and try to implement them in practical exercises. You will also become familiar
+with the concept of decentralized autonomous organization.
 
 \subsection*{Project Setup}
 
-You have two options for working with this exercise. Using docker container or local installation. Choose the one that best fits your preferences.
+You have two options for working with this exercise: using Docker container or
+local installation. Choose the one that best fits your preferences.
 
 \subsection{Using Docker with VS Code}
 
-This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
+This option uses Docker to create a development environment with all the
+necessary tools and dependencies pre-installed.
 
 \subsubsection*{Prerequisites:}
 
@@ -105,18 +114,22 @@ This option uses Docker to create a development environment with all the necessa
 \subsubsection*{Setting Up the Project:}
 
 \begin{enumerate}
-  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/07-Out-of-Gas/task/task-code}{GitLab repository} and clone it to your local machine.
-  \item Open the repository folder in VS Code.
-  \item When prompted, click "Reopen in Container" or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
+    \item Visit the following
+          \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/07-Out-of-Gas/task/task-code}{GitLab
+              repository} and clone it to your local machine.
+    \item Open the repository folder in VS Code.
+    \item When prompted, click ``Reopen in Container'' or use the command palette (F1)
+          and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
 
 \subsection{Local Setup}
 
-If you prefer working directly on your machine without Docker, you can set up the development environment locally.
+If you prefer working directly on your machine without Docker, you can set up
+the development environment locally.
 
 \subsubsection*{Prerequisites}
 \begin{itemize}
-    \item \textbf{Node.js} - \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
+    \item \textbf{Node.js}: \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
     \item \textbf{NPM}: Node Package Manager, which comes with Node.js.
 \end{itemize}
 
@@ -128,29 +141,48 @@ $ node -v
 $ npm -v
 \end{minted}
 
-Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
+Both commands should return the installed version numbers of Node.js and NPM
+respectively. Node.js provides the runtime environment required to execute
+JavaScript-based tools like Hardhat, while NPM is used to manage the packages
+and dependencies needed for development.
 
 \subsubsection*{Setting Up the Project}
 
 \begin{enumerate}
-    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/07-Out-of-Gas/task/task-code}{GitLab repository} and clone it to your local machine.
+    \item Visit the following
+          \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/07-Out-of-Gas/task/task-code}{GitLab
+              repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
     \item Install the project dependencies by running \codegrey{npm install}.
 \end{enumerate}
 
 \section{Denial of Service Attacks}
 
-Denial of Service (DoS) attacks in Ethereum smart contracts occur when a malicious actor prevents legitimate users from using a contract's functionality. There are several types of DoS attacks that can affect smart contracts.
+Denial of Service (DoS) attacks in Ethereum smart contracts occur when a
+malicious actor prevents legitimate users from using a contract's
+functionality. There are several types of DoS attacks that can affect smart
+contracts.
 
 \subsection{DoS with Block Gas Limit}
 
-Ethereum blocks have a maximum gas limit. If a function requires more gas than this limit to execute, it becomes impossible to call. This commonly happens with functions that loop through unbounded arrays, make multiple external calls, or perform complex computations. Read more about gas: \href{https://ethereum.org/gas/}{https://ethereum.org/gas/}.
+Ethereum blocks have a maximum gas limit. If a function requires more gas than
+this limit to execute, it becomes impossible to call. This commonly happens
+with functions that loop through unbounded arrays, make multiple external
+calls, or perform complex computations. Read more about gas:
+\href{https://ethereum.org/gas/}{https://ethereum.org/gas/}.
 
-The following code shows a contract that iterates through an unbounded array to check if someone is a member of the organization. With each additional member in the organization, the join function requires more and more gas to execute, making it increasingly expensive to run. Eventually, when the member count becomes too high, the join() function will become impossible to call at all due to exceeding the block gas limit. You can try this yourself in the \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/DoS01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared file in REMIX IDE}.
+The following code shows a contract that iterates through an unbounded array to
+check if someone is a member of the organization. With each additional member
+in the organization, the join function requires more and more gas to execute,
+making it increasingly expensive to run. Eventually, when the member count
+becomes too high, the join() function will become impossible to call at all due
+to exceeding the block gas limit. You can try this yourself in the
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/DoS01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared
+    file in REMIX IDE}.
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity, caption=DoS with Block Gas Limit Example]
+    \begin{lstlisting}[language=Solidity, caption=DoS with Block Gas Limit Example]
 contract Organisation {
     mapping(uint => address) members;
     uint public membersCount;
@@ -176,11 +208,17 @@ contract Organisation {
 
 \subsection{DoS with Unexpected Revert}
 
-When a contract requires all operations in a batch to succeed, a single rejected operation can block the entire process. See this \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/DoS02.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{example in REMIX IDE}. In this case, the successful execution of the claimThrone() function depends on the transfer operation completing successfully. If a smart contract becomes the current king and doesn't implement a receive function, it will remain king forever.
+When a contract requires all operations in a batch to succeed, a single
+rejected operation can block the entire process. See this
+\href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/DoS02.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{example
+    in REMIX IDE}. In this case, the successful execution of the \codegrey{claimThrone()}
+function depends on the transfer operation completing successfully. If a smart
+contract becomes the current king and doesn't implement a receive function, it
+will remain king forever.
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity, caption=DoS with Revert Example]
+    \begin{lstlisting}[language=Solidity, caption=DoS with Revert Example]
 contract KingOfEther {
     address public king;
     uint public balance;
@@ -205,11 +243,13 @@ contract MaliciousKing {
 
 \subsection{Owner Operations DoS}
 
-If a contract relies on an owner for critical operations, and the owner's private key is lost or the owner becomes unresponsive, the contract can become permanently unusable.
+If a contract relies on an owner for critical operations, and the owner's
+private key is lost or the owner becomes unresponsive, the contract can become
+permanently unusable.
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity, caption=Owner Operations DoS Example]
+    \begin{lstlisting}[language=Solidity, caption=Owner Operations DoS Example]
 function withdrawFunds() public onlyOwner {
     // What if the owner loses their private key?
     payable(owner).transfer(address(this).balance);
@@ -224,11 +264,13 @@ In this example, if the owner loses their private key or becomes unresponsive, t
 
 \subsubsection*{Pull Over Push Payment Pattern}
 
-Instead of pushing payments to users, let users pull their own funds. This shifts the responsibility of handling failed transactions to individual users rather than affecting everyone.
+Instead of pushing payments to users, let users pull their own funds. This
+shifts the responsibility of handling failed transactions to individual users
+rather than affecting everyone.
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity, caption=Pull Over Push Example]
+    \begin{lstlisting}[language=Solidity, caption=Pull Over Push Example]
 mapping(address => uint256) public pendingWithdrawals;
 
 // Allow users to claim their funds individually
@@ -243,11 +285,12 @@ function withdraw() public {
 
 \subsubsection*{Avoid Unbounded Operations}
 
-Never iterate through unbounded arrays or perform unbounded operations that could exceed the block gas limit.
+Never iterate through unbounded arrays or perform unbounded operations that
+could exceed the block gas limit.
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity, caption=Bounded Operations Example]
+    \begin{lstlisting}[language=Solidity, caption=Bounded Operations Example]
 function processBatch(uint start, uint batchSize) public {
     // Process only a limited number of items per transaction
     uint end = start + batchSize;
@@ -263,11 +306,12 @@ function processBatch(uint start, uint batchSize) public {
 
 \subsubsection*{External Calls Handling}
 
-When making external calls, handle failures gracefully without causing the entire function to revert.
+When making external calls, handle failures gracefully without causing the
+entire function to revert.
 
 \noindent
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[language=Solidity, caption=Safe External Call Example]
+    \begin{lstlisting}[language=Solidity, caption=Safe External Call Example]
 function processPayments() public {
     for(uint i = 0; i < recipients.length; i++) {
         // Note missing require statement - we continue even if one transfer fails
@@ -286,7 +330,15 @@ function processPayments() public {
 
 \section{Decentralized Autonomous Organizations (DAOs)}
 
-DAOs are blockchain-based organizations governed by smart contracts and controlled by their members rather than a central authority. They rely on on-chain voting mechanisms to make decisions and allocate resources. The foundation of a DAO is a smart contract on the blockchain that precisely establishes the rules by which the organization will be governed. Examples of DAOs include charities (where members decide where to contribute funds), collective ownership structures, and ventures and grants - where a venture fund pools investment capital and members vote on which ventures to support. Key components of DAOs include:
+DAOs are blockchain-based organizations governed by smart contracts and
+controlled by their members rather than a central authority. They rely on
+on-chain voting mechanisms to make decisions and allocate resources. The
+foundation of a DAO is a smart contract on the blockchain that precisely
+establishes the rules by which the organization will be governed. Examples of
+DAOs include charities (where members decide where to contribute funds),
+collective ownership structures, and ventures and grants - where a venture fund
+pools investment capital and members vote on which ventures to support. Key
+components of DAOs include:
 
 \begin{enumerate}
     \item \textbf{Membership Management}: Rules for joining the DAO, often by holding governance tokens or paying membership fees.
@@ -296,58 +348,68 @@ DAOs are blockchain-based organizations governed by smart contracts and controll
 \end{enumerate}
 
 \noindent
-One of the most infamous DAO organizations was the notorious \href{https://en.wikipedia.org/wiki/The_DAO}{The DAO} which you learned about in Exercise 05 - Re-entrancy. You will see simple example of DAO in the task 2.
+One of the most infamous DAO organizations was the notorious \href{https://en.wikipedia.org/wiki/The_DAO}{The DAO} which you learned about in Exercise 05 - Re-entrancy. You will see simple example of DAO in the Task 2.
 
 \begin{table}[H]
-\centering
-\footnotesize
-\begin{tabular}{|p{0.40\textwidth}|p{0.40\textwidth}|}
-\hline
-\multicolumn{1}{|c|}{\textbf{DAO}} & \multicolumn{1}{c|}{\textbf{Traditional Organization}} \\
-\hline
-Usually flat, and fully democratized. & Usually hierarchical. \\
-\hline
-Voting required by members for any changes to be implemented. & Depending on structure, changes can be demanded from a sole party, or voting may be offered. \\
-\hline
-Votes tallied, and outcome implemented automatically without trusted intermediary. & If voting allowed, votes are tallied internally, and outcome of voting must be handled manually. \\
-\hline
-Services offered are handled automatically in a decentralized manner (for example distribution of philanthropic funds). & Requires human handling, or centrally controlled automation, prone to manipulation. \\
-\hline
-All activity is transparent and fully public. & Activity is typically private, and limited to the public. \\
-\hline
-\end{tabular}
-\caption{DAOs and Traditional Organizations (from: \href{https://ethereum.org/dao/}{Ethereum.org})}
-\label{tab:dao-comparison}
+    \centering
+    \footnotesize
+    \begin{tabular}{|p{0.40\textwidth}|p{0.40\textwidth}|}
+        \hline
+        \multicolumn{1}{|c|}{\textbf{DAO}}                                                                                      & \multicolumn{1}{c|}{\textbf{Traditional Organization}}                                           \\
+        \hline
+        Usually flat, and fully democratized.                                                                                   & Usually hierarchical.                                                                            \\
+        \hline
+        Voting required by members for any changes to be implemented.                                                           & Depending on structure, changes can be demanded from a sole party, or voting may be offered.     \\
+        \hline
+        Votes tallied, and outcome implemented automatically without trusted intermediary.                                      & If voting allowed, votes are tallied internally, and outcome of voting must be handled manually. \\
+        \hline
+        Services offered are handled automatically in a decentralized manner (for example distribution of philanthropic funds). & Requires human handling, or centrally controlled automation, prone to manipulation.              \\
+        \hline
+        All activity is transparent and fully public.                                                                           & Activity is typically private, and limited to the public.                                        \\
+        \hline
+    \end{tabular}
+    \caption{DAOs and Traditional Organizations (from: \href{https://ethereum.org/dao/}{Ethereum.org})}
+    \label{tab:dao-comparison}
 \end{table}
 
 \medskip
 \noindent
 More about DAOs:
 \begin{itemize}
-  \item \textbf{Read:} \href{https://ethereum.org/dao/#what-are-daos}{What is a DAO?}
-  \item \textbf{Video:} \href{https://www.youtube.com/watch?v=KHm0uUPqmVE}{What is a DAO in Crypto?}
-  \item \textbf{TED Talk:} \href{https://www.youtube.com/watch?v=zTStDvUtQWc}{Could a DAO Build the Next Great City?}
+    \item \textbf{Read:} \href{https://ethereum.org/dao/#what-are-daos}{What is a DAO?}
+    \item \textbf{Video:} \href{https://www.youtube.com/watch?v=KHm0uUPqmVE}{What is a DAO in Crypto?}
+    \item \textbf{TED Talk:} \href{https://www.youtube.com/watch?v=zTStDvUtQWc}{Could a DAO Build the Next Great City?}
 \end{itemize}
 
 \section{Task}
 
 \subsection*{Task 1: NFT Auction Sabotage}
 
-One of the most valuable students from the FEL NFT students collection is now for sale. It's an Electronics and Communication student who dozed off with a calculator. The owner (seller) has decided not to sell this rare piece on an ordinary marketplace, but through an auction. The starting price is 0.5 ETH, but it quickly rises to 2.8 ETH. You have 3 ETH available and want to acquire this piece at all costs! Suddenly, a well-known speculator and reseller appears and threatens on the auction forum that they'll pay 50 ETH for the NFT student. You realize that you no longer have any chance of winning the auction. But you decide: if you can't have the NFT, no one will!
+One of the most valuable students from the FEL NFT Students collection is now
+for sale. It's an Electronics and Communication student who dozed off with a
+calculator. The owner (seller) has decided not to sell this rare piece on an
+ordinary marketplace, but through an auction. The starting price is 0.5 ETH,
+but it quickly rises to 2.8 ETH. You have 3 ETH available and want to acquire
+this piece at all costs! Suddenly, a well-known speculator and reseller appears
+and threatens on the auction forum that they'll pay 50 ETH for the NFT student.
+You realize that you no longer have any chance of winning the auction. But you
+decide: if you can't have the NFT, no one will!
 
 \begin{figure}[h!]
-  \centering
-  \begin{minipage}{0.3\textwidth}
-    \includegraphics[width=\textwidth]{NFTs/ek-student-nft.pdf}
-  \end{minipage}
+    \centering
+    \begin{minipage}{0.3\textwidth}
+        \includegraphics[width=\textwidth]{NFTs/ek-student-nft.pdf}
+    \end{minipage}
 \end{figure}
 
 \medskip
 \noindent
 \textbf{Your Mission:}
 \begin{itemize}
-    \item Prevent the reseller from acquiring the NFT student - your code will run before the reseller (bidder 3) places their 50 ETH bid
-    \item Ensure that none of the other auction participants can acquire the NFT student either
+    \item Prevent the reseller from acquiring the NFT Student - your code will run before
+          the reseller (bidder 3) places their 50 ETH bid
+    \item Ensure that none of the other auction participants can acquire the NFT Student
+          either
 \end{itemize}
 
 \noindent
@@ -360,24 +422,32 @@ $ npm run auction
 \noindent
 Files that are relevant for this challenge:
 \begin{itemize}
-\item test/\textbf{NFTAuction.js}: The test file where you should code your solution.
-\item contracts/\textbf{NFTAuction.sol}: The auction contract where the auction is taking place.
-\item contracts/\textbf{FELStudentNFT.sol}: The NFT collection contract.
+    \item test/\textbf{NFTAuction.js}: The test file where you should code your solution.
+    \item contracts/\textbf{NFTAuction.sol}: The auction contract where the auction is
+          taking place.
+    \item contracts/\textbf{FELStudentNFT.sol}: The NFT collection contract.
 \end{itemize}
 
 \subsection*{Task 2: Save the DAO Funds From the Cats}
 
-You decided to join a DAO with other people to collectively manage your finances. The founder of the DAO contributed 10 ETH, and anyone who wants to join the DAO must pay a membership fee of 1 ETH. Everything looks promising until one member proposes to donate all the funds to a cat charity organization. This proposal is very popular and all members (except you) vote in favor of it. By coincidence, it's the same cat charity that you exploited in Exercise 4, but this time it's sufficiently protected against re-entrancy attacks. You hate cats and don't want the funds to reach them under any circumstances.
+You decided to join a DAO with other people to collectively manage your
+finances. The founder of the DAO contributed 10 ETH, and anyone who wants to
+join the DAO must pay a membership fee of 1 ETH. Everything looks promising
+until one member proposes to donate all the funds to a cat charity
+organization. This proposal is very popular and all members (except you) vote
+in favor of it. By coincidence, it's the same cat charity that you exploited in
+Exercise 4, but this time it's sufficiently protected against re-entrancy
+attacks. You hate cats and don't want the funds to reach them under any
+circumstances.
 
 \medskip
 \noindent
 \textbf{Your Mission:}
 \begin{itemize}
-  \item Prevent the execution of the proposal to donate funds to the cat charity
-  \item Ensure the treasury funds remain in the DAO
-  \item You have 1.5 ETH available to achieve this goal
+    \item Prevent the execution of the proposal to donate funds to the cat charity
+    \item Ensure the treasury funds remain in the DAO
+    \item You have 1.5 ETH available to achieve this goal
 \end{itemize}
-
 
 \noindent
 Code your solution in the \texttt{test/DAO.js} file. Use only the player account, which is already a DAO member.  Verify your solution by running the following command:
@@ -389,9 +459,11 @@ $ npm run dao
 \noindent
 Files that are relevant for this challenge:
 \begin{itemize}
-\item test/\textbf{DAO.js}: The test file where you should code your solution.
-\item contracts/\textbf{DAO.sol}: The contract forming your Decentralized Autonomous Organization.
-\item contracts/\textbf{CatCharity.sol}: The cat charity contract. You do not need to pay any special attention to this contract.
+    \item test/\textbf{DAO.js}: The test file where you should code your solution.
+    \item contracts/\textbf{DAO.sol}: The contract forming your Decentralized Autonomous
+          Organization.
+    \item contracts/\textbf{CatCharity.sol}: The cat charity contract. You do not need to
+          pay any special attention to this contract.
 \end{itemize}
 
 \end{document}

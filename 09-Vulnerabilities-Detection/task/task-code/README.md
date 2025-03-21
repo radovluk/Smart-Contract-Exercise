@@ -3,13 +3,14 @@
 ## Introduction
 
 This exercise focuses on general vulnerability detection in smart contracts. We
-will explore static code analysis tool Slither to identify vulnerabilities
-in contracts from previous exercises. The exercise will also cover the
+will the explore static analysis tool Slither to identify vulnerabilities in
+contracts from previous exercises. The exercise will also cover the
 implementation of unit tests, stateless fuzzing tests, and stateful fuzzing
 tests with invariants. We will introduce the Foundry development environment
-(this will be new only for students who previously used Hardhat). The primary task involves
-writing tests for a simple toy smart contract and then applying this knowledge
-to develop more complex tests for the DEX contract from earlier exercise.
+(this will be new only for students who previously used Hardhat). The primary
+task involves writing tests for a simple toy smart contract and then applying
+this knowledge to develop more complex tests for the DEX contract from earlier
+exercise.
 
 ### Project Setup
 
@@ -32,9 +33,11 @@ necessary tools and dependencies pre-installed.
 
 #### Setting Up the Project:
 
-1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code) and clone it to your local machine.
+1. Visit the following
+   [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code) and clone it to your local machine.
 2. Open the repository folder in VS Code.
-3. When prompted, click "Reopen in Container" or use the command palette (F1) and run `Dev Containers: Reopen in Container`.
+3. When prompted, click "Reopen in Container" or use the command palette (F1)
+   and run `Dev Containers: Reopen in Container`.
 
 ### Local Setup
 
@@ -89,17 +92,18 @@ $ anvil --version
 
 #### Setting Up the Project:
 
-1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code) and clone it to your local machine.
+1. Visit the following
+   [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code) and clone it to your local machine.
 2. Open a terminal and navigate to the project directory.
 3. Install the project dependencies by running `bun install`.
 
 ## Static Analysis
 
 Static analysis is a method of examining code without executing it. Unlike
-dynamic analysis which examines code during execution, static analysis looks
-at the source code or bytecode to find patterns that match known vulnerability
-types. If you're using a local setup, you'll need to install Slither first,
-while those using the Docker container already have these tools available in
+dynamic analysis, which examines code during execution, static analysis looks at
+the source code or bytecode to find patterns that match known vulnerability
+types. If you're using a local setup, you'll need to install Slither first.
+Students using the Docker container already have these tools available in
 the container.
 
 ### Slither
@@ -154,7 +158,11 @@ vulnerability.
 
 ## Testing in Foundry
 
-[Foundry](https://github.com/foundry-rs/foundry) provides powerful tools for testing smart contracts, with a focus on flexibility and efficiency. Unlike Hardhat (which uses JavaScript), Foundry uses Solidity for writing tests and scripts. We won't cover all Foundry functions in detail here, but will focus primarily on writing tests. For more information about working with Foundry, visit the project documentation [Foundry Book](https://book.getfoundry.sh/). Let's now introduce the concept of smart contract testing with a simple example that you'll work with in this exercise. The PiggyBank contract is a simple savings contract where anyone can deposit ETH, but only the owner can withdraw:
+[Foundry](https://github.com/foundry-rs/foundry) provides powerful tools for testing smart contracts, with a focus on flexibility and efficiency. Unlike Hardhat (which uses JavaScript), Foundry uses Solidity for writing tests and scripts. We won't cover all Foundry functions in detail here, but will focus primarily on writing tests. For more information about working with Foundry, visit the project documentation [Foundry Book](https://book.getfoundry.sh/). Let's now introduce the concept of smart contract testing with a simple example that you'll work with in this exercise. The PiggyBank contract is a simple savings contract where anyone can deposit ETH, but only the owner can withdraw.
+
+**Note:** At the time of writing this exercise, Hardhat is adding support for Solidity-written tests and scripts in an alpha release. If you're interested, check it out: [Hardhat 3 Alpha](https://hardhat.org/hardhat3-alpha).
+
+**Note:** Hardhat and Foundry are mutually compatible. Learn more about this topic: [Integrating Hardhat with Foundry](https://hardhat.org/hardhat-runner/docs/advanced/hardhat-and-foundry#integrating-with-foundry) and [Integrating Foundry with Hardhat](https://book.getfoundry.sh/config/hardhat).
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -213,7 +221,7 @@ function test_Deposit() public {
 }
 ```
 
-Another test could verify that if we try to withdraw more money than was deposited into the contract, we receive the appropriate error -- `InsufficientFunds`.
+Another test could verify that if we try to withdraw more money than has been deposited into the contract, we receive the appropriate error -- `InsufficientFunds`.
 
 ```solidity
 function test_RevertWhen_WithdrawExceedsBalance() public {
@@ -237,7 +245,7 @@ the code. The file contains four completed unit tests and four unimplemented
 ones that you need to complete. Run the tests using the following command:
 
 ```bash
-$ forge test --match-path test/PiggyBankUnitTest.t.sol -v
+$ forge test --mp test/PiggyBankUnitTest.t.sol -v
 ```
 
 You can use different verbosity levels to make debugging easier:
@@ -293,7 +301,7 @@ the code. The file contains four completed fuzz tests and four unimplemented
 ones that you need to complete. Run the tests using the following command:
 
 ```bash
-$ forge test --match-path test/PiggyBankStatelessFuzzTest.t.sol -v
+$ forge test --mp test/PiggyBankStatelessFuzzTest.t.sol -v
 ```
 
 **Note:** Test configuration is set in the `foundry.toml` file. The default setting for stateless fuzz testing is 1000 iterations per test
@@ -338,7 +346,7 @@ should always hold true for the PiggyBank contract. Run the tests using the
 following command:
 
 ```bash
-$ forge test --match-path test/PiggyBankInvariantTest.t.sol -v
+$ forge test --mp test/PiggyBankInvariantTest.t.sol -v
 ```
 
 **Warning:** after any code change in invariant tests, you need to run the `forge clean` command because Foundry caches completed tests and only replicates them otherwise.
@@ -359,9 +367,9 @@ the files `test/SimpleDEXUnitTest.t.sol`,
 Verify your solution with:
 
 ```bash
-$ forge test --match-path test/SimpleDEXUnitTest.t.sol -v
-$ forge test --match-path test/SimpleDEXStatelessFuzzTest.t.sol -v
-$ forge test --match-path test/SimpleDEXInvariantTest.t.sol -v
+$ forge test --mp test/SimpleDEXUnitTest.t.sol -v
+$ forge test --mp test/SimpleDEXStatelessFuzzTest.t.sol -v
+$ forge test --mp test/SimpleDEXInvariantTest.t.sol -v
 ```
 
 **Note:** Foundry follows a specific naming convention for tests and invariants that must be followed, otherwise the tests won't run:
@@ -375,11 +383,11 @@ $ forge test --match-path test/SimpleDEXInvariantTest.t.sol -v
 ### Additional Resources
 
 For more resources on fuzzing and invariant testing, check out these links:
-- **Even More Resources:** [Updated comprehensive list of fuzzing resources](https://github.com/perimetersec/evm-fuzzing-resources?tab=readme-ov-file#evm-fuzzing-resources)
-- **Hands-on Learning:** [Practical exercises on fuzzing](https://github.com/crytic/building-secure-contracts/tree/master/program-analysis/echidna/exercises)
-- **Real-world Examples:** [Published professional fuzzing campaigns](https://github.com/perimetersec/public-fuzzing-campaigns-list)
-- **Case Study:** [Invariant Testing WETH With Foundry](https://mirror.xyz/horsefacts.eth/Jex2YVaO65dda6zEyfM_-DXlXhOWCAoSpOx5PLocYgw)
-- **Video Tutorial:** [Fuzzing Workshop by Trail of Bits](https://www.youtube.com/playlist?list=PLciHOL_J7Iwqdja9UH4ZzE8dP1IxtsBXI)
+- **Hands-on Learning**: [Practical exercises on fuzzing](https://github.com/crytic/building-secure-contracts/tree/master/program-analysis/echidna/exercises)
+- **Real-world Examples**: [Published professional fuzzing campaigns](https://github.com/perimetersec/public-fuzzing-campaigns-list)
+- **Case Study**: [Invariant Testing WETH With Foundry](https://mirror.xyz/horsefacts.eth/Jex2YVaO65dda6zEyfM_-DXlXhOWCAoSpOx5PLocYgw)
+- **Video Tutorial**: [Fuzzing Workshop by Trail of Bits](https://www.youtube.com/playlist?list=PLciHOL_J7Iwqdja9UH4ZzE8dP1IxtsBXI)
+- **Even More Resources**: [Updated comprehensive list of fuzzing resources](https://github.com/perimetersec/evm-fuzzing-resources?tab=readme-ov-file#evm-fuzzing-resources)
 
 ## Beyond The Course: The End?
 
@@ -391,51 +399,55 @@ evolving. Here are resources to continue your journey:
 
 Practical hands-on courses focused on smart contract development.
 
-- **[CryptoZombies](https://cryptozombies.io/)** - Interactive lessons for learning Solidity
-- **[SpeedRunEthereum](https://speedrunethereum.com/)** - Hands-on challenges to build Ethereum apps
+- **[CryptoZombies](https://cryptozombies.io/)**: Interactive lessons for learning Solidity
+- **[SpeedRunEthereum](https://speedrunethereum.com/)**: Hands-on challenges to build Ethereum apps
 
 #### Interactive Learning Resources -- Security Focus
 
-Practical exercises similar to those you solved in this course. Ethernaut offers shorter and simpler challenges in the style of the Vaults from Exercise 04, while Damn Vulnerable DeFi is more complex and focuses on DeFi applications, often using real copies of smart contracts.
+Practical exercises similar to those you solved in this course. Ethernaut
+offers shorter and simpler challenges in the style of the Vaults from Exercise
+04, while Damn Vulnerable DeFi is more complex and focuses on DeFi
+applications, often using real copies of smart contracts.
 
-- **[Damn Vulnerable DeFi](https://www.damnvulnerabledefi.xyz/)** - Challenges focusing on DeFi vulnerabilities
-- **[Ethernaut](https://ethernaut.openzeppelin.com/)** - OpenZeppelin's collection of smart contract security challenges
+- **[Damn Vulnerable DeFi](https://www.damnvulnerabledefi.xyz/)**: Challenges focusing on DeFi vulnerabilities
+- **[Ethernaut](https://ethernaut.openzeppelin.com/)**: OpenZeppelin's collection of smart contract security challenges
 
 #### University Courses
 
-- **[TUM: Blockchain-based Systems Engineering](https://github.com/sebischair/bbse)** - Blockchain course at Technical University of Munich
-- **[Berkeley DeFi Course](https://rdi.berkeley.edu/berkeley-defi/f24)** - Decentralized Finance course at the University of California, Berkeley
-- **[FIT ČVUT: NIE-BLO](https://courses.fit.cvut.cz/NIE-BLO/index.html)** - Blockchain Course at Czech Technical University in Prague
+- **[TUM: Blockchain-based Systems Engineering](https://github.com/sebischair/bbse)**: Blockchain course at Technical University of Munich
+- **[Berkeley DeFi Course](https://rdi.berkeley.edu/berkeley-defi/f24)**: Decentralized Finance course at the University of California, Berkeley
+- **[FIT ČVUT: NIE-BLO](https://courses.fit.cvut.cz/NIE-BLO/index.html)**: Blockchain Course at Czech Technical University in Prague
 
 #### Cyfrin Courses
 
-Cyfrin is a smart contract security audit company that has published up-to-date practical courses on their website, accessible for free.
+Cyfrin is a smart contract security audit company that has published up-to-date
+practical courses on their website, accessible for free.
 
-- **[Security and Auditing Full Course](https://updraft.cyfrin.io/courses/security)** - Comprehensive guide to smart contract security
-- **[Foundry Fundamentals](https://updraft.cyfrin.io/courses/foundry)** - Master the Foundry development environment
-- **[Formal Verification](https://updraft.cyfrin.io/courses/formal-verification)** - Learn to use formal methods to verify smart contracts
-- **[Advanced Foundry](https://updraft.cyfrin.io/courses/advanced-foundry)** - Take your Foundry skills to the next level
-- **[SoloDIT](https://solodit.cyfrin.io/)** - Cyfrin's searchable database of vulnerabilities found in audits
+- **[Security and Auditing Full Course](https://updraft.cyfrin.io/courses/security)**: Comprehensive guide to smart contract security
+- **[Foundry Fundamentals](https://updraft.cyfrin.io/courses/foundry)**: Master the Foundry development environment
+- **[Formal Verification](https://updraft.cyfrin.io/courses/formal-verification)**: Learn to use formal methods to verify smart contracts
+- **[Advanced Foundry](https://updraft.cyfrin.io/courses/advanced-foundry)**: Take your Foundry skills to the next level
+- **[SoloDIT](https://solodit.cyfrin.io/)**: Cyfrin's searchable database of vulnerabilities found in audits
 
 #### Competitive Audit Platforms
 
 Participating in competitive audits is an excellent way to apply your skills in
 real-world scenarios, learn from others, and potentially earn rewards:
 
-- **[Code4rena](https://code4rena.com/)** - Competitive audit platform with regular contests and substantial rewards
-- **[Sherlock](https://www.sherlock.xyz/)** - Combines security competitions with protocol coverage
-- **[CodeHawks](https://codehawks.cyfrin.io/)** - Newer platform with both private and public audit competitions
-- **[Immunefi](https://immunefi.com/)** - The largest bug bounty platform in crypto
+- **[Code4rena](https://code4rena.com/)**: Competitive audit platform with regular contests and substantial rewards
+- **[Sherlock](https://www.sherlock.xyz/)**: Combines security competitions with protocol coverage
+- **[CodeHawks](https://codehawks.cyfrin.io/)**: Newer platform with both private and public audit competitions
+- **[Immunefi](https://immunefi.com/)**: The largest bug bounty platform in crypto
 
 #### Security Tools and Technical Resources
 
-- **[Manticore](https://github.com/trailofbits/manticore)** - Symbolic execution tool
-- **[Echidna](https://github.com/crytic/echidna)** - Fuzzing tool
-- **[Medusa](https://github.com/crytic/medusa)** - Fuzzing tool
+- **[Manticore](https://github.com/trailofbits/manticore)**: Symbolic execution tool
+- **[Echidna](https://github.com/crytic/echidna)**: Fuzzing tool
+- **[Medusa](https://github.com/crytic/medusa)**: Fuzzing tool
 
 #### Communities and Networking
 
-- **[Cyfrin](https://discord.gg/cyfrin)** - Active community focused on smart contract security
-- **[Ethereum Research](https://discord.gg/qGpsxSA)** - Technical discussions about Ethereum
+- **[Cyfrin](https://discord.gg/cyfrin)**: Active community focused on smart contract security
+- **[Ethereum Research](https://discord.gg/qGpsxSA)**: Technical discussions about Ethereum
 
 It has been a pleasure guiding you through your first steps in smart contract security. Happy hacking, and best of luck on your smart contract security journey!

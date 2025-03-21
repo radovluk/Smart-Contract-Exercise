@@ -8,7 +8,7 @@ describe("CTUTokenBank Challenge", function () {
   let deployer, player;
   let token, bank;
 
-  const BANK_INITIAL_ETH_BALANCE = ethers.parseEther("10") // 10 ETH
+  const BANK_INITIAL_ETH_BALANCE = ethers.parseEther("10"); // 10 ETH
   const PLAYER_INITIAL_ETH_BALANCE = ethers.parseEther("5.1"); // 5.1 ETH
   const CTU_TOKEN_INITIAL_SUPPLY = ethers.parseEther("1000000"); // 1 million tokens
 

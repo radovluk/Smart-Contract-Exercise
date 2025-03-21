@@ -95,7 +95,7 @@ Since the guess is derived from predictable on-chain data and is used within the
 
 ## Vault05: Fortune Teller
 
-To breach `Vault05`, you need to use the `blockhash` of the block when the guess was locked in, but only after the next block has been mined. First, you lock the guess using `lockInGuess`. Then, you must wait for the next block and calculate the random number using `blockhash(lockInBlockNumber)`. The issue is that at the moment of locking in the password, we do not know the blockhash yet. We can only access the blockhash of the previous blocks. However, since the `blockhash` function only returns the blockhash for the last 256 blocks, otherwise it returns zero (see [Solidity documentation](https://docs.soliditylang.org/en/latest/units-and-global-variables.html)). Therefore, we simply lock in a 0 and mine 256 blocks before calling `breachVault` function.
+To breach `Vault05`, you need to use the `blockhash` of the block when the guess was locked in, but only after the next block has been mined. First, you lock the guess using `lockInGuess`. Then, you must wait for the next block and calculate the random number using `blockhash(lockInBlockNumber)`. The issue is that at the moment of locking in the password, we do not know the blockhash yet. We can only access the blockhash of the previous blocks. However, since the `blockhash` function only returns the blockhash for the last 256 blocks, otherwise it returns zero (see [Solidity documentation](https://docs.soliditylang.org/en/latest/units-and-global-variables.html)). Therefore, we simply lock in a 0 and mine 256 blocks before calling the `breachVault` function.
 
 ```javascript
 // Lock the zero
@@ -111,7 +111,6 @@ await vault.connect(player).breachVault();
 ```
 
 ## Vault06: Explorer
-
 Since the contract is verified on Etherscan, you can view the constructor arguments on [Sepolia Etherscan](https://sepolia.etherscan.io/address/0xA3a763bF62550511A0E485d6EB16c98937609A32#code).
 
 ```
@@ -131,8 +130,8 @@ You can also find the password from a previous transactions that interacted with
 
 To breach `Vault07`, you need to figure out the stored `password` string, which is located in the contract's storage. The storage layout of the contract reveals that the password is stored at slot 4.
 
-| **Name** | **Type** | **Slot** | **Offset** | **Bytes** |
-|----------|----------|----------|------------|-----------|
+| Name | Type | Slot | Offset | Bytes |
+|------|------|------|--------|-------|
 | `lastSolver` | `address` | 0 | 0 | 20 |
 | `small1` | `uint8` | 0 | 20 | 1 |
 | `small2` | `uint16` | 0 | 21 | 2 |
@@ -172,7 +171,7 @@ await tx.wait();
 
 To breach `Vault08`, you need to exploit an integer overflow vulnerability in the `buyTokens` function. Since the contract uses Solidity 0.7.6, which lacks built-in protection against overflow, you can find a value for `numTokens` that causes `numTokens * TOKEN_PRICE` to overflow to exactly 0. This allows you to purchase tokens without paying any ETH.
 
-To achieve this, use a value for `numTokens` that, when multiplied by 1 ether (10^18), overflows and wraps around to exactly 0 in a uint256. A perfect value for this is 2^238, since 2^238 × 10^18 = 2^238 × 2^60 ≈ 2^298, which exceeds the maximum uint256 value (2^256 - 1) and wraps around to 0.
+To achieve this, use a value for `numTokens` that, when multiplied by 1 ether (10^18), overflows and wraps around to exactly 0 in a uint256. A perfect value for this is 2^238, since 2^238 × 10^18 ≈ 2^238 × 2^60 = 2^298, which exceeds the maximum uint256 value (2^256 - 1) and wraps around to 0. The exploit works because when the multiplication overflows, the result becomes 2^298 mod 2^256 = 0. This allows you to pass the payment check with 0 ETH.
 
 ```javascript
 // Connect to the vault contract as the player

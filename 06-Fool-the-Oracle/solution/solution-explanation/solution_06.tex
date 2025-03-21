@@ -85,16 +85,14 @@ The solved Exercise 06 - Fool the Oracle can be found in this \href{https://gitl
 
 \section*{Solution to Task 1: Fool the Oracle 01}
 
-The solution to Task 1 leverages price manipulation in the SimpleDEX, which is being used as a price oracle by the NFT marketplace. By exploiting the price impact mechanics of AMM, we can change the exchange rate between ETH and USDC to make the NFTs much cheaper in ETH terms.
-
-The key steps in the solution are:
+The solution to Task 1 leverages price manipulation in the SimpleDEX, which is being used as a price oracle by the NFT marketplace. By exploiting the price impact mechanics of AMM, we can change the exchange rate between ETH and USDC to make the NFTs much cheaper in ETH terms. The key steps in the solution are:
 
 \begin{enumerate}
 \item First, we approve the DEX to spend our USDC tokens:
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 await usdcToken.connect(player).approve(simpleDEX.target, PLAYER_INITIAL_USDC);
 \end{minted}
-\item Then, we swap all our USDC (3000) for ETH, which drastically changes the composition of the liquidity pool. This manipulation causes the price of ETH (in USDC terms) to significantly increase:
+\item Then, we swap all our USDC (3,000) for ETH, which drastically changes the composition of the liquidity pool. This manipulation causes the price of ETH (in USDC terms) to significantly increase:
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 await simpleDEX.connect(player).usdcToEth(PLAYER_INITIAL_USDC);
 \end{minted}
@@ -210,5 +208,5 @@ function onFlashLoan(
 Smart contracts relying on price oracles require robust protection against manipulation attacks like those demonstrated in these exercises. Effective mitigation approaches focus on making these attacks economically unfeasible.
 Time-Weighted Average Prices offer significant protection by averaging prices over extended periods, greatly increasing the capital required for manipulation. Rather than trusting a single source, projects should aggregate data from multiple independent oracles, taking median values to neutralize outliers.
 Implementing volume and liquidity monitoring helps detect suspicious activities. When unusually large trades occur relative to pool size, the system can temporarily pause or flag transactions for review. Similarly, setting reasonable price deviation bounds prevents acceptance of manipulated values that fall outside historical volatility patterns.
-Many production DeFi applications now rely on professional oracle networks like \href{https://chain.link/}{Chainlink}, which aggregate data from numerous off-chain sources with built-in manipulation safeguards. For systems potentially vulnerable to flash loan attacks, transaction context analysis can identify and block operations initiated within flash loan transactions by examining the call stack.
+Many production DeFi applications now rely on professional oracle networks like \href{https://chain.link/}{Chainlink}, which aggregate data from numerous off-chain sources with built-in manipulation safeguards.
 \end{document}

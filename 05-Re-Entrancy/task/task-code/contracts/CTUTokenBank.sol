@@ -5,7 +5,7 @@ import "./CTUToken.sol";
 
 /**
  * @title ReentrancyGuard
- * @notice A simple guard to deter reentrant calls. 
+ * @notice A simple guard to deter reentrant calls.
  *         It sets a boolean lock before function execution and resets it after.
  *         Though it helps, no guarantee this covers all possible attacks—be cautious.
  */
@@ -28,10 +28,9 @@ abstract contract ReentrancyGuard {
     }
 }
 
-
 /**
  * @title CTUTokenBank
- * @notice This contract allows users to deposit Ether, withdraw Ether, buy CTU Tokens deposited using Ether, 
+ * @notice This contract allows users to deposit Ether, withdraw Ether, buy CTU Tokens deposited using Ether,
  * and sell CTU Tokens in exchange for Ether.
  * - It integrates with the CTUToken contract to facilitate token transactions.
  * - The contract uses a ReentrancyGuard to prevent reentrancy attacks on critical functions.
@@ -40,7 +39,6 @@ abstract contract ReentrancyGuard {
  * - The price of 1 CTU Token is fixed to 1 Ether.
  */
 contract CTUTokenBank is ReentrancyGuard {
-
     // ------------------------------------------------------------------------
     //                          Storage Variables
     // ------------------------------------------------------------------------
@@ -121,10 +119,7 @@ contract CTUTokenBank is ReentrancyGuard {
     function withdrawEther() public noReentrant {
         uint amount = balances[msg.sender];
         // Ensure the user has enough balance to withdraw
-        require(
-            amount >= 0,
-            InsufficientBalance(balances[msg.sender], amount)
-        );
+        require(amount >= 0, InsufficientBalance(balances[msg.sender], amount));
 
         // Transfer the Ether to the user and reset their balance
         (bool success, ) = msg.sender.call{value: amount}("");
@@ -176,7 +171,7 @@ contract CTUTokenBank is ReentrancyGuard {
         // Calculate the Ether amount to add to the user's balance
         uint etherAmount = _amount * 1 ether;
 
-        // Transfer the tokens from the user to the contract 
+        // Transfer the tokens from the user to the contract
         // (fails if the user has not approved the contract)
         ctuTokenContract.transferFrom(msg.sender, address(this), _amount);
 

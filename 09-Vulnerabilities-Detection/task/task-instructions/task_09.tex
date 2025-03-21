@@ -87,7 +87,7 @@
 \section{Introduction}
 
 This exercise focuses on general vulnerability detection in smart contracts. We
-will explore static code analysis tool Slither to identify vulnerabilities in
+will the explore static analysis tool Slither to identify vulnerabilities in
 contracts from previous exercises. The exercise will also cover the
 implementation of unit tests, stateless fuzzing tests, and stateful fuzzing
 tests with invariants. We will introduce the Foundry development environment
@@ -201,10 +201,10 @@ $ anvil --version
 \section{Static Analysis}
 
 Static analysis is a method of examining code without executing it. Unlike
-dynamic analysis which examines code during execution, static analysis looks at
+dynamic analysis, which examines code during execution, static analysis looks at
 the source code or bytecode to find patterns that match known vulnerability
-types. If you're using a local setup, you'll need to install Slither first,
-while those using the Docker container already have these tools available in
+types. If you're using a local setup, you'll need to install Slither first.
+Students using the Docker container already have these tools available in
 the container.
 
 \subsection*{Slither}
@@ -366,7 +366,7 @@ function test_Deposit() public {
 \end{minipage}
 
 \noindent
-Another test could verify that if we try to withdraw more money than was deposited into the contract, we receive the appropriate error -- \texttt{InsufficientFunds}.
+Another test could verify that if we try to withdraw more money than has been deposited into the contract, we receive the appropriate error -- \texttt{InsufficientFunds}.
 
 \noindent \begin{minipage}{\textwidth}
     \begin{lstlisting}[language=Solidity]
@@ -399,7 +399,7 @@ ones that you need to complete. Run the tests using the following command:
 
 \noindent \begin{minipage}{\textwidth}
     \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ forge test --match-path test/PiggyBankUnitTest.t.sol -v
+$ forge test --mp test/PiggyBankUnitTest.t.sol -v
 \end{minted}
 \end{minipage}
 
@@ -469,7 +469,7 @@ ones that you need to complete. Run the tests using the following command:
 
 \noindent \begin{minipage}{\textwidth}
     \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ forge test --match-path test/PiggyBankStatelessFuzzTest.t.sol -v
+$ forge test --mp test/PiggyBankStatelessFuzzTest.t.sol -v
 \end{minted}
 \end{minipage}
 
@@ -526,7 +526,7 @@ following command:
 
 \noindent \begin{minipage}{\textwidth}
     \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ forge test --match-path test/PiggyBankInvariantTest.t.sol -v
+$ forge test --mp test/PiggyBankInvariantTest.t.sol -v
 \end{minted}
 \end{minipage}
 
@@ -553,9 +553,9 @@ Verify your solution with:
 
 \noindent \begin{minipage}{\textwidth}
     \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
-$ forge test --match-path test/SimpleDEXUnitTest.t.sol -v
-$ forge test --match-path test/SimpleDEXStatelessFuzzTest.t.sol -v
-$ forge test --match-path test/SimpleDEXInvariantTest.t.sol -v
+$ forge test --mp test/SimpleDEXUnitTest.t.sol -v
+$ forge test --mp test/SimpleDEXStatelessFuzzTest.t.sol -v
+$ forge test --mp test/SimpleDEXInvariantTest.t.sol -v
 \end{minted}
 \end{minipage}
 
@@ -575,11 +575,11 @@ $ forge test --match-path test/SimpleDEXInvariantTest.t.sol -v
 \noindent
 For more resources on fuzzing and invariant testing, check out these links:
 \begin{itemize}
-    \item \textbf{Even More Resources:} \href{https://github.com/perimetersec/evm-fuzzing-resources?tab=readme-ov-file#evm-fuzzing-resources}{Updated comprehensive list of fuzzing resources}
-    \item \textbf{Hands-on Learning:} \href{https://github.com/crytic/building-secure-contracts/tree/master/program-analysis/echidna/exercises}{Practical exercises on fuzzing}
-    \item \textbf{Real-world Examples:} \href{https://github.com/perimetersec/public-fuzzing-campaigns-list}{Published professional fuzzing campaigns}
-    \item \textbf{Case Study:} \href{https://mirror.xyz/horsefacts.eth/Jex2YVaO65dda6zEyfM_-DXlXhOWCAoSpOx5PLocYgw}{Invariant Testing WETH With Foundry}
-    \item \textbf{Video Tutorial:} \href{https://www.youtube.com/playlist?list=PLciHOL_J7Iwqdja9UH4ZzE8dP1IxtsBXI}{Fuzzing Workshop by Trail of Bits}
+    \item \textbf{Hands-on Learning}: \href{https://github.com/crytic/building-secure-contracts/tree/master/program-analysis/echidna/exercises}{Practical exercises on fuzzing}
+    \item \textbf{Real-world Examples}: \href{https://github.com/perimetersec/public-fuzzing-campaigns-list}{Published professional fuzzing campaigns}
+    \item \textbf{Case Study}: \href{https://mirror.xyz/horsefacts.eth/Jex2YVaO65dda6zEyfM_-DXlXhOWCAoSpOx5PLocYgw}{Invariant Testing WETH With Foundry}
+    \item \textbf{Video Tutorial}: \href{https://www.youtube.com/playlist?list=PLciHOL_J7Iwqdja9UH4ZzE8dP1IxtsBXI}{Fuzzing Workshop by Trail of Bits}
+    \item \textbf{Even More Resources}: \href{https://github.com/perimetersec/evm-fuzzing-resources?tab=readme-ov-file#evm-fuzzing-resources}{Updated comprehensive list of fuzzing resources}
 \end{itemize}
 
 \section{Beyond The Course: The End?}
@@ -593,8 +593,8 @@ evolving. Here are resources to continue your journey:
 Practical hands-on courses focused on smart contract development.
 
 \begin{itemize}
-    \item \textbf{\href{https://cryptozombies.io/}{CryptoZombies}} - Interactive lessons for learning Solidity
-    \item \textbf{\href{https://speedrunethereum.com/}{SpeedRunEthereum}} - Hands-on challenges to build Ethereum apps
+    \item \textbf{\href{https://cryptozombies.io/}{CryptoZombies}}: Interactive lessons for learning Solidity
+    \item \textbf{\href{https://speedrunethereum.com/}{SpeedRunEthereum}}: Hands-on challenges to build Ethereum apps
 \end{itemize}
 
 \subsubsection*{Interactive Learning Resources -- Security Focus}
@@ -605,16 +605,16 @@ offers shorter and simpler challenges in the style of the Vaults from Exercise
 applications, often using real copies of smart contracts.
 
 \begin{itemize}
-    \item \textbf{\href{https://www.damnvulnerabledefi.xyz/}{Damn Vulnerable DeFi}} - Challenges focusing on DeFi vulnerabilities
-    \item \textbf{\href{https://ethernaut.openzeppelin.com/}{Ethernaut}} - OpenZeppelin's collection of smart contract security challenges
+    \item \textbf{\href{https://www.damnvulnerabledefi.xyz/}{Damn Vulnerable DeFi}}: Challenges focusing on DeFi vulnerabilities
+    \item \textbf{\href{https://ethernaut.openzeppelin.com/}{Ethernaut}}: OpenZeppelin's collection of smart contract security challenges
 \end{itemize}
 
 \subsubsection*{University Courses}
 
 \begin{itemize}
-    \item \textbf{\href{https://github.com/sebischair/bbse}{TUM: Blockchain-based Systems Engineering}} - Blockchain course at Technical University of Munich
-    \item \textbf{\href{https://rdi.berkeley.edu/berkeley-defi/f24}{Berkeley DeFi Course}} - Decentralized Finance course at the University of California, Berkeley
-    \item \textbf{\href{https://courses.fit.cvut.cz/NIE-BLO/index.html}{FIT ČVUT: NIE-BLO}} - Blockchain Course at Czech Technical University in Prague
+    \item \textbf{\href{https://github.com/sebischair/bbse}{TUM: Blockchain-based Systems Engineering}}: Blockchain course at Technical University of Munich
+    \item \textbf{\href{https://rdi.berkeley.edu/berkeley-defi/f24}{Berkeley DeFi Course}}: Decentralized Finance course at the University of California, Berkeley
+    \item \textbf{\href{https://courses.fit.cvut.cz/NIE-BLO/index.html}{FIT ČVUT: NIE-BLO}}: Blockchain Course at Czech Technical University in Prague
 \end{itemize}
 
 \subsubsection*{Cyfrin Courses}
@@ -623,11 +623,11 @@ Cyfrin is a smart contract security audit company that has published up-to-date
 practical courses on their website, accessible for free.
 
 \begin{itemize}
-    \item \textbf{\href{https://updraft.cyfrin.io/courses/security}{Security and Auditing Full Course}} - Comprehensive guide to smart contract security
-    \item \textbf{\href{https://updraft.cyfrin.io/courses/foundry}{Foundry Fundamentals}} - Master the Foundry development environment
-    \item \textbf{\href{https://updraft.cyfrin.io/courses/formal-verification}{Formal Verification}} - Learn to use formal methods to verify smart contracts
-    \item \textbf{\href{https://updraft.cyfrin.io/courses/advanced-foundry}{Advanced Foundry}} - Take your Foundry skills to the next level
-    \item \textbf{\href{https://solodit.cyfrin.io/}{SoloDIT}} - Cyfrin's searchable database of vulnerabilities found in audits
+    \item \textbf{\href{https://updraft.cyfrin.io/courses/security}{Security and Auditing Full Course}}: Comprehensive guide to smart contract security
+    \item \textbf{\href{https://updraft.cyfrin.io/courses/foundry}{Foundry Fundamentals}}: Master the Foundry development environment
+    \item \textbf{\href{https://updraft.cyfrin.io/courses/formal-verification}{Formal Verification}}: Learn to use formal methods to verify smart contracts
+    \item \textbf{\href{https://updraft.cyfrin.io/courses/advanced-foundry}{Advanced Foundry}}: Take your Foundry skills to the next level
+    \item \textbf{\href{https://solodit.cyfrin.io/}{SoloDIT}}: Cyfrin's searchable database of vulnerabilities found in audits
 \end{itemize}
 
 \subsubsection*{Competitive Audit Platforms}
@@ -636,25 +636,25 @@ Participating in competitive audits is an excellent way to apply your skills in
 real-world scenarios, learn from others, and potentially earn rewards:
 
 \begin{itemize}
-    \item \textbf{\href{https://code4rena.com/}{Code4rena}} - Competitive audit platform with regular contests and substantial rewards
-    \item \textbf{\href{https://www.sherlock.xyz/}{Sherlock}} - Combines security competitions with protocol coverage
-    \item \textbf{\href{https://codehawks.cyfrin.io/}{CodeHawks}} - Newer platform with both private and public audit competitions
-    \item \textbf{\href{https://immunefi.com/}{Immunefi}} - The largest bug bounty platform in crypto
+    \item \textbf{\href{https://code4rena.com/}{Code4rena}}: Competitive audit platform with regular contests and substantial rewards
+    \item \textbf{\href{https://www.sherlock.xyz/}{Sherlock}}: Combines security competitions with protocol coverage
+    \item \textbf{\href{https://codehawks.cyfrin.io/}{CodeHawks}}: Newer platform with both private and public audit competitions
+    \item \textbf{\href{https://immunefi.com/}{Immunefi}}: The largest bug bounty platform in crypto
 \end{itemize}
 
 \subsubsection*{Security Tools and Technical Resources}
 
 \begin{itemize}
-    \item \textbf{\href{https://github.com/trailofbits/manticore}{Manticore}} - Symbolic execution tool
-    \item \textbf{\href{https://github.com/crytic/echidna}{Echidna}} - Fuzzing tool
-    \item \textbf{\href{https://github.com/crytic/medusa}{Medusa}} - Fuzzing tool
+    \item \textbf{\href{https://github.com/trailofbits/manticore}{Manticore}}: Symbolic execution tool
+    \item \textbf{\href{https://github.com/crytic/echidna}{Echidna}}: Fuzzing tool
+    \item \textbf{\href{https://github.com/crytic/medusa}{Medusa}}: Fuzzing tool
 \end{itemize}
 
 \subsubsection*{Communities and Networking}
 
 \begin{itemize}
-    \item \textbf{\href{https://discord.gg/cyfrin}{Cyfrin}} - Active community focused on smart contract security
-    \item \textbf{\href{https://discord.gg/qGpsxSA}{Ethereum Research}} - Technical discussions about Ethereum
+    \item \textbf{\href{https://discord.gg/cyfrin}{Cyfrin}}: Active community focused on smart contract security
+    \item \textbf{\href{https://discord.gg/qGpsxSA}{Ethereum Research}}: Technical discussions about Ethereum
 \end{itemize}
 
 \noindent

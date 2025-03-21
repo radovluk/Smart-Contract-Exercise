@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Tokens in the Ethereum ecosystem are smart contracts that implement a standardized interface. They are designed to represent various assets digitaly. These assets can range from financial instruments like company shares and stablecoins (e.g., USDC, DAI) to governance tokens that allow holders to vote on decisions in decentralized projects (e.g., Uniswap's UNI). Tokens can also enable artists to tokenize their works and sell them as unique digital items (NFTs), represent collectibles in games, or are used for digital identity or access to services. Depending on the use case, there are different types of tokens, each serving distinct purposes. Below are three common types of tokens:
+Tokens in the Ethereum ecosystem are smart contracts that implement a standardized interface. They are designed to represent various assets digitally. These assets can range from financial instruments like company shares and stablecoins (e.g., USDC, DAI) to governance tokens that allow holders to vote on decisions in decentralized projects (e.g., Uniswap's UNI). Tokens can also enable artists to tokenize their works and sell them as unique digital items (NFTs), represent collectibles in games, or are used for digital identity or access to services. Depending on the use case, there are different types of tokens, each serving distinct purposes. Below are three common types of tokens:
 
 1. **Fungible Tokens**
 
@@ -18,9 +18,9 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
 
 In this exercise, you'll create your own ERC-20 token contract following the specified standard, and then attempt to hack it. For more information about tokens, check out this animated video: [What Are NFTs and How Can They Be Used in Decentralized Finance?](https://www.youtube.com/watch?v=Xdkkux6OxfM) You'll also work with your own NFTs in future exercises.
 
-## Project Setup
+### Project Setup
 
-You have two options for working with this exercise. Using docker container or local installation. Choose the one that best fits your preferences.
+You have two options for working with this exercise: using Docker container or local installation. Choose the one that best fits your preferences.
 
 ### Using Docker with VS Code
 
@@ -43,7 +43,7 @@ This option uses Docker to create a development environment with all the necessa
 If you prefer working directly on your machine without Docker, you can set up the development environment locally.
 
 #### Prerequisites
-- **Node.js** - https://nodejs.org/en/ - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
+- **Node.js**: https://nodejs.org/en/ - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
 - **NPM**: Node Package Manager, which comes with Node.js.
 
 Open your terminal and run the following commands to verify the installations:
@@ -213,5 +213,5 @@ For this attack, we use a special configuration file for Hardhat, where we set t
 ### Task: Modify the CTU Token smart contract to prevent vulnerability to frontrunning attacks.
 
 - **Tip:** To display all blocks in the simulation, uncomment the last line of the main function.
-- **Tip:** Use these functions for easier debugging: `displayState`, `logTransactionDetails`, `printMempool`, `printLastBlockInfo`, `printAllBlocksInfo`.
+- **Tip:** Use these functions for easier debugging: `displayState`, `printMempool`, `printLastBlockInfo`, `printAllBlocksInfo`.
 - **Tip:** You might need to change the approval process completely.

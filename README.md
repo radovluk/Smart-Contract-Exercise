@@ -39,11 +39,11 @@ This project contains exercises for students to learn about smart contract secur
 - **Topics**: Solidity programming
 
 ### 03 - ERC-20 CTU Token
-- **Task**: In this exercise, you will learn about tokens on Ethereum, with a particular focus on ERC-20 fungible tokens. You will implement a smart contract that follows the ERC-20 standard. In the second part of the exercise, you will focus on a Frontrunning attack targeting your CTU token contract. Finally, you will need to consider changes to the implementation to mitigate the risk of a frontrunning attack.
+- **Task**: In this exercise, you will learn about tokens on Ethereum, with a particular focus on ERC-20 fungible tokens. You will implement a smart contract that follows the ERC-20 standard. In the second part of the exercise, you will focus on a frontrunning attack targeting your CTU token contract. Finally, you will need to consider changes to the implementation to mitigate the risk of a frontrunning attack.
 - **Topics**: Frontrunning Attack, ERC-20, ERC-1155, ERC-721, OpenZeppelin
 
 ### 04 - Unbreakable Vault
-- **Task**: In this exercise, you will be tasked with breaching several vaults, one by one in CTF style. You will gain familiarity with the JavaScript library Ethers.js. We will also demonstrate how to work in Remix IDE, an open-source development environment accessible through a web browser. Additionally, you will learn about insecure randomness, commit and reveal scheme, blockchain data transparency, the differences between msg.sender and tx.origin and integer underflow and overflow problem.
+- **Task**: In this exercise, you will be tasked with breaching several vaults, one by one in CTF style. You will gain familiarity with the JavaScript library Ethers.js. We will also demonstrate how to work in Remix IDE, an open-source development environment accessible through a web browser. Additionally, you will learn about insecure randomness, commit and reveal scheme, blockchain data transparency, the differences between msg.sender and tx.origin, and integer underflow and overflow problems.
 - **Topics**: Ethers.js, Remix IDE, insecure randomness, commit and reveal, storage, blockhash, timestamp, tx.origin, msg.sender, integer underflow, integer overflow
 
 ### 05 - Re-Entrancy

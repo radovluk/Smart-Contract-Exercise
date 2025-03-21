@@ -4,7 +4,7 @@
 
 In this exercise, you will implement a smart contract of a decentralized voting system on the blockchain. The goal of this exercise is to familiarize yourself with the basics of the Solidity language.
 
-## Project Setup
+### Project Setup
 
 You have two options for working with this exercise. Using docker container or local installation. Choose the one that best fits your preferences.
 
@@ -14,9 +14,9 @@ This option uses Docker to create a development environment with all the necessa
 
 **Prerequisites:**
 
-- **[Docker](https://www.docker.com/products/docker-desktop)** - A platform for developing, shipping, and running applications in containers.
-- **[Visual Studio Code](https://code.visualstudio.com/)** - A lightweight but powerful source code editor.
-- **[Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)** - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
+* **[Docker](https://www.docker.com/products/docker-desktop)** - A platform for developing, shipping, and running applications in containers.
+* **[Visual Studio Code](https://code.visualstudio.com/)** - A lightweight but powerful source code editor.
+* **[Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)** - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
 
 **Setting Up the Project:**
 
@@ -28,9 +28,9 @@ This option uses Docker to create a development environment with all the necessa
 
 If you prefer working directly on your machine without Docker, you can set up the development environment locally.
 
-**Prerequisites:**
-- **Node.js** - https://nodejs.org/en/ - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
-- **NPM**: Node Package Manager, which comes with Node.js.
+**Prerequisites**
+* **Node.js**: https://nodejs.org/en/ - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
+* **NPM**: Node Package Manager, which comes with Node.js.
 
 Open your terminal and run the following commands to verify the installations:
 
@@ -41,7 +41,7 @@ $ npm -v
 
 Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
 
-**Setting Up the Project:**
+**Setting Up the Project**
 
 1. Visit the following [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads) and clone it to your local machine.
 2. Open a terminal and navigate to the project directory.
@@ -52,24 +52,25 @@ Both commands should return the installed version numbers of Node.js and NPM res
 Your implementation will be in the file `contracts/Voting.sol`. In this file, there are #TODO comments where you should implement the required functionality. To fulfill this task, you need to pass all the provided tests. You can run the tests with the following command:
 
 ```bash
-$ npx hardhat test
+  $ npx hardhat test
 ```
 
 There is also a deployment script in the `scripts` folder. You can deploy the contract to the local Hardhat network with the following command:
+
 ```bash
-$ npx hardhat run scripts/deploy.js
+  $ npx hardhat run scripts/deploy.js
 ```
 
 ### Overview
 
 The **Voting** contract is a simple implementation of a voting system using Solidity. It allows the contract owner to add candidates, and any address to vote exactly once for a candidate. The contract includes the following functionalities:
-- The contract owner can add candidates.
-- Any address can vote exactly once for a candidate.
-- The contract tracks the number of votes each candidate has received.
-- The contract tracks whether an address has already voted.
-- A function to get the total number of candidates.
-- A function to retrieve a candidate's name and vote count by index.
-- A function to get the index of the winning candidate.
+* The contract owner can add candidates.
+* Any address can vote exactly once for a candidate.
+* The contract tracks the number of votes each candidate has received.
+* The contract tracks whether an address has already voted.
+* A function to get the total number of candidates.
+* A function to retrieve a candidate's name and vote count by index.
+* A function to get the index of the winning candidate.
 
 ### Solidity Crash Course
 
@@ -80,14 +81,14 @@ The **Voting** contract is designed to facilitate a decentralized voting system.
 State variables are used to store data permanently on the blockchain. They represent the contract's state and can be accessed and modified by the contract's functions.
 
 ```solidity
-// Address of the contract owner
-address public owner;
+  // Address of the contract owner
+  address public owner;
 
-// Dynamic array to store all candidates
-Candidate[] public candidates;
+  // Dynamic array to store all candidates
+  Candidate[] public candidates;
 
-// Mapping to track whether an address has already voted
-mapping(address => bool) public hasVoted;
+  // Mapping to track whether an address has already voted
+  mapping(address => bool) public hasVoted;
 ```
 
 #### Structs
@@ -95,15 +96,15 @@ mapping(address => bool) public hasVoted;
 Structs are custom data types that allow you to group related data together. They are useful for organizing complex data structures within the contract.
 
 ```solidity
-/**
-* @dev Struct to represent a candidate.
-* @param name The name of the candidate.
-* @param voteCount The number of votes the candidate has received.
-*/
-struct Candidate {
-    string name;
-    uint voteCount;
-}
+  /**
+  * @dev Struct to represent a candidate.
+  * @param name The name of the candidate.
+  * @param voteCount The number of votes the candidate has received.
+  */
+ struct Candidate {
+     string name;
+     uint voteCount;
+  }
 ```
 
 #### Constructor
@@ -111,10 +112,10 @@ struct Candidate {
 The constructor is a special function that runs once during the contract's deployment and cannot be invoked later.
 
 ```solidity
-constructor() {
-  // The deployer of the contract is the owner
-  owner = msg.sender;
-}
+  constructor() {
+    // The deployer of the contract is the owner
+    owner = msg.sender;
+  }
 ```
 
 #### Events
@@ -122,18 +123,18 @@ constructor() {
 Events are used to log information on the blockchain that can be accessed by off-chain applications. They are essential for tracking contract activities and facilitating interactions with the user interface.
 
 ```solidity
-/**
-* @dev Event emitted when a vote is cast.
-* @param voter The address of the voter.
-* @param candidateIndex The index of the candidate voted for.
-*/
-event Voted(address indexed voter, uint indexed candidateIndex);
+  /**
+  * @dev Event emitted when a vote is cast.
+  * @param voter The address of the voter.
+  * @param candidateIndex The index of the candidate voted for.
+  */
+ event Voted(address indexed voter, uint indexed candidateIndex);
 
-/**
-* @dev Event emitted when a new candidate is added.
-* @param name The name of the candidate to be added.
-*/
-event CandidateAdded(string name);
+ /**
+  * @dev Event emitted when a new candidate is added.
+  * @param name The name of the candidate to be added.
+  */
+ event CandidateAdded(string name);
 ```
 
 #### Errors
@@ -141,16 +142,16 @@ event CandidateAdded(string name);
 Errors allow developers to provide more information to the caller about why a condition or operation failed. Errors are used together with the revert statement or require function. On failure, they abort and revert **all** changes made by the transaction.
 
 ```solidity
-/// Only the owner can call this function.
-error NotOwner();
-/// The candidate name cannot be empty.
-error EmptyCandidateName();
+  /// Only the owner can call this function.
+  error NotOwner();
+  /// The candidate name cannot be empty.
+  error EmptyCandidateName();
 
-// revert if condition is not met
-require(msg.sender == owner, NotOwner());
+  // revert if condition is not met
+  require(msg.sender == owner, NotOwner());
 
-// revert statement
-revert EmptyCandidateName();
+  // revert statement
+  revert EmptyCandidateName();
 ```
 
 #### Modifiers
@@ -158,15 +159,15 @@ revert EmptyCandidateName();
 Modifiers are used to change the behavior of functions in a declarative way. They can enforce rules or conditions before executing a function's code.
 
 ```solidity
-// Modifier to restrict access to the contract owner
-modifier onlyOwner() {
-    require(msg.sender == owner, NotOwner());
-    _; // Continue executing the function
-}
+  // Modifier to restrict access to the contract owner
+  modifier onlyOwner() {
+      require(msg.sender == owner, NotOwner());
+      _; // Continue executing the function
+  }
 
-function addCandidate(string memory name) public onlyOwner {
-  // Only the contract owner can call this function
-}
+  function addCandidate(string memory name) public onlyOwner {
+    // Only the contract owner can call this function
+  }
 ```
 
 #### Functions
@@ -198,9 +199,11 @@ emit EventName(parameters);
 
 ## More Solidity Concepts
 
-This extra section covers additional Solidity concepts that are useful for developing smart contracts, including more detailed function examples, visibility, and advanced data types. It is not needed to complete the exercise.
+This extra section covers additional Solidity concepts that are useful for
+developing smart contracts, including more detailed function examples,
+visibility, and advanced data types. It is not needed to complete the exercise.
 
-### Function Types and Visibility
+#### Function Types and Visibility
 Functions in Solidity can have different visibility modifiers that determine how and where they can be called from:
 
 ```solidity
@@ -230,9 +233,10 @@ function pureFunction(uint a, uint b) public pure returns (uint) {
 }
 ```
 
-### Function Modifiers with Parameters
+#### Function Modifiers with Parameters
 
 Modifiers can also accept parameters, making them more flexible:
+
 ```solidity
 // Modifier with parameters
 modifier onlyRole(bytes32 role) {
@@ -248,7 +252,7 @@ function moderatorFunction() public onlyRole(MODERATOR_ROLE) {
 }
 ```
 
-### Advanced Data Structures
+#### Advanced Data Structures
 
 Solidity supports several advanced data structures that help organize complex data:
 
@@ -275,7 +279,7 @@ function setStatus(Status newStatus) public {
 }
 ```
 
-### Memory Management in Solidity
+#### Memory Management in Solidity
 
 ```solidity
 // Storage - persisted between function calls (expensive)
@@ -303,7 +307,7 @@ function readOnlyProcess(uint[] calldata calldataArray) external {
 }
 ```
 
-### Error Handling
+#### Error Handling
 Solidity provides several mechanisms for error handling:
 
 ```solidity
@@ -337,7 +341,7 @@ function withdraw(uint amount) public {
 }
 ```
 
-### Gas Optimization Techniques
+#### Gas Optimization Techniques
 Gas optimization is crucial for cost-effective smart contracts:
 
 ```solidity
@@ -364,8 +368,8 @@ function readOnlyOperation(string calldata text) external pure returns (uint) {
 }
 ```
 
-### Events and Logging
-Events are crucial for offchain services and DApp frontends:
+#### Events and Logging
+Events are crucial for offchain services and DApp frontends, which can listen for events and react to changes on the blockchain.
 
 ```solidity
 // Simple event with basic data
@@ -402,7 +406,28 @@ function runProcess(uint processId) public {
 }
 ```
 
-### Inheritance and Contract Interaction
+Offchain services or DApp frontend code:
+
+```javascript
+// Import the ethers.js library
+const { ethers } = require("ethers");
+// Connect to an Ethereum node (replace with your provider URL)
+const provider = new ethers.providers
+  .JsonRpcProvider("https://mainnet.infura.io/v3/YOUR_KEY");
+// Define minimal ABI with just the event we want to listen for
+const abi = ["event VoteCast(address indexed voter, uint indexed candidateId, \
+  uint timestamp, string comments)"];
+// Create contract instance with address, ABI and provider
+const contract = new ethers.Contract("0xContractAddress", abi, provider);
+
+// Listen for vote events - the callback receives all parameters defined in the event
+contract.on("VoteCast", (voter, candidateId, timestamp, comments) => {
+  console.log(`Vote from ${voter} for candidate ${candidateId}: 
+  "${comments}" at ${new Date(timestamp * 1000)}`);
+});
+```
+
+#### Inheritance and Contract Interaction
 Solidity supports contract inheritance and interfaces:
 
 ```solidity
@@ -424,10 +449,8 @@ contract Ownable {
     owner = newOwner;
   }
 }
-// Derived contract
+// Derived contract - inherits all functions and modifiers from Ownable
 contract VotingEnhanced is Ownable {
-  // Inherits all functions and modifiers from Ownable
-  
   function addCandidate(string memory name) public onlyOwner {
     // Only the owner can add candidates
   }
@@ -456,52 +479,6 @@ contract VotingClient {
 }
 ```
 
-### Using Modifiers Effectively
-
-Modifiers can be combined and chained for complex access control:
-
-```solidity
-// Multiple modifiers
-contract VotingWithRoles {
-  address public admin;
-  mapping(address => bool) public moderators;
-  bool public votingOpen;
-  
-  constructor() {
-    admin = msg.sender;
-  }
-
-  modifier onlyAdmin() {
-    require(msg.sender == admin, "Not admin");
-    _;
-  }
-
-  modifier onlyModerator() {
-    require(moderators[msg.sender], "Not moderator");
-    _;
-  }
-
-  modifier whenVotingOpen() {
-    require(votingOpen, "Voting not open");
-    _;
-  }
-
-  // Function with multiple modifiers
-  function emergencyCloseVoting() public onlyAdmin {
-    votingOpen = false;
-  }
-
-  // Another example with multiple modifiers
-  function addCandidate(string memory name) public onlyAdmin whenVotingOpen {
-    // Only the admin can add candidates when voting is open
-  }
-
-  // Moderators can only count votes when voting is closed
-  function countVotes() public onlyModerator {
-    require(!votingOpen, "Voting still open");
-    // Count votes logic
-  }
-}
-```
+This example demonstrates inheritance through a base contract (Ownable) that's extended by a derived contract (VotingEnhanced), interface definition (IVoting) for standardizing contract interactions, and contract-to-contract communication through interfaces.
 
 To see some more advanced smart contract examples, visit the [Solidity by Example](https://docs.soliditylang.org/en/latest/solidity-by-example.html) section of the Solidity documentation.

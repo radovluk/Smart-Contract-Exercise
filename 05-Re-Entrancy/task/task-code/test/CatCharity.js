@@ -8,8 +8,8 @@ describe("CatCharity Challenge", function () {
   let catCharity;
   let deployer, player;
 
-  const CHARITY_INITIAL_BALANCE = ethers.parseEther("10");  // 10 ETH
-  const PLAYER_INITIAL_ETH_BALANCE = ethers.parseEther("1");  // 1 ETH
+  const CHARITY_INITIAL_BALANCE = ethers.parseEther("10"); // 10 ETH
+  const PLAYER_INITIAL_ETH_BALANCE = ethers.parseEther("1"); // 1 ETH
 
   before("Set up the challenge", async function () {
     /** DO NOT CHANGE ANYTHING HERE */
@@ -53,7 +53,7 @@ describe("CatCharity Challenge", function () {
     expect(finalBalance, "Cat charity was not fully drained").to.equal(0);
 
     // The player should have more then the initial charity balance
-    // He has less then (10 ETH) + the initial player balance (1 ETH) because of gas costs
+    // He has less then (10 ETH) + the initial player balance (1 ETH) because of the gas costs
     expect(
       await ethers.provider.getBalance(player.address),
       "The player should have more then the initial charity balance"
