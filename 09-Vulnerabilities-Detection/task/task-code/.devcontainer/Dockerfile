@@ -9,6 +9,7 @@ RUN apt-get update && \
     libssl-dev \
     pkg-config \
     python3 \
+    python3-pip \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
@@ -30,17 +31,11 @@ RUN curl -fsSL https://bun.sh/install | bash -s "bun-v1.2.5"
 # Add Bun to PATH
 ENV PATH="/root/.bun/bin:${PATH}"
 
-# Install slither and myhtril
-RUN python3 -m pip install --no-cache-dir \
-    slither-analyzer \
-    mythril
-
-# Verify installations
-RUN slither --version && myth --version
+# Install Slither
+RUN python3 -m pip install slither-analyzer
 
 # Create workdir
 WORKDIR /workspace
 
 # Default command
 CMD ["bash"]
-

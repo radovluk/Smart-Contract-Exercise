@@ -87,13 +87,14 @@
 \section{Introduction}
 
 This exercise focuses on general vulnerability detection in smart contracts. We
-will explore static code analysis tool Slither to identify vulnerabilities
-in contracts from previous exercises. The exercise will also cover the
+will explore static code analysis tool Slither to identify vulnerabilities in
+contracts from previous exercises. The exercise will also cover the
 implementation of unit tests, stateless fuzzing tests, and stateful fuzzing
 tests with invariants. We will introduce the Foundry development environment
-(this will be new only for students who previously used Hardhat). The primary task involves
-writing tests for a simple toy smart contract and then applying this knowledge
-to develop more complex tests for the DEX contract from earlier exercise.
+(this will be new only for students who previously used Hardhat). The primary
+task involves writing tests for a simple toy smart contract and then applying
+this knowledge to develop more complex tests for the DEX contract from earlier
+exercise.
 
 \subsection*{Project Setup}
 
@@ -123,8 +124,8 @@ necessary tools and dependencies pre-installed.
           \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code}{GitLab
               repository} and clone it to your local machine.
     \item Open the repository folder in VS Code.
-    \item When prompted, click ``Reopen in Container'' or use the command palette (F1) and
-          run \codegrey{Dev Containers: Reopen in Container}.
+    \item When prompted, click ``Reopen in Container'' or use the command palette (F1)
+          and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
 
 \subsection{Local Setup}
@@ -200,8 +201,8 @@ $ anvil --version
 \section{Static Analysis}
 
 Static analysis is a method of examining code without executing it. Unlike
-dynamic analysis which examines code during execution, static analysis looks
-at the source code or bytecode to find patterns that match known vulnerability
+dynamic analysis which examines code during execution, static analysis looks at
+the source code or bytecode to find patterns that match known vulnerability
 types. If you're using a local setup, you'll need to install Slither first,
 while those using the Docker container already have these tools available in
 the container.
@@ -291,7 +292,15 @@ vulnerability.
 
 \section{Testing in Foundry}
 
-\href{https://github.com/foundry-rs/foundry}{Foundry} provides powerful tools for testing smart contracts, with a focus on flexibility and efficiency. Unlike Hardhat (which uses JavaScript), Foundry uses Solidity for writing tests and scripts. We won't cover all Foundry functions in detail here, but will focus primarily on writing tests. For more information about working with Foundry, visit the project documentation \href{https://book.getfoundry.sh/}{Foundry Book}. Let's now introduce the concept of smart contract testing with a simple example that you'll work with in this exercise. The PiggyBank contract is a simple savings contract where anyone can deposit ETH, but only the owner can withdraw:
+\href{https://github.com/foundry-rs/foundry}{Foundry} provides powerful tools for testing smart contracts, with a focus on flexibility and efficiency. Unlike Hardhat (which uses JavaScript), Foundry uses Solidity for writing tests and scripts. We won't cover all Foundry functions in detail here, but will focus primarily on writing tests. For more information about working with Foundry, visit the project documentation \href{https://book.getfoundry.sh/}{Foundry Book}. Let's now introduce the concept of smart contract testing with a simple example that you'll work with in this exercise. The PiggyBank contract is a simple savings contract where anyone can deposit ETH, but only the owner can withdraw.
+
+\medskip
+\noindent
+\textbf{Note:} At the time of writing this exercise, Hardhat is adding support for Solidity-written tests and scripts in an alpha release. If you're interested, check it out: \href{https://hardhat.org/hardhat3-alpha}{Hardhat 3 Alpha}.
+
+\medskip
+\noindent
+\textbf{Note:} Hardhat and Foundry are mutually compatible. Learn more about this topic: \href{https://hardhat.org/hardhat-runner/docs/advanced/hardhat-and-foundry#integrating-with-foundry}{Integrating Hardhat with Foundry} and \href{https://book.getfoundry.sh/config/hardhat}{Integrating Foundry with Hardhat}.
 
 \noindent \begin{minipage}{\textwidth}
     \begin{lstlisting}[language=Solidity]
@@ -590,7 +599,10 @@ Practical hands-on courses focused on smart contract development.
 
 \subsubsection*{Interactive Learning Resources -- Security Focus}
 
-Practical exercises similar to those you solved in this course. Ethernaut offers shorter and simpler challenges in the style of the Vaults from Exercise 04, while Damn Vulnerable DeFi is more complex and focuses on DeFi applications, often using real copies of smart contracts.
+Practical exercises similar to those you solved in this course. Ethernaut
+offers shorter and simpler challenges in the style of the Vaults from Exercise
+04, while Damn Vulnerable DeFi is more complex and focuses on DeFi
+applications, often using real copies of smart contracts.
 
 \begin{itemize}
     \item \textbf{\href{https://www.damnvulnerabledefi.xyz/}{Damn Vulnerable DeFi}} - Challenges focusing on DeFi vulnerabilities
@@ -607,7 +619,8 @@ Practical exercises similar to those you solved in this course. Ethernaut offers
 
 \subsubsection*{Cyfrin Courses}
 
-Cyfrin is a smart contract security audit company that has published up-to-date practical courses on their website, accessible for free.
+Cyfrin is a smart contract security audit company that has published up-to-date
+practical courses on their website, accessible for free.
 
 \begin{itemize}
     \item \textbf{\href{https://updraft.cyfrin.io/courses/security}{Security and Auditing Full Course}} - Comprehensive guide to smart contract security

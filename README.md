@@ -65,7 +65,8 @@ This project contains exercises for students to learn about smart contract secur
 ### 09 - Vulnerabilities Detection
 - **Task**: In this exercise, you will learn how to detect vulnerabilities in smart contracts using various testing methods and tools. You'll work with the static analysis tool Slither, and implement different types of tests including unit tests, stateless fuzzing tests, and stateful fuzzing tests with invariants. You'll apply this knowledge to both a simple PiggyBank contract and a more complex DEX contract while using the Foundry development environment.
 - **Topics**: unit testing, stateless fuzz testing, invariant testing, fuzzing, Foundry, static analysis, Slither
-- 
+
+
 ## Getting Started
 
 1. Clone the repository.
