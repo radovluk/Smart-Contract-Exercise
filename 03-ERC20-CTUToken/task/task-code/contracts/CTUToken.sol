@@ -11,10 +11,10 @@ pragma solidity =0.8.28;
  * - Events {Transfer} and {Approval} to track token movements and allowances.
  *
  * Note: This contract is intended for learning and experimentation. It is
- * not suitable for production use.
+ * not suitable for real use.
  *
- * For production, consider using the OpenZeppelin ERC-20 implementation:
- * https://docs.openzeppelin.com/contracts/4.x/erc20
+ * Consider using the OpenZeppelin ERC-20 implementation:
+ * https://docs.openzeppelin.com/contracts/5.x/erc20
  */
 contract CTUToken {
     // ------------------------------------------------------------------------

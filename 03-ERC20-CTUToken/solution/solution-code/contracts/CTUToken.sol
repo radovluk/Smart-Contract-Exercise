@@ -11,10 +11,10 @@ pragma solidity =0.8.28;
  * - Events {Transfer} and {Approval} to track token movements and allowances.
  *
  * Note: This contract is intended for learning and experimentation. It is
- * not suitable for production use.
+ * not suitable for real use.
  *
- * For production, consider using the OpenZeppelin ERC-20 implementation:
- * https://docs.openzeppelin.com/contracts/4.x/erc20
+ * Consider using the OpenZeppelin ERC-20 implementation:
+ * https://docs.openzeppelin.com/contracts/5.x/erc20
  */
 contract CTUToken {
     // ------------------------------------------------------------------------
@@ -168,10 +168,10 @@ contract CTUToken {
      */
     function transfer(address to, uint256 value) public returns (bool success) {
         // Check if the recipient is not the zero address
-        require(to != address(0), TransferToZeroAddress());
+        if (to == address(0)) revert TransferToZeroAddress();
 
         // Check if the sender has enough balance
-        require(balances[msg.sender] >= value, InsufficientBalance(value, balances[msg.sender]));
+        if (balances[msg.sender] < value) revert InsufficientBalance(value, balances[msg.sender]);
 
         // Subtract the value from the sender's balance
         balances[msg.sender] -= value;
@@ -200,7 +200,7 @@ contract CTUToken {
         uint256 value
     ) public returns (bool success) {
         // Check if the spender is not the zero address
-        require(spender != address(0), ApproveToZeroAddress());
+        if (spender == address(0)) revert ApproveToZeroAddress();
 
         // Set the allowance
         allowances[msg.sender][spender] = value;
@@ -228,7 +228,7 @@ contract CTUToken {
         uint256 addedValue
     ) public returns (bool success) {
         // Check if the spender is not the zero address
-        require(spender != address(0), IncreaseAllowanceForZeroAddress());
+        if (spender == address(0)) revert IncreaseAllowanceForZeroAddress();
 
         // Increase the allowance
         allowances[msg.sender][spender] += addedValue;
@@ -259,13 +259,11 @@ contract CTUToken {
         uint256 subtractedValue
     ) public returns (bool success) {
         // Check if the spender is not the zero address
-        require(spender != address(0), DecreaseAllowanceForZeroAddress());
+        if (spender == address(0)) revert DecreaseAllowanceForZeroAddress();
 
         // Check if the current allowance is sufficient
-        require(
-            allowances[msg.sender][spender] >= subtractedValue,
-            "Decreased allowance below zero"
-        );
+        if (allowances[msg.sender][spender] < subtractedValue) 
+            revert DecreasedAllowanceBelowZero(subtractedValue, allowances[msg.sender][spender]);
 
         // Decrease the allowance
         allowances[msg.sender][spender] -= subtractedValue;
@@ -314,22 +312,18 @@ contract CTUToken {
         uint256 value
     ) public returns (bool success) {
         // Check if the sender is not the zero address
-        require(from != address(0), TransferFromZeroAddress());
+        if (from == address(0)) revert TransferFromZeroAddress();
 
         // Check if the recipient is not the zero address
-        require(to != address(0), TransferToZeroAddress());
+        if (to == address(0)) revert TransferToZeroAddress();
 
         // Check if the sender has enough balance
-        require(
-            balances[from] >= value,
-            InsufficientBalance(value, balances[from])
-        );
+        if (balances[from] < value) 
+            revert InsufficientBalance(value, balances[from]);
 
         // Check if the caller has enough allowance
-        require(
-            allowances[from][msg.sender] >= value,
-            TransferExceedsAllowance(value, allowances[from][msg.sender])
-        );
+        if (allowances[from][msg.sender] < value) 
+            revert TransferExceedsAllowance(value, allowances[from][msg.sender]);
 
         // Subtract the value from the sender's balance
         balances[from] -= value;

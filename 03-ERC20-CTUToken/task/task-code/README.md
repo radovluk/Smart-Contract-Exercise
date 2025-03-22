@@ -205,7 +205,7 @@ The following table shows the attack vector for our CTU Token smart contract, wh
 Review the file `scripts/attack.js` where this attack is implemented and understand it. Then run the attack using the command
 
 ```bash
-$ npx hardhat run scripts/attack.js --config priority.mempool.js
+$ npm run attack
 ```
 
 For this attack, we use a special configuration file for Hardhat, where we set that a new block is confirmed every 500ms and transactions are selected for inclusion in the blockchain based on priority fees. In our simulation, each block contains only one transaction for simplicity. However, this does not protect against frontrunning attacks, as transactions with higher fees will simply be included in earlier blocks. 

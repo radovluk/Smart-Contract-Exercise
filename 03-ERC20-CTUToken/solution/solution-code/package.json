@@ -9,6 +9,9 @@
     "test": "test",
     "scripts": "scripts"
   },
+  "scripts": {
+    "attack": "npx hardhat run scripts/attack.js --config priority.mempool.js"
+  },
   "keywords": [
     "blockchain",
     "solidity",
