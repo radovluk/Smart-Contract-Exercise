@@ -52,9 +52,6 @@ contract Voting {
 
     /**
      * @dev Custom errors that describe the failures
-     * The triple-slash comments are for natspec comments.
-     * They will be shown when a user is asked to confirm a
-     * transaction or when an error is thrown.
      */
     /// Only the owner can call this function.
     error NotOwner();

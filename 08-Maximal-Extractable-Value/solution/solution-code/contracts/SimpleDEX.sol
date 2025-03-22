@@ -157,10 +157,7 @@ contract SimpleDEX is ERC20, ReentrancyGuard {
             // Subsequent liquidity provision
             uint ethAmount = msg.value;
 
-            // Fix divide-before-multiply issue by rearranging the formula
-            // Original: usdcNeeded = (ethAmount * usdcReserve) / ethReserve
-            // Adjusted: maintain the ratio (ethAmount / ethReserve) = (usdcNeeded / usdcReserve)
-            // So: usdcNeeded = (ethAmount * usdcReserve) / ethReserve
+            // Calculate the amount of USDC needed based on the current reserves
             uint usdcNeeded;
             if (ethAmount > 0) {
                 // Calculate this safely to prevent precision loss
@@ -251,7 +248,7 @@ contract SimpleDEX is ERC20, ReentrancyGuard {
         if (!success) revert USDCTransferFailed();
 
         (success, ) = msg.sender.call{value: ethAmount}("");
-        if (!success) revert EthTransferFailed(); // Fixed error type
+        if (!success) revert EthTransferFailed();
 
         emit RemoveLiquidity(msg.sender, usdcAmount, ethAmount, liquidity);
         return (usdcAmount, ethAmount);

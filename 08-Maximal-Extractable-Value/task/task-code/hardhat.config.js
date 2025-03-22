@@ -12,7 +12,7 @@ module.exports = {
       mempool: {
         order: "priority" // transactions will be ordered by priority based on the priority fee
       },
-      gas: "auto", // Critical fix to allow multiple transactions in the mempool
+      gas: "auto", // Allow multiple transactions in the mempool
       initialBaseFeePerGas: 1000000000, // 1 gwei initial base fee
       hardfork: "london" // Ensure we're using the London hardfork which includes EIP-1559
     }
