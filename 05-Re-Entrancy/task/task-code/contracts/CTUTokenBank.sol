@@ -20,8 +20,8 @@ abstract contract ReentrancyGuard {
      * @dev Prevents reentrant calls to a function.
      *      Reverts if the lock is already engaged.
      */
-    modifier noReentrant() {
-        require(!locked, ReentrancyGuardError());
+    modifier nonReentrant() {
+        if (locked) revert ReentrancyGuardError();
         locked = true;
         _;
         locked = false;
@@ -44,7 +44,7 @@ contract CTUTokenBank is ReentrancyGuard {
     // ------------------------------------------------------------------------
 
     /// Reference to the CTUToken contract.
-    CTUToken private ctuTokenContract;
+    CTUToken private immutable ctuTokenContract;
 
     /// Tracks Ether balances for each investor address.
     mapping(address => uint) public balances;
@@ -104,7 +104,7 @@ contract CTUTokenBank is ReentrancyGuard {
      */
     function depositEther() public payable {
         // Ensure the deposit amount is greater than zero
-        require(msg.value > 0, DepositAmountMustBeGreaterThanZero());
+        if (msg.value <= 0) revert DepositAmountMustBeGreaterThanZero();
 
         // Update the user's balance and emit a deposit event
         balances[msg.sender] += msg.value;
@@ -113,17 +113,18 @@ contract CTUTokenBank is ReentrancyGuard {
 
     /**
      * @dev Allows users to withdraw all their Ether from the contract.
-     *      Uses the noReentrant modifier to prevent reentrancy attacks.
+     *      Uses the nonReentrant modifier to prevent reentrancy attacks.
      *      Emits a Withdraw event upon successful withdrawal.
      */
-    function withdrawEther() public noReentrant {
+    function withdrawEther() public nonReentrant {
         uint amount = balances[msg.sender];
         // Ensure the user has enough balance to withdraw
-        require(amount >= 0, InsufficientBalance(balances[msg.sender], amount));
+        if (amount <= 0)
+            revert InsufficientBalance(balances[msg.sender], amount);
 
         // Transfer the Ether to the user and reset their balance
         (bool success, ) = msg.sender.call{value: amount}("");
-        require(success, TransferFailed());
+        if (!success) revert TransferFailed();
         balances[msg.sender] = 0;
         emit Withdraw(msg.sender, amount);
     }
@@ -136,7 +137,7 @@ contract CTUTokenBank is ReentrancyGuard {
     function buyTokens() public {
         // Ensure the user has enough Ether to buy at least 1 token
         uint etherAmount = balances[msg.sender];
-        require(etherAmount >= 1 ether, InsufficientEtherForTokenPurchase());
+        if (etherAmount < 1 ether) revert InsufficientEtherForTokenPurchase();
 
         // Calculate the maximum number of tokens that can be bought
         uint tokenAmount = etherAmount / 1 ether;
@@ -147,36 +148,48 @@ contract CTUTokenBank is ReentrancyGuard {
         // Update the user's balance with the remaining Ether
         balances[msg.sender] = remainingEther;
 
-        // Transfer the tokens to the user
-        ctuTokenContract.transfer(msg.sender, tokenAmount);
+        // Emit a buy event
         emit BuyTokens(msg.sender, tokenAmount);
+
+        // Transfer the tokens to the user
+        bool success = ctuTokenContract.transfer(msg.sender, tokenAmount);
+        if (!success) revert TransferFailed();
     }
 
     /**
      * @dev Allows users to sell their CTU Tokens in exchange for Ether.
-     *      Uses the noReentrant modifier to prevent reentrancy attacks.
+     *      Uses the nonReentrant modifier to prevent reentrancy attacks.
      *      Emits a SellTokens event upon successful sale.
-     * @param _amount The amount of CTU Tokens to sell.
+     * @param amount The amount of CTU Tokens to sell.
      * @notice The user must have approved the CTUTokenBank to spend their tokens
      * before calling this function.
      * @notice The user must have enough tokens to sell.
      * @notice The user will receive Ether in exchange for their tokens in their bank balance.
      */
-    function sellTokens(uint _amount) public noReentrant {
+    function sellTokens(uint amount) public nonReentrant {
         // Ensure the user has enough tokens to sell
-        require(
-            ctuTokenContract.balanceOf(msg.sender) >= _amount,
-            InsufficientBalance(ctuTokenContract.balanceOf(msg.sender), _amount)
-        );
+        if (ctuTokenContract.balanceOf(msg.sender) < amount)
+            revert InsufficientBalance(
+                ctuTokenContract.balanceOf(msg.sender),
+                amount
+            );
+
         // Calculate the Ether amount to add to the user's balance
-        uint etherAmount = _amount * 1 ether;
+        uint etherAmount = amount * 1 ether;
+
+        // Emit a sell event
+        emit SellTokens(msg.sender, amount);
 
         // Transfer the tokens from the user to the contract
         // (fails if the user has not approved the contract)
-        ctuTokenContract.transferFrom(msg.sender, address(this), _amount);
+        bool success = ctuTokenContract.transferFrom(
+            msg.sender,
+            address(this),
+            amount
+        );
+        if (!success) revert TransferFailed();
 
         // Update the user's balance with the Ether amount and emit a sell event
         balances[msg.sender] += etherAmount;
-        emit SellTokens(msg.sender, _amount);
     }
 }

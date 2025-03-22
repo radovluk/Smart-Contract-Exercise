@@ -20,7 +20,7 @@ contract NFTAuction is Ownable {
     // ------------------------------------------------------------------------
 
     // Address of the seller who is selling the NFT
-    address public seller;
+    address public immutable seller;
 
     // The current highest bidder
     address public highestBidder;
@@ -29,16 +29,16 @@ contract NFTAuction is Ownable {
     uint256 public highestBid;
 
     // The initial price of the NFT
-    uint256 public initialPrice;
+    uint256 public immutable initialPrice;
 
     // Whether the auction has ended
     bool public ended;
 
     // The NFT contract address
-    IERC721 public nftContract;
+    IERC721 public immutable nftContract;
 
     // The ID of the NFT being auctioned
-    uint256 public tokenId;
+    uint256 public immutable tokenId;
 
     // Mapping of pending returns for outbid bidders
     mapping(address => uint256) public pendingReturns;
@@ -109,7 +109,7 @@ contract NFTAuction is Ownable {
         ended = false;
 
         // Ensure the seller owns the token
-        require(nftContract.ownerOf(_tokenId) == _seller, SellerNotOwner());
+        if (nftContract.ownerOf(_tokenId) != _seller) revert SellerNotOwner();
     }
 
     // ------------------------------------------------------------------------
@@ -124,10 +124,10 @@ contract NFTAuction is Ownable {
      */
     function bid() external payable {
         // Check if auction is still active
-        require(!ended, AuctionAlreadyEnded());
+        if (ended) revert AuctionAlreadyEnded();
 
         // Check if bid is high enough
-        require(msg.value > highestBid, BidNotHighEnough(highestBid));
+        if (msg.value <= highestBid) revert BidNotHighEnough(highestBid);
 
         // Process the previous highest bidder's refund
         if (highestBidder != address(0)) {
@@ -173,7 +173,7 @@ contract NFTAuction is Ownable {
      */
     function endAuction() external onlyOwner {
         // Check if the auction has already ended
-        require(!ended, AuctionAlreadyEnded());
+        if (ended) revert AuctionAlreadyEnded();
 
         // Mark the auction as ended
         ended = true;

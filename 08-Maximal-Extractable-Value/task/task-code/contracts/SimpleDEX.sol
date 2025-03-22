@@ -3,6 +3,7 @@ pragma solidity =0.8.28;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
  * @title SimpleDEX
@@ -14,19 +15,19 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  *         - Rewards liquidity providers with LP tokens representing their share
  *           and fees collected from swaps
  */
-contract SimpleDEX is ERC20 {
+contract SimpleDEX is ERC20, ReentrancyGuard {
     // ------------------------------------------------------------------------
     //                          Storage Variables
     // ------------------------------------------------------------------------
 
     // The USDC token contract interface (for our example same ERC20 interface)
-    IERC20 public usdcToken;
+    IERC20 public immutable usdcToken;
 
     // Reserve amount of USDC in the pool
-    uint public usdcReserve;
+    uint public usdcReserve = 0;
 
     // Reserve amount of ETH in the pool
-    uint public ethReserve;
+    uint public ethReserve = 0;
 
     // Minimum liquidity to prevent division by zero and lock initial liquidity forever
     uint private constant MINIMUM_LIQUIDITY = 1000;
@@ -80,6 +81,9 @@ contract SimpleDEX is ERC20 {
     /// ETH transfer failed
     error EthTransferFailed();
 
+    /// USDC transfer failed
+    error USDCTransferFailed();
+
     /// USDC amount purchased is too small
     error InsufficientUsdcPurchase();
 
@@ -113,71 +117,98 @@ contract SimpleDEX is ERC20 {
 
     /**
      * @dev Allows users to add liquidity to the pool and receive LP tokens
-     * @param _usdcAmount The amount of USDC tokens to add
+     * @param usdcAmount The amount of USDC tokens to add
      * @return liquidity The amount of LP tokens minted for the provider
      */
     function addLiquidity(
-        uint _usdcAmount
-    ) external payable returns (uint256 liquidity) {
+        uint usdcAmount
+    ) external payable nonReentrant returns (uint256 liquidity) {
         if (usdcReserve == 0 && ethReserve == 0) {
             // Initial liquidity provision
-            usdcToken.transferFrom(msg.sender, address(this), _usdcAmount);
+            uint ethAmount = msg.value;
+            uint tempLiquidity = _sqrt(ethAmount * usdcAmount) -
+                MINIMUM_LIQUIDITY;
 
-            usdcReserve = _usdcAmount;
-            ethReserve = msg.value;
+            // Check if the computed liquidity is valid
+            if (tempLiquidity <= 0) revert InsufficientLiquidityMinted();
 
-            // Initial liquidity is sqrt(x * y) - MINIMUM_LIQUIDITY
-            // The formula uses the geometric mean (square root of the product) of both tokens
-            liquidity = _sqrt(msg.value * _usdcAmount) - MINIMUM_LIQUIDITY;
+            // Update reserves first
+            usdcReserve = usdcAmount;
+            ethReserve = ethAmount;
 
             // Lock the minimum liquidity forever by minting to address(1)
-            // address(1) is a "dead address" - no one is known to have the private key.
             _mint(address(1), MINIMUM_LIQUIDITY);
 
             // Give the rest of the liquidity to the provider
-            _mint(msg.sender, liquidity);
+            _mint(msg.sender, tempLiquidity);
 
-            emit AddLiquidity(msg.sender, _usdcAmount, msg.value, liquidity);
+            // Transfer USDC after state changes
+            bool success = usdcToken.transferFrom(
+                msg.sender,
+                address(this),
+                usdcAmount
+            );
+            if (!success) revert USDCTransferFailed();
+
+            emit AddLiquidity(msg.sender, usdcAmount, ethAmount, tempLiquidity);
+
+            return tempLiquidity;
         } else {
             // Subsequent liquidity provision
             uint ethAmount = msg.value;
 
-            // Determine the amount of USDC needed to maintain the ratio
-            // The ratio of tokens before and after the liquidity provision must remain the same.
-            uint usdcAmount = (ethAmount * usdcReserve) / ethReserve;
+            // Fix divide-before-multiply issue by rearranging the formula
+            // Original: usdcNeeded = (ethAmount * usdcReserve) / ethReserve
+            // Adjusted: maintain the ratio (ethAmount / ethReserve) = (usdcNeeded / usdcReserve)
+            // So: usdcNeeded = (ethAmount * usdcReserve) / ethReserve
+            uint usdcNeeded;
+            if (ethAmount > 0) {
+                // Calculate this safely to prevent precision loss
+                usdcNeeded =
+                    (ethAmount * usdcReserve + ethReserve - 1) /
+                    ethReserve; // Ceiling division
+            } else {
+                usdcNeeded = 0;
+            }
 
-            if (_usdcAmount < usdcAmount) {
+            if (usdcAmount < usdcNeeded) {
                 revert InsufficientUSDCAmount({
-                    provided: _usdcAmount,
-                    required: usdcAmount
+                    provided: usdcAmount,
+                    required: usdcNeeded
                 });
             }
 
-            // Transfer USDC from provider
-            // LP needs to approve the contract to transfer USDC before calling the function
-            usdcToken.transferFrom(msg.sender, address(this), usdcAmount);
+            // Calculate liquidity proportionally
+            uint totalLpSupply = totalSupply();
+            uint ethRatio = (ethAmount * 1e18) / ethReserve;
+            uint usdcRatio = (usdcNeeded * 1e18) / usdcReserve;
+            uint minRatio = ethRatio < usdcRatio ? ethRatio : usdcRatio;
 
-            // Calculate liquidity tokens to mint
-            // Mint proportional to the share of the pool being added
-            liquidity = _min(
-                (ethAmount * totalSupply()) / ethReserve,
-                (usdcAmount * totalSupply()) / usdcReserve
-            );
+            // Calculate liquidity based on the smaller ratio to ensure proportionality
+            uint tempLiquidity = (minRatio * totalLpSupply) / 1e18;
 
             // Check if provided liquidity is not zero
-            require(liquidity > 0, InsufficientLiquidityMinted());
+            if (tempLiquidity == 0) revert InsufficientLiquidityMinted();
 
-            // Update reserves
-            usdcReserve += usdcAmount;
+            // Update reserves first
+            usdcReserve += usdcNeeded;
             ethReserve += ethAmount;
 
             // Mint LP tokens to provider
-            _mint(msg.sender, liquidity);
+            _mint(msg.sender, tempLiquidity);
 
-            emit AddLiquidity(msg.sender, usdcAmount, ethAmount, liquidity);
+            // Transfer USDC after state changes
+            bool success = usdcToken.transferFrom(
+                msg.sender,
+                address(this),
+                usdcNeeded
+            );
+            if (!success) revert USDCTransferFailed();
+
+            emit AddLiquidity(msg.sender, usdcNeeded, ethAmount, tempLiquidity);
+
+            return tempLiquidity;
         }
-
-        return liquidity;
     }
 
     /**
@@ -188,7 +219,7 @@ contract SimpleDEX is ERC20 {
      */
     function removeLiquidity(
         uint liquidity
-    ) external returns (uint usdcAmount, uint ethAmount) {
+    ) external nonReentrant returns (uint usdcAmount, uint ethAmount) {
         // Check user's balance of LP Tokens
         uint balance = balanceOf(msg.sender);
 
@@ -205,9 +236,10 @@ contract SimpleDEX is ERC20 {
         usdcAmount = (liquidity * usdcReserve) / totalLiquidity;
         ethAmount = (liquidity * ethReserve) / totalLiquidity;
 
-        require(usdcAmount > 0 && ethAmount > 0, InsufficientLiquidityBurned());
+        if (usdcAmount == 0 || ethAmount == 0)
+            revert InsufficientLiquidityBurned();
 
-        // Burn LP tokens first (to prevent reentrancy)
+        // Burn LP tokens first
         _burn(msg.sender, liquidity);
 
         // Update reserves
@@ -215,9 +247,11 @@ contract SimpleDEX is ERC20 {
         ethReserve -= ethAmount;
 
         // Transfer assets back to provider
-        usdcToken.transfer(msg.sender, usdcAmount);
-        (bool success, ) = msg.sender.call{value: ethAmount}("");
-        require(success, EthTransferFailed());
+        bool success = usdcToken.transfer(msg.sender, usdcAmount);
+        if (!success) revert USDCTransferFailed();
+
+        (success, ) = msg.sender.call{value: ethAmount}("");
+        if (!success) revert EthTransferFailed(); // Fixed error type
 
         emit RemoveLiquidity(msg.sender, usdcAmount, ethAmount, liquidity);
         return (usdcAmount, ethAmount);
@@ -261,36 +295,47 @@ contract SimpleDEX is ERC20 {
      * @param usdcAmount The amount of USDC tokens to swap
      * @return ethBought The amount of ETH received after the swap and fee deduction
      */
-    function usdcToEth(uint usdcAmount) public returns (uint ethBought) {
+    function usdcToEth(
+        uint usdcAmount
+    ) public nonReentrant returns (uint ethBought) {
         // Ensure the pool has liquidity before attempting a swap
-        require(usdcReserve > 0 && ethReserve > 0, ZeroReserves());
+        if (usdcReserve == 0 || ethReserve == 0) revert ZeroReserves();
 
         // Apply the 0.3% fee by reducing the effective input to 99.7% of the actual input
         // This approach allows the fee to remain in the pool, benefiting liquidity providers
         uint inputWithFee = usdcAmount * 997;
 
-        // Calculate ETH output using constant product formula with fee: 
+        // Calculate ETH output using constant product formula with fee:
         // (x + dx * 0.997) * (y - dy) = x * y
         // where: x = usdcReserve, y = ethReserve, dx = usdcAmount, dy = ethBought
-        ethBought = (inputWithFee * ethReserve) / ((usdcReserve * 1000) + inputWithFee);
+        ethBought =
+            (inputWithFee * ethReserve) /
+            ((usdcReserve * 1000) + inputWithFee);
 
         // Ensure the swap produces a meaningful amount of output tokens
-        require(ethBought > 0, InsufficientEthPurchase());
+        if (ethBought == 0) revert InsufficientEthPurchase();
 
-        // Transfer USDC from the user to the contract
-        usdcToken.transferFrom(msg.sender, address(this), usdcAmount);
+        // Store the values to be used later
+        uint ethToSend = ethBought;
 
-        // Transfer ETH to the user and check for successful transfer
-        (bool success, ) = msg.sender.call{value: ethBought}("");
-        require(success, EthTransferFailed());
-
-        // Update the reserves to reflect the new state after the swap
-        // The full usdcAmount is added to reserves, which includes the fee portion
+        // Update the reserves first
         usdcReserve += usdcAmount;
         ethReserve -= ethBought;
 
-        emit TokenPurchase(msg.sender, ethBought, usdcAmount);
-        return ethBought;
+        // Transfer USDC from the user to the contract
+        bool success = usdcToken.transferFrom(
+            msg.sender,
+            address(this),
+            usdcAmount
+        );
+        if (!success) revert USDCTransferFailed();
+
+        // Transfer ETH to the user and check for successful transfer
+        (success, ) = msg.sender.call{value: ethToSend}("");
+        if (!success) revert EthTransferFailed();
+
+        emit TokenPurchase(msg.sender, ethToSend, usdcAmount);
+        return ethToSend;
     }
 
     /**
@@ -300,26 +345,30 @@ contract SimpleDEX is ERC20 {
      *         All fees are automatically added to the liquidity pool, increasing the value of LP tokens
      * @return usdcBought The amount of USDC tokens received after the swap and fee deduction
      */
-    function ethToUsdc() public payable returns (uint usdcBought) {
+    function ethToUsdc() public payable nonReentrant returns (uint usdcBought) {
         // Ensure the pool has liquidity before attempting a swap
-        require(usdcReserve > 0 && ethReserve > 0, ZeroReserves());
+        if (usdcReserve == 0 || ethReserve == 0) revert ZeroReserves();
 
         uint ethSold = msg.value;
         uint inputWithFee = ethSold * 997;
 
-        // Calculate USDC output using constant product formula with fee: 
+        // Calculate USDC output using constant product formula with fee:
         // (x + dx * 0.997) * (y - dy) = x * y
         // where: x = ethReserve, y = usdcReserve, dx = ethSold, dy = usdcBought
-        usdcBought = (inputWithFee * usdcReserve) / ((ethReserve * 1000) + inputWithFee);
+        usdcBought =
+            (inputWithFee * usdcReserve) /
+            ((ethReserve * 1000) + inputWithFee);
 
         // Ensure the swap produces a meaningful amount of output tokens
-        require(usdcBought > 0, InsufficientUsdcPurchase());
+        if (usdcBought == 0) revert InsufficientUsdcPurchase();
 
-        // Transfer the USDC tokens to the user
-        usdcToken.transfer(msg.sender, usdcBought);
-
+        // Update the reserves
         usdcReserve -= usdcBought;
         ethReserve += ethSold;
+
+        // Transfer the USDC tokens to the user
+        bool success = usdcToken.transfer(msg.sender, usdcBought);
+        if (!success) revert USDCTransferFailed();
 
         // Emit event for off-chain tracking and transparency
         emit EthPurchase(msg.sender, usdcBought, ethSold);

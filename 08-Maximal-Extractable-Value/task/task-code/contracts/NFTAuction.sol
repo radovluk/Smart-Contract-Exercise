@@ -21,7 +21,7 @@ contract NFTAuction is Ownable, ReentrancyGuard {
     // ------------------------------------------------------------------------
 
     // Address of the seller who is selling the NFT
-    address public seller;
+    address public immutable seller;
 
     // The current highest bidder
     address public highestBidder;
@@ -30,23 +30,23 @@ contract NFTAuction is Ownable, ReentrancyGuard {
     uint256 public highestBid;
 
     // The initial price of the NFT
-    uint256 public initialPrice;
+    uint256 public immutable initialPrice;
 
     // Whether the auction has ended
     bool public ended;
 
     // The NFT contract address
-    IERC721 public nftContract;
+    IERC721 public immutable nftContract;
 
     // The ID of the NFT being auctioned
-    uint256 public tokenId;
+    uint256 public immutable tokenId;
 
     // Mapping of pending returns for outbid bidders
     mapping(address => uint256) public pendingReturns;
-    
+
     // Tracks if the NFT has been claimed by the winner
     bool public nftClaimed;
-    
+
     // Tracks if the seller has withdrawn the funds
     bool public fundsWithdrawn;
 
@@ -62,10 +62,10 @@ contract NFTAuction is Ownable, ReentrancyGuard {
 
     // Emitted when a user withdraws their pending returns
     event WithdrawnPendingReturns(address indexed bidder, uint256 amount);
-    
+
     // Emitted when the winner claims the NFT
     event NFTClaimed(address indexed winner, uint256 tokenId);
-    
+
     // Emitted when the seller claims the funds
     event FundsClaimed(address indexed seller, uint256 amount);
 
@@ -81,22 +81,22 @@ contract NFTAuction is Ownable, ReentrancyGuard {
 
     /// Bid is not high enough
     error BidNotHighEnough(uint256 highestBid);
-    
+
     /// Only the highest bidder can claim the NFT
     error NotHighestBidder();
-    
+
     /// Only the seller can claim the funds
     error NotSeller();
-    
+
     /// NFT has already been claimed
     error NFTAlreadyClaimed();
-    
+
     /// Funds have already been withdrawn
     error FundsAlreadyWithdrawn();
-    
+
     /// No funds to withdraw
     error NoFundsToWithdraw();
-    
+
     /// Transfer failed
     error TransferFailed();
 
@@ -175,7 +175,7 @@ contract NFTAuction is Ownable, ReentrancyGuard {
         if (amount == 0) {
             revert NoFundsToWithdraw();
         }
-        
+
         // Set pending amount to zero first to prevent re-entrancy
         pendingReturns[msg.sender] = 0;
 
@@ -186,7 +186,7 @@ contract NFTAuction is Ownable, ReentrancyGuard {
             pendingReturns[msg.sender] = amount;
             revert TransferFailed();
         }
-        
+
         emit WithdrawnPendingReturns(msg.sender, amount);
         return true;
     }
@@ -204,10 +204,10 @@ contract NFTAuction is Ownable, ReentrancyGuard {
 
         // Mark the auction as ended
         ended = true;
-        
+
         emit AuctionEnded(highestBidder, highestBid);
     }
-    
+
     /**
      * @dev Allows the highest bidder to claim the NFT after the auction has ended
      * - Can only be called by the highest bidder after the auction has ended
@@ -216,24 +216,24 @@ contract NFTAuction is Ownable, ReentrancyGuard {
         if (!ended) {
             revert AuctionNotEndedYet();
         }
-        
+
         if (msg.sender != highestBidder) {
             revert NotHighestBidder();
         }
-        
+
         if (nftClaimed) {
             revert NFTAlreadyClaimed();
         }
-        
+
         // Mark as claimed
         nftClaimed = true;
-        
+
         // Transfer the NFT
         nftContract.transferFrom(address(this), highestBidder, tokenId);
-        
+
         emit NFTClaimed(highestBidder, tokenId);
     }
-    
+
     /**
      * @dev Allows the seller to claim the auction funds after the auction has ended
      * - Can only be called by the seller after the auction has ended
@@ -242,25 +242,25 @@ contract NFTAuction is Ownable, ReentrancyGuard {
         if (!ended) {
             revert AuctionNotEndedYet();
         }
-        
+
         if (msg.sender != seller) {
             revert NotSeller();
         }
-        
+
         if (fundsWithdrawn) {
             revert FundsAlreadyWithdrawn();
         }
-        
+
         // Mark as withdrawn
         fundsWithdrawn = true;
-        
+
         // Transfer the funds
         (bool success, ) = payable(seller).call{value: highestBid}("");
         if (!success) {
             fundsWithdrawn = false; // Reset if transfer fails
             revert TransferFailed();
         }
-        
+
         emit FundsClaimed(seller, highestBid);
     }
 
@@ -317,13 +317,17 @@ contract NFTAuction is Ownable, ReentrancyGuard {
             nftIsClaimed
         );
     }
-    
+
     /**
      * @dev Get the highest bidder and their bid
      * @return winner The address of the highest bidder
      * @return winningBid The highest bid amount
      */
-    function getHighestBid() external view returns (address winner, uint256 winningBid) {
+    function getHighestBid()
+        external
+        view
+        returns (address winner, uint256 winningBid)
+    {
         return (highestBidder, highestBid);
     }
 }

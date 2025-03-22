@@ -170,7 +170,7 @@ contract FlashLoanProvider is IERC3156FlashLender {
         if (token == address(0)) {
             // ETH loan
             (bool success, ) = address(receiver).call{value: amount}("");
-            require(success, TransferToBorrowerFailed());
+            if (!success) revert TransferToBorrowerFailed();
         } else {
             // USDC loan
             usdcToken.safeTransfer(address(receiver), amount);
