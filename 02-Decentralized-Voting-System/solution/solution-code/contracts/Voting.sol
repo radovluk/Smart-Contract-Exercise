@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity =0.8.28;
+pragma solidity 0.8.28;
 
 /**
  * @title Voting
@@ -27,7 +27,7 @@ contract Voting {
      */
     struct Candidate {
         string name;
-        uint voteCount;
+        uint96 voteCount;
     }
 
     // Dynamic array to store all candidates
@@ -53,7 +53,7 @@ contract Voting {
     /**
      * @dev Custom errors that describe the failures
      * The triple-slash comments are for natspec comments.
-     * They will be shown when a user is asked to confirm a 
+     * They will be shown when a user is asked to confirm a
      * transaction or when an error is thrown.
      */
     /// Only the owner can call this function.
@@ -72,7 +72,7 @@ contract Voting {
      *      Reverts with "Not the contract owner" if the caller is not the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == owner, NotOwner());
+        if (msg.sender != owner) revert NotOwner();
         _;
     }
 
@@ -91,9 +91,9 @@ contract Voting {
      * - Only the contract owner can add a candidate.
      * - The candidate name cannot be empty.
      */
-    function addCandidate(string memory name) public onlyOwner {
+    function addCandidate(string calldata name) external onlyOwner {
         // Check if the candidate name is empty
-        require(bytes(name).length > 0, EmptyCandidateName());
+        if (bytes(name).length == 0) revert EmptyCandidateName();
         // Create a new Candidate struct and push it to the candidates array
         candidates.push(Candidate({name: name, voteCount: 0}));
         // Emit the CandidateAdded event
@@ -108,11 +108,12 @@ contract Voting {
      * - The caller has not voted before.
      * - The candidate index is valid (within the array bounds).
      */
-    function vote(uint candidateIndex) public {
+    function vote(uint candidateIndex) external {
         // Ensure the caller hasn't voted yet
-        require(!hasVoted[msg.sender], AlreadyVoted(msg.sender));
+        if (hasVoted[msg.sender]) revert AlreadyVoted(msg.sender);
         // Ensure the candidate index is valid
-        require(candidateIndex < candidates.length, InvalidCandidateIndex(candidateIndex));
+        if (candidateIndex >= candidates.length)
+            revert InvalidCandidateIndex(candidateIndex);
 
         // Increment the vote count for the chosen candidate
         candidates[candidateIndex].voteCount += 1;
@@ -127,7 +128,7 @@ contract Voting {
      * @dev Returns the total number of candidates.
      * @return The length of the candidates array.
      */
-    function getCandidateCount() public view returns (uint) {
+    function getCandidateCount() external view returns (uint) {
         return candidates.length;
     }
 
@@ -142,9 +143,9 @@ contract Voting {
      */
     function getCandidate(
         uint index
-    ) public view returns (string memory name, uint voteCount) {
+    ) external view returns (string memory name, uint voteCount) {
         // Ensure the index is valid
-        require(index < candidates.length, InvalidCandidateIndex(index));
+        if (index >= candidates.length) revert InvalidCandidateIndex(index);
         // Retrieve the candidate from the array
         Candidate storage candidate = candidates[index];
         return (candidate.name, candidate.voteCount);
@@ -158,9 +159,9 @@ contract Voting {
      * Requirements:
      * - There must be at least one candidate in the array.
      */
-    function winningCandidate() public view returns (uint) {
+    function winningCandidate() external view returns (uint) {
         // Revert of no candidates are added
-        require(candidates.length > 0, NoCandidates());
+        if (candidates.length == 0) revert NoCandidates();
 
         uint winningVoteCount = candidates[0].voteCount;
         uint winnerIndex = 0;

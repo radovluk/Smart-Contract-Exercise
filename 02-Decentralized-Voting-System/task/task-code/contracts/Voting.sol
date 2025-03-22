@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity =0.8.28;
+pragma solidity 0.8.28;
 
 /**
  * @title Voting
@@ -27,7 +27,7 @@ contract Voting {
      */
     struct Candidate {
         string name;
-        uint voteCount;
+        uint96 voteCount;
     }
 
     // Dynamic array to store all candidates
@@ -69,6 +69,7 @@ contract Voting {
      *      Reverts with "Not the contract owner" if the caller is not the owner.
      */
     modifier onlyOwner() {
+        if (msg.sender != owner) revert NotOwner();
         _; // this line represents where the modified function's code executes
     }
 
@@ -88,7 +89,7 @@ contract Voting {
      * - Only the contract owner can add a candidate.
      * - The candidate name cannot be empty.
      */
-    function addCandidate(string memory name) public onlyOwner {
+    function addCandidate(string calldata name) external onlyOwner {
         // TODO: Ensure that the candidate name is not empty
         // TODO: Create a new Candidate struct with the provided name and zero votes
         // TODO: Add the new candidate to the candidates array
@@ -103,7 +104,7 @@ contract Voting {
      * - The caller has not voted before.
      * - The candidate index is valid (within the array bounds).
      */
-    function vote(uint candidateIndex) public {
+    function vote(uint candidateIndex) external {
         // TODO: Check if the sender has already voted
         // Tip: Use msg.sender to get the sender address and require statetment.
         // TODO: Check if the candidate index is within the valid range
@@ -117,7 +118,7 @@ contract Voting {
      * @dev Returns the total number of candidates.
      * @return The length of the candidates array.
      */
-    function getCandidateCount() public view returns (uint) {
+    function getCandidateCount() external view returns (uint) {
         // TODO: Return the number of candidates in the candidates array
     }
 
@@ -132,7 +133,7 @@ contract Voting {
      */
     function getCandidate(
         uint index
-    ) public view returns (string memory name, uint voteCount) {
+    ) external view returns (string memory name, uint voteCount) {
         // TODO: Ensure the index is within the valid range
         // TODO: Retrieve the candidate's name and vote count from the candidates array
     }
@@ -145,7 +146,7 @@ contract Voting {
      * Requirements:
      * - There must be at least one candidate in the array.
      */
-    function winningCandidate() public view returns (uint) {
+    function winningCandidate() external view returns (uint) {
         // TODO: Ensure there is at least one candidate to determine a winner
         // TODO: Initialize variables to track the highest vote count and winner index
         // TODO: Cache the length of the candidates array before looping through it

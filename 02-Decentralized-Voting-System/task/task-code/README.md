@@ -148,7 +148,7 @@ Errors allow developers to provide more information to the caller about why a co
   error EmptyCandidateName();
 
   // revert if condition is not met
-  require(msg.sender == owner, NotOwner());
+  if (msg.sender != owner) revert NotOwner();
 
   // revert statement
   revert EmptyCandidateName();
@@ -161,7 +161,7 @@ Modifiers are used to change the behavior of functions in a declarative way. The
 ```solidity
   // Modifier to restrict access to the contract owner
   modifier onlyOwner() {
-      require(msg.sender == owner, NotOwner());
+      if (msg.sender != owner) revert NotOwner();
       _; // Continue executing the function
   }
 

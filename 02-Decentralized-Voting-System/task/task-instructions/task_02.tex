@@ -243,7 +243,7 @@ Events are used to log information on the blockchain that can be accessed by off
 
 \subsubsection*{Errors}
 
-Errors allow developers to provide more information to the caller about why a condition or operation failed. Errors are used together with the revert statement or require function. On failure, they abort and revert \textbf{all} changes made by the transaction.
+Errors allow developers to provide more information to the caller about why a condition or operation failed. Errors are used together with the revert statement. On failure, they abort and revert \textbf{all} changes made by the transaction.
 
 \noindent
 \begin{minipage}[c]{\textwidth}
@@ -254,7 +254,7 @@ Errors allow developers to provide more information to the caller about why a co
   error EmptyCandidateName();
 
   // revert if condition is not met
-  require(msg.sender == owner, NotOwner());
+  if (msg.sender != owner) revert NotOwner();
 
   // revert statement
   revert EmptyCandidateName();
@@ -270,7 +270,7 @@ Modifiers are used to change the behavior of functions in a declarative way. The
 \begin{lstlisting}[language=Solidity]
   // Modifier to restrict access to the contract owner
   modifier onlyOwner() {
-      require(msg.sender == owner, NotOwner());
+      if (msg.sender != owner) revert NotOwner();
       _; // Continue executing the function
   }
 
@@ -295,9 +295,6 @@ address sender = msg.sender;
 
 // Amount sent with the transaction
 uint amount = msg.value;
-
-// Enforcing conditions
-require(condition, CustomError());
 
 // Casting arbitrary data to uint
 uint number = uint(data);

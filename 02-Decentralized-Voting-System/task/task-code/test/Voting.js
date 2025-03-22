@@ -163,6 +163,14 @@ describe("Voting Contract Test Suite", function () {
       expect(candidate2.voteCount).to.equal(1);
     });
 
+    it("Should fail when calling winningCandidate with no candidates", async function () {
+      // Attempt to get the winning candidate when there are no candidates
+      await expect(voting.winningCandidate()).to.be.revertedWithCustomError(
+        voting,
+        "NoCandidates"
+      );
+    });
+
     it("Should emit a Voted event upon successful voting", async function () {
       // Owner adds a candidate
       await voting.connect(owner).addCandidate("Alice");
