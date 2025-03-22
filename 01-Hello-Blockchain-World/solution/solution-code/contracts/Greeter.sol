@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28; // Specify the Solidity compiler version
+pragma solidity =0.8.28; // Specify the Solidity compiler version
 
 /**
  * @title Greeter
