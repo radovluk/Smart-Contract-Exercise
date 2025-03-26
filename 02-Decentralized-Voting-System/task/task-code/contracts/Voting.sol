@@ -66,7 +66,7 @@ contract Voting {
 
     /**
      * @dev Modifier to restrict function access to only the contract owner.
-     *      Reverts with "Not the contract owner" if the caller is not the owner.
+     *      Reverts with NotOwner() if the caller is not the owner.
      */
     modifier onlyOwner() {
         if (msg.sender != owner) revert NotOwner();
@@ -106,12 +106,12 @@ contract Voting {
      */
     function vote(uint candidateIndex) external {
         // TODO: Check if the sender has already voted
-        // Tip: Use msg.sender to get the sender address and require statetment.
+        // Tip: Use msg.sender to get the sender address and custom error.
         // TODO: Check if the candidate index is within the valid range
         // TODO: Increment the vote count for the chosen candidate
         // TODO: Mark the sender as having voted
         // TODO: Emit the Voted event with the voter's address and candidate index
-        // This will allow clients to listen for the event and react to it
+        //       (This will allow clients to listen for the event and react to it)
     }
 
     /**

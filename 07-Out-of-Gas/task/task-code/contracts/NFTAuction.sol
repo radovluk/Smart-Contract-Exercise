@@ -189,7 +189,7 @@ contract NFTAuction is Ownable {
             address bidder = bidders[i];
             uint256 amount = pendingReturns[bidder];
             if (amount > 0) {
-                // Important: Setting the pending amount to 0 before sending to prevent re-entrancy
+                // Setting the pending amount to 0 before sending to prevent re-entrancy
                 pendingReturns[bidder] = 0;
 
                 // Send the refund

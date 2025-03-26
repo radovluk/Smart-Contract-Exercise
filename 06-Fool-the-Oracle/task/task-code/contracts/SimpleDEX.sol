@@ -20,7 +20,7 @@ contract SimpleDEX is ERC20, ReentrancyGuard {
     //                          Storage Variables
     // ------------------------------------------------------------------------
 
-    // The USDC token contract interface (for our example same ERC20 interface)
+    // The USDC token contract interface (for our example same as ERC20 interface)
     IERC20 public immutable usdcToken;
 
     // Reserve amount of USDC in the pool

@@ -32,6 +32,7 @@ interface IFELStudentNFT {
  *         - Sells FEL student NFTs with different traits
  *         - Each NFT has an individual price set by the owner in USD
  *         - Calculates the ETH price based on current USD/ETH exchange rate
+ *         - USDC token is used as a reference for USD equivalent, 1 USD = 1 USDC
  *         - Allows users to purchase NFTs for the calculated ETH price
  *         - Provides listing functionality to view all available NFTs with prices
  */
@@ -148,7 +149,6 @@ contract FELStudentNFTMarketplace is ReentrancyGuard, Ownable {
         // Store excess ETH amount before state changes
         uint256 excessEth = msg.value > priceInEth ? msg.value - priceInEth : 0;
 
-        // EFFECTS - Update state variables before external interactions
         // Remove the price mapping for the sold NFT
         delete nftPrices[tokenId];
 
@@ -158,7 +158,6 @@ contract FELStudentNFTMarketplace is ReentrancyGuard, Ownable {
             _removeTokenFromListing(tokenId);
         }
 
-        // INTERACTIONS - External calls come last
         // Transfer the NFT to the buyer
         nftContract.transferFrom(address(this), msg.sender, tokenId);
 

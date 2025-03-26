@@ -7,7 +7,6 @@ import "./CTUToken.sol";
  * @title ReentrancyGuard
  * @notice A simple guard to deter reentrant calls.
  *         It sets a boolean lock before function execution and resets it after.
- *         Though it helps, no guarantee this covers all possible attacks—be cautious.
  */
 abstract contract ReentrancyGuard {
     /// Indicates whether a function is currently locked from reentry.
@@ -54,6 +53,8 @@ contract CTUTokenBank is ReentrancyGuard {
     // ------------------------------------------------------------------------
 
     /// Emitted when an investor deposits Ether.
+    /// @param investor The address of the investor who made the deposit.
+    /// @param amount The amount of Ether deposited in wei.
     event Deposit(address indexed investor, uint amount);
 
     /// Emitted when an investor withdraws Ether.
@@ -69,7 +70,10 @@ contract CTUTokenBank is ReentrancyGuard {
     //                               Errors
     // ------------------------------------------------------------------------
 
-    /// Client attempts an action but lacks sufficient balance.
+    /// Insufficient balance for transfer. Needed `amount` but only
+    /// `balance` available.
+    /// @param balance balance available.
+    /// @param amount requested amount to transfer.
     error InsufficientBalance(uint balance, uint amount);
 
     /// Deposit is made with zero Ether.

@@ -11,11 +11,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  * Features:
  * - Inherits standard ERC-20 functionalities such as decimals, totalSupply, balanceOf,
  *   transfer, transferFrom, approve, and allowance from OpenZeppelin.
- *
- * Note:
- * - Using OpenZeppelin's implementation is always recommended for its security, reliability,
- *   and community trust. It reduces the risk of vulnerabilities and leverages well-tested code.
- *   Do not reinvent the wheel!
  */
 contract CTUTokenOpenZeppelin is ERC20 {
     // Define the initial supply: 1,000,000 tokens with 18 decimal places

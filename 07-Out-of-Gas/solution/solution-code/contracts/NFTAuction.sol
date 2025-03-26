@@ -84,6 +84,9 @@ contract NFTAuction is Ownable {
     /// Seller does not own the NFT
     error SellerNotOwner();
 
+    /// Zero address not allowed
+    error ZeroAddressNotAllowed();
+
     // ------------------------------------------------------------------------
     //                               Constructor
     // ------------------------------------------------------------------------
@@ -101,6 +104,9 @@ contract NFTAuction is Ownable {
         uint256 _tokenId,
         uint256 _initialPrice
     ) Ownable(msg.sender) {
+        if (_seller == address(0)) revert ZeroAddressNotAllowed();
+        if (_nftContract == address(0)) revert ZeroAddressNotAllowed();
+
         seller = _seller;
         nftContract = IERC721(_nftContract);
         tokenId = _tokenId;
@@ -183,7 +189,7 @@ contract NFTAuction is Ownable {
             address bidder = bidders[i];
             uint256 amount = pendingReturns[bidder];
             if (amount > 0) {
-                // Important: Setting the pending amount to 0 before sending to prevent re-entrancy
+                // Setting the pending amount to 0 before sending to prevent re-entrancy
                 pendingReturns[bidder] = 0;
 
                 // Send the refund

@@ -4,7 +4,6 @@ pragma solidity =0.8.28;
 /**
  * @title DAO
  * @notice A simple decentralized autonomous organization (DAO) contract
- *         that demonstrates a vulnerability to a DoS attack.
  *         - Members can join the DAO by paying a membership fee
  *         - Members can vote on proposals
  *         - When a proposal gets a majority vote, it passes

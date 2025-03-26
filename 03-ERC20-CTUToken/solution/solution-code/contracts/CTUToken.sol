@@ -76,19 +76,32 @@ contract CTUToken {
 
     /// Attempting to transfer to the zero address.
     error TransferToZeroAddress();
+
     /// Attempting to transfer from the zero address.
     error TransferFromZeroAddress();
+
     /// Account does not have enough balance. Requested:`requsted` Available:`available`
+    /// @param requested amount of token.
+    /// @param available balance of the account.
     error InsufficientBalance(uint256 requested, uint256 available);
+
     /// Attempting to approve the zero address as a spender.
     error ApproveToZeroAddress();
+
     /// Attempting to increase allowance for the zero address.
     error IncreaseAllowanceForZeroAddress();
+
     /// Attempting to decrease allowance for the zero address.
     error DecreaseAllowanceForZeroAddress();
+
     /// Attempting to decrease allowance=`requested` below the current value=`current`.
+    /// @param requested The amount by which to decrease the allowance.
+    /// @param current The current allowance value.
     error DecreasedAllowanceBelowZero(uint256 requested, uint256 current);
+
     /// Trying to transfer an amount=`requested` exceeding the current allowance=`allowance`.
+    /// @param requested The amount the spender is attempting to transfer.
+    /// @param allowance The current approved allowance for the spender.
     error TransferExceedsAllowance(uint256 requested, uint256 allowance);
 
     // ------------------------------------------------------------------------
@@ -130,11 +143,7 @@ contract CTUToken {
      * be displayed to a user as `4.2` (`42 / 10 ** 2`).
      *
      * Tokens usually opt for a value of 18, imitating the relationship between
-     * Ether and Wei. This is the default value returned by this function, unless
-     * it's overridden.
-     *
-     * NOTE: This information is only used for display purposes: it in
-     * no way affects any of the arithmetic of the contract.
+     * Ether and Wei.
      */
     function decimals() public pure returns (uint8) {
         return 18;
@@ -302,7 +311,7 @@ contract CTUToken {
      * Requirements:
      * - `from` and `to` cannot be the zero address.
      * - `from` must have a balance of at least `value`.
-     * - the caller must have allowance for ``from``'s tokens of at least
+     * - the caller must have allowance for `from`'s tokens of at least
      * `value`.
      * - Transfer amount must be greater or equal than zero
      */

@@ -9,13 +9,11 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 /**
  * @title FlashLoanProvider
  * @notice An EIP-3156 compliant flash loan provider for educational purposes
-*  For more information about EIP-3165 see https://eips.ethereum.org/EIPS/eip-3156
+ *  For more information about EIP-3165 see https://eips.ethereum.org/EIPS/eip-3156
  *         - Provides standard-compliant flash loans for both ETH and USDC
  *         - Charges a fixed 0.01% fee on all flash loans (1 basis point)
- *         - Fee is designed to be minimal while still preventing economic exploits
  *         - All collected fees are retained in the contract, increasing the pool size
  *         - Supports ETH (address(0)) and USDC token as loan currencies
- *         - Implements the ERC-3156 standard for maximum interoperability
  *         - ETH loans are handled directly while USDC loans use ERC20 transfers
  */
 contract FlashLoanProvider is IERC3156FlashLender {

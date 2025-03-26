@@ -21,7 +21,7 @@ contract Vault09Attack {
     }
     
     /**
-     * @notice Performs the attack by triggering an underflow in the vault contract
+     * @notice Performs the attack
      */
     function attack() external {      
         // =========================

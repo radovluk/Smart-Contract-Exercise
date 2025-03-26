@@ -66,7 +66,7 @@ contract Voting {
 
     /**
      * @dev Modifier to restrict function access to only the contract owner.
-     *      Reverts with "Not the contract owner" if the caller is not the owner.
+     *      Reverts with NotOwner() if the caller is not the owner.
      */
     modifier onlyOwner() {
         if (msg.sender != owner) revert NotOwner();
