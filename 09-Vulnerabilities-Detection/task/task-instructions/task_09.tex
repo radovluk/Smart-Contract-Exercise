@@ -136,8 +136,9 @@ have the following installed on your system:
 
 \subsubsection*{Prerequisites}
 \begin{itemize}
-    \item \textbf{Rust Toolchain} -- Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using \href{https://rustup.rs/}{rustup.rs}.
-    \item \textbf{Bun} -- JavaScript runtime \& toolkit for installing dependencies and running scripts. Install it from \href{https://bun.sh/}{bun.sh}.
+     \item \textbf{Rust Toolchain} -- Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using \href{https://rustup.rs/}{rustup.rs}.
+        \item \textbf{Bun} -- JavaScript runtime \& toolkit for installing dependencies and running scripts. Install it from \href{https://bun.sh/}{bun.sh}.
+        \item \textbf{Tip}: If you already have Node Package Manager installed and use it regularly, you can use it instead of Bun.
 \end{itemize}
 
 \noindent
@@ -193,9 +194,9 @@ $ anvil --version
 \begin{enumerate}
     \item Visit the following
           \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code}{GitLab
-              repository} and clone it to your local machine.
+          repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
-    \item Install the project dependencies by running \codegrey{bun install}.
+    \item Install the project dependencies by running \codegrey{bun install}. (Alternatively with NPM, you can use \codegrey{npm install}).
 \end{enumerate}
 
 \section{Static Analysis}
