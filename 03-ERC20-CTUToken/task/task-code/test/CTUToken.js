@@ -89,14 +89,6 @@ describe("CTUToken Contract Test Suite", function () {
           .withArgs(owner.address, addr1.address, transferAmount);
       });
 
-      it("Should fail when transferring to zero address", async function () {
-        const transferAmount = ethers.parseUnits("1000", 18);
-
-        await expect(
-          ctuToken.transfer(ethers.ZeroAddress, transferAmount)
-        ).to.be.revertedWithCustomError(ctuToken, "TransferToZeroAddress");
-      });
-
       it("Should fail when sender has insufficient balance", async function () {
         const transferAmount = ethers.parseUnits("1000", 18);
 
@@ -200,19 +192,6 @@ describe("CTUToken Contract Test Suite", function () {
             .connect(addr1)
             .transferFrom(owner.address, addr2.address, transferAmount)
         ).to.changeTokenBalance(ctuToken, owner, -transferAmount);
-      });
-
-      it("Should fail when transferring to zero address", async function () {
-        const approveAmount = ethers.parseUnits("1000", 18);
-        const transferAmount = ethers.parseUnits("500", 18);
-
-        await ctuToken.approve(addr1.address, approveAmount);
-
-        await expect(
-          ctuToken
-            .connect(addr1)
-            .transferFrom(owner.address, ethers.ZeroAddress, transferAmount)
-        ).to.be.revertedWithCustomError(ctuToken, "TransferToZeroAddress");
       });
 
       it("Should fail when transferring more than balance", async function () {

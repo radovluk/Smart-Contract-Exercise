@@ -10,7 +10,7 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
 
 2. **Non-Fungible Tokens (NFTs)**
 
-   Non-fungible tokens ([*ERC-721 Tokens*](https://eips.ethereum.org/EIPS/eip-721)) are unique and cannot be exchanged on a one-to-one basis. They are used to represent ownership of unique items such as digital art, collectibles, and real estate. Each token is uniquely identifiable by an ID.
+   Non-fungible tokens ([*ERC-721 Tokens*](https://eips.ethereum.org/EIPS/eip-721)) are unique and cannot be exchanged on a one-to-one basis. They are used to represent ownership of unique items such as digital art, collectibles, and real estate and many others. Each token is uniquely identifiable by an ID.
 
 3. **Multi-Tokens**
 
@@ -143,7 +143,6 @@ To complete the CTU Token contract and pass all the associated tests, you need t
 - **Approval Event**: Implement and emit an `Approval` event when an allowance is set via the `approve` function.
 
 ### Errors
-- **TransferToZeroAddress**: Attempting to transfer to the zero address.
 - **InsufficientBalance(uint256 requested, uint256 available)**: Account does not have enough balance.
 - **ApproveToZeroAddress**: Attempting to approve the zero address as a spender.
 - **TransferExceedsAllowance(uint256 requested, uint256 allowance)**: Trying to transfer an amount exceeding the current allowance.

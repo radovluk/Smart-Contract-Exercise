@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity =0.8.28;
+pragma solidity 0.8.28;
 
 /**
  * @title CTUToken
@@ -69,9 +69,6 @@ contract CTUToken {
     // ------------------------------------------------------------------------
     //                               Errors
     // ------------------------------------------------------------------------
-
-    /// Attempting to transfer to the zero address.
-    error TransferToZeroAddress();
 
     /// Account does not have enough balance. Requested:`requsted` Available:`available`
     /// @param requested amount of token.
@@ -156,11 +153,9 @@ contract CTUToken {
      * @dev Emits a {Transfer} event.
      *
      * Requirements:
-     * - `to` cannot be the zero address.
      * - the caller must have a balance of at least `value`.
      */
     function transfer(address to, uint256 value) public returns (bool success) {
-        // TODO: Check if the recipient is not the zero address
         // TODO: Check if the sender has enough balance
         // TODO: Subtract the value from the sender's balance
         // TODO: Add the value to the recipient's balance
@@ -173,15 +168,11 @@ contract CTUToken {
      * @param spender The address authorized to spend.
      * @param value The maximum amount they can spend.
      * @return success A boolean indicating if the operation was successful.
-     *
-     * Requirements:
-     * - `spender` cannot be the zero address.
      */
     function approve(
         address spender,
         uint256 value
     ) public returns (bool success) {
-        // TODO: Check if the spender is not the zero address
         // TODO: Set the allowance
         // TODO: Emit Approval event
         // TODO: Return true if the approval is successful
