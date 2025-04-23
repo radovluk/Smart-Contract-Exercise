@@ -203,7 +203,7 @@ contract CTUToken {
      * @return success A boolean indicating if the operation was successful.
      *
      * Requirements:
-     * - `from` and `to` cannot be the zero address.
+     * - `from` cannot be the zero address.
      * - `from` must have a balance of at least `value`.
      * - the caller must have allowance for `from`'s tokens of at least
      * `value`.
@@ -215,7 +215,6 @@ contract CTUToken {
         uint256 value
     ) public returns (bool success) {
         // TODO: Check if the sender is not the zero address
-        // TODO: Check if the recipient is not the zero address
         // TODO: Check if the sender has enough balance
         // TODO: Check if the caller has enough allowance
         // TODO: Subtract the value from the sender's balance

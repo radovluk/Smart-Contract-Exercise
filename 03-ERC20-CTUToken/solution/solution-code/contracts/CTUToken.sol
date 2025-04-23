@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity =0.8.28;
+pragma solidity 0.8.28;
 
 /**
  * @title CTUToken
@@ -36,11 +36,12 @@ contract CTUToken {
     // ------------------------------------------------------------------------
 
     // Mapping from account addresses to their current token balance
-    mapping(address => uint256) private balances;
+    mapping(address account => uint256 balance) private balances;
 
     // Mapping from account addresses to another account's allowances.
     // This allows an account to authorize another account to spend tokens on its behalf.
-    mapping(address => mapping(address => uint256)) private allowances;
+    mapping(address owner => mapping(address spender => uint256 amount))
+        private allowances;
 
     // ------------------------------------------------------------------------
     //                              Events
@@ -73,9 +74,6 @@ contract CTUToken {
     // ------------------------------------------------------------------------
     //                               Errors
     // ------------------------------------------------------------------------
-
-    /// Attempting to transfer to the zero address.
-    error TransferToZeroAddress();
 
     /// Attempting to transfer from the zero address.
     error TransferFromZeroAddress();
@@ -172,15 +170,12 @@ contract CTUToken {
      * @dev Emits a {Transfer} event.
      *
      * Requirements:
-     * - `to` cannot be the zero address.
      * - the caller must have a balance of at least `value`.
      */
     function transfer(address to, uint256 value) public returns (bool success) {
-        // Check if the recipient is not the zero address
-        if (to == address(0)) revert TransferToZeroAddress();
-
         // Check if the sender has enough balance
-        if (balances[msg.sender] < value) revert InsufficientBalance(value, balances[msg.sender]);
+        if (balances[msg.sender] < value)
+            revert InsufficientBalance(value, balances[msg.sender]);
 
         // Subtract the value from the sender's balance
         balances[msg.sender] -= value;
@@ -271,8 +266,11 @@ contract CTUToken {
         if (spender == address(0)) revert DecreaseAllowanceForZeroAddress();
 
         // Check if the current allowance is sufficient
-        if (allowances[msg.sender][spender] < subtractedValue) 
-            revert DecreasedAllowanceBelowZero(subtractedValue, allowances[msg.sender][spender]);
+        if (allowances[msg.sender][spender] < subtractedValue)
+            revert DecreasedAllowanceBelowZero(
+                subtractedValue,
+                allowances[msg.sender][spender]
+            );
 
         // Decrease the allowance
         allowances[msg.sender][spender] -= subtractedValue;
@@ -309,7 +307,7 @@ contract CTUToken {
      * @return success A boolean indicating if the operation was successful.
      *
      * Requirements:
-     * - `from` and `to` cannot be the zero address.
+     * - `from` cannot be the zero address.
      * - `from` must have a balance of at least `value`.
      * - the caller must have allowance for `from`'s tokens of at least
      * `value`.
@@ -323,16 +321,16 @@ contract CTUToken {
         // Check if the sender is not the zero address
         if (from == address(0)) revert TransferFromZeroAddress();
 
-        // Check if the recipient is not the zero address
-        if (to == address(0)) revert TransferToZeroAddress();
-
         // Check if the sender has enough balance
-        if (balances[from] < value) 
+        if (balances[from] < value)
             revert InsufficientBalance(value, balances[from]);
 
         // Check if the caller has enough allowance
-        if (allowances[from][msg.sender] < value) 
-            revert TransferExceedsAllowance(value, allowances[from][msg.sender]);
+        if (allowances[from][msg.sender] < value)
+            revert TransferExceedsAllowance(
+                value,
+                allowances[from][msg.sender]
+            );
 
         // Subtract the value from the sender's balance
         balances[from] -= value;
