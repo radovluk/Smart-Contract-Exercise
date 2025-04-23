@@ -34,14 +34,14 @@ contract Voting {
     Candidate[] public candidates;
 
     // Mapping to track whether an address has already voted
-    mapping(address => bool) public hasVoted;
+    mapping(address voter => bool hasVoted) public hasVoted;
 
     /**
      * @dev Event emitted when a vote is cast.
      * @param voter The address of the voter.
      * @param candidateIndex The index of the candidate voted for.
      */
-    event Voted(address indexed voter, uint indexed candidateIndex);
+    event Voted(address indexed voter, uint256 indexed candidateIndex);
 
     /**
      * @dev Event emitted when a new candidate is added.
@@ -60,7 +60,7 @@ contract Voting {
     /// The `voter` has already voted.
     error AlreadyVoted(address voter);
     /// The candidate index `index` is invalid.
-    error InvalidCandidateIndex(uint index);
+    error InvalidCandidateIndex(uint256 index);
     /// No candidates have been added yet.
     error NoCandidates();
 
@@ -104,7 +104,7 @@ contract Voting {
      * - The caller has not voted before.
      * - The candidate index is valid (within the array bounds).
      */
-    function vote(uint candidateIndex) external {
+    function vote(uint256 candidateIndex) external {
         // TODO: Check if the sender has already voted
         // Tip: Use msg.sender to get the sender address and custom error.
         // TODO: Check if the candidate index is within the valid range
@@ -116,9 +116,9 @@ contract Voting {
 
     /**
      * @dev Returns the total number of candidates.
-     * @return The length of the candidates array.
+     * @return count The length of the candidates array.
      */
-    function getCandidateCount() external view returns (uint) {
+    function getCandidateCount() external view returns (uint256 count) {
         // TODO: Return the number of candidates in the candidates array
     }
 
@@ -132,8 +132,8 @@ contract Voting {
      * - The candidate index must be within bounds.
      */
     function getCandidate(
-        uint index
-    ) external view returns (string memory name, uint voteCount) {
+        uint256 index
+    ) external view returns (string memory name, uint256 voteCount) {
         // TODO: Ensure the index is within the valid range
         // TODO: Retrieve the candidate's name and vote count from the candidates array
     }
@@ -141,12 +141,12 @@ contract Voting {
     /**
      * @dev Determines the index of the candidate with the highest vote count.
      *      If multiple candidates have the same highest vote count, the first one encountered is returned.
-     * @return The index of the winning candidate in the candidates array.
+     * @return winnerIndex The index of the winning candidate in the candidates array.
      *
      * Requirements:
      * - There must be at least one candidate in the array.
      */
-    function winningCandidate() external view returns (uint) {
+    function winningCandidate() external view returns (uint256 winnerIndex) {
         // TODO: Ensure there is at least one candidate to determine a winner
         // TODO: Initialize variables to track the highest vote count and winner index
         // TODO: Cache the length of the candidates array before looping through it
