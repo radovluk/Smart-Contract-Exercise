@@ -83,28 +83,28 @@
 \maketitle
 \section{Introduction}
 
-In this exercise, you will implement a smart contract of a decentralized voting system on the blockchain. The goal of this exercise is to familiarize yourself with the basics of the Solidity language.
+In this exercise, you will implement a smart contract for a decentralized voting system on the blockchain. The goal of this exercise is to familiarize yourself with the basics of the Solidity programming language.
 
 \subsection*{Project Setup}
 
-You have two options for working with this exercise. Using docker container or local installation. Choose the one that best fits your preferences.
+You have two options for working with this exercise: using a Docker container or local installation. Choose the option that best fits your preferences.
 
 \subsection{Using Docker with VS Code}
 
-This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
+This option uses Docker to create a development environment with all necessary tools and dependencies preinstalled.
 
 \subsubsection*{Prerequisites:}
 
 \begin{itemize}
     \item \textbf{\href{https://www.docker.com/products/docker-desktop}{Docker}} - A platform for developing, shipping, and running applications in containers.
-    \item \textbf{\href{https://code.visualstudio.com/}{Visual Studio Code}} - A lightweight but powerful source code editor.
+    \item \textbf{\href{https://code.visualstudio.com/}{Visual Studio Code}} - A lightweight yet powerful source code editor.
     \item \textbf{\href{https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers}{Dev Containers}} - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
 \end{itemize}
 
 \subsubsection*{Setting Up the Project:}
 
 \begin{enumerate}
-  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads}{GitLab repository} and clone it to your local machine.
+  \item Visit the following \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/02-Decentralized-Voting-System/task/task-code}{GitHub repository} and clone it to your local machine.
   \item Open the repository folder in VS Code.
   \item When prompted, click ``Reopen in Container'' or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
@@ -132,14 +132,14 @@ Both commands should return the installed version numbers of Node.js and NPM res
 \subsubsection*{Setting Up the Project}
 
 \begin{enumerate}
-    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/02-Decentralized-Voting-System/task/task-code?ref_type=heads}{GitLab repository} and clone it to your local machine.
+    \item Visit the following \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/02-Decentralized-Voting-System/task/task-code}{GitHub repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
     \item Install the project dependencies by running \codegrey{npm install}.
 \end{enumerate}
 
 \section{Task Specification: Voting Contract}
 
-Your implementation will be in the file \texttt{contracts/Voting.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To fulfill this task, you need to pass all the provided tests. You can run the tests with the following command:
+Your implementation will be in the file \texttt{contracts/Voting.sol}. In this file, there are \#TODO comments where you should implement the required functionality. To complete this task, you need to pass all the provided tests. You can run the tests with the following command:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
   $ npx hardhat test
@@ -153,7 +153,7 @@ There is also a deployment script in the \texttt{scripts} folder. You can deploy
 
 \subsection{Overview}
 
-The \textbf{Voting} contract is a simple implementation of a voting system using Solidity. It allows the contract owner to add candidates, and any address to vote exactly once for a candidate. The contract includes the following functionalities:
+The \textbf{Voting} contract is a simple implementation of a voting system using Solidity. It allows the contract owner to add candidates and enables any address to vote exactly once for a candidate. The contract includes the following functionality:
 \begin{itemize}
     \item The contract owner can add candidates.
     \item Any address can vote exactly once for a candidate.
@@ -166,7 +166,7 @@ The \textbf{Voting} contract is a simple implementation of a voting system using
 
 \subsection{Solidity Crash Course}
 
-The \textbf{Voting} contract is designed to facilitate a decentralized voting system. Below are some solidity code snippets that you might find useful for implementing the contract and explanations of the key components.
+The \textbf{Voting} contract is designed to facilitate a decentralized voting system. Below are some Solidity code snippets that you might find useful for implementing the contract, along with explanations.
 
 \subsubsection*{State Variables}
 
@@ -207,7 +207,7 @@ Structs are custom data types that allow you to group related data together. The
 
 \subsubsection*{Constructor}
 
-The constructor is a special function that runs once during the contract's deployment and cannot be invoked later.
+The constructor is a special function that runs once during the contract's deployment and cannot be invoked afterward.
 
 \noindent
 \begin{minipage}[c]{\textwidth}
@@ -243,7 +243,7 @@ Events are used to log information on the blockchain that can be accessed by off
 
 \subsubsection*{Errors}
 
-Errors allow developers to provide more information to the caller about why a condition or operation failed. Errors are used together with the revert statement. On failure, they abort and revert \textbf{all} changes made by the transaction.
+Errors allow developers to provide more information to the caller about why a condition or operation failed. Errors are used together with the revert statement. Upon failure, they abort and revert \textbf{all} changes made by the transaction.
 
 \noindent
 \begin{minipage}[c]{\textwidth}
@@ -315,7 +315,7 @@ developing smart contracts, including more detailed function examples,
 visibility, and advanced data types. It is not needed to complete the exercise.
 
 \subsubsection*{Function Types and Visibility}
-Functions in Solidity can have different visibility modifiers that determine how and where they can be called from:
+Functions in Solidity can have different visibility modifiers that determine how and from where they can be called:
 
 \noindent
 \begin{minipage}[c]{\textwidth}
@@ -407,7 +407,7 @@ uint[] public storageArray;
 // Memory - temporary during function execution (cheaper)
 function processArray(uint[] memory memoryArray) public {
   // This array exists only during function execution
-  uint[] memory tempArray = new uint;
+  uint[] memory tempArray = new uint[](memoryArray.length);
   
   for(uint i = 0; i < memoryArray.length; i++) {
     tempArray[i] = memoryArray[i] * 2;
@@ -466,7 +466,7 @@ function withdraw(uint amount) public {
 \end{minipage}
 
 \subsubsection*{Gas Optimization Techniques}
-Gas optimization is crucial for cost-effective smart contracts:
+Gas optimization is crucial for developing cost-effective smart contracts:
 
 \noindent
 \begin{minipage}[c]{\textwidth}
@@ -496,7 +496,7 @@ function readOnlyOperation(string calldata text) external pure returns (uint) {
 \end{minipage}
 
 \subsubsection*{Events and Logging}
-Events are crucial for offchain services and DApp frontends, which can listen for events and react to changes on the blockchain.
+Events are crucial for off-chain services and DApp frontends, which can listen for events and react to changes on the blockchain.
 
 \noindent
 \begin{minipage}[c]{\textwidth}
@@ -538,7 +538,7 @@ function runProcess(uint processId) public {
 
 \medskip
 \noindent
-Offchain services or DApp frontend code:
+Off-chain services or DApp frontend code:
 
 \noindent
 \begin{minipage}[c]{\textwidth}
@@ -622,6 +622,6 @@ This example demonstrates inheritance through a base contract (Ownable) that's e
 
 \medskip
 \noindent
-To see some more advanced smart contract examples, visit the \href{https://docs.soliditylang.org/en/latest/solidity-by-example.html}{Solidity by Example} section of the Solidity documentation.
+To see more advanced smart contract examples, visit the \href{https://docs.soliditylang.org/en/latest/solidity-by-example.html}{Solidity by Example} section of the Solidity documentation.
 
 \end{document}
