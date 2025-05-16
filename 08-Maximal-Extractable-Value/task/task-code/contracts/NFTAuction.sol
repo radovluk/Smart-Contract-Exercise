@@ -257,7 +257,6 @@ contract NFTAuction is Ownable, ReentrancyGuard {
         // Transfer the funds
         (bool success, ) = payable(seller).call{value: highestBid}("");
         if (!success) {
-            fundsWithdrawn = false; // Reset if transfer fails
             revert TransferFailed();
         }
 

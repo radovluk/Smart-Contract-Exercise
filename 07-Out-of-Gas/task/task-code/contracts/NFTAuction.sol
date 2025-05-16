@@ -106,16 +106,17 @@ contract NFTAuction is Ownable {
     ) Ownable(msg.sender) {
         if (_seller == address(0)) revert ZeroAddressNotAllowed();
         if (_nftContract == address(0)) revert ZeroAddressNotAllowed();
+        
+        nftContract = IERC721(_nftContract);
+        
+        // Ensure the seller owns the token
+        if (nftContract.ownerOf(_tokenId) != _seller) revert SellerNotOwner();
 
         seller = _seller;
-        nftContract = IERC721(_nftContract);
         tokenId = _tokenId;
         initialPrice = _initialPrice;
         highestBid = _initialPrice; // Set the minimum bid to the initial price
         ended = false;
-
-        // Ensure the seller owns the token
-        if (nftContract.ownerOf(_tokenId) != _seller) revert SellerNotOwner();
     }
 
     // ------------------------------------------------------------------------
@@ -185,7 +186,8 @@ contract NFTAuction is Ownable {
         ended = true;
 
         // Process refunds for all bidders
-        for (uint i = 0; i < bidders.length; i++) {
+        uint256 biddersLength = bidders.length;
+        for (uint i = 0; i < biddersLength; i++) {
             address bidder = bidders[i];
             uint256 amount = pendingReturns[bidder];
             if (amount > 0) {

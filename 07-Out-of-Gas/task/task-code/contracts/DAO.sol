@@ -27,13 +27,13 @@ contract DAO {
     struct Proposal {
         uint256 id;
         address proposer;
+        bool executed;
         string description;
         address target;
         uint256 value;
         bytes data;
         uint256 createdAt;
         uint256 voteCount;
-        bool executed;
     }
 
     Proposal[] public proposals;
@@ -104,6 +104,9 @@ contract DAO {
 
     /// No proposals have passed and are ready to be executed
     error NoPassedProposals();
+
+    /// Proposals array is empty 
+    error EmtyProposalsArray();
 
     // ------------------------------------------------------------------------
     //                               Modifiers
@@ -231,8 +234,10 @@ contract DAO {
         uint256[] memory temp = new uint256[](proposals.length);
         uint256 count = 0;
 
+        uint256 proposalsLength = proposals.length;
+        if (proposalsLength == 0) revert EmtyProposalsArray();
         // Find all winning proposals in a single loop
-        for (uint256 i = 0; i < proposals.length; i++) {
+        for (uint256 i = 0; i < proposalsLength; i++) {
             Proposal storage proposal = proposals[i];
 
             // Check if the proposal has passed and is ready for execution
@@ -260,12 +265,11 @@ contract DAO {
      */
     function executeProposals() external onlyMember {
         uint256[] memory winningProposals = getWinningProposals();
+        uint256 winningProposalsLength = proposals.length;
 
-        if (winningProposals.length == 0) {
-            revert NoPassedProposals();
-        }
+        if (winningProposalsLength == 0) revert NoPassedProposals();
 
-        for (uint256 i = 0; i < winningProposals.length; i++) {
+        for (uint256 i = 0; i < winningProposalsLength; i++) {
             uint256 proposalId = winningProposals[i];
             Proposal storage proposal = proposals[proposalId];
 

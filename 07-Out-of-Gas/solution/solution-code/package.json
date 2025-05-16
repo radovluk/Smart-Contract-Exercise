@@ -1,7 +1,7 @@
 {
   "name": "07-out-of-gas",
   "version": "1.0.0",
-  "description": "Educational exercise for learning about Denial of Service attacks in smart contracts that render a contract temporarily or permanently unusable by manipulating execution flow or exploiting resource limitations.",
+  "description": "Educational exercise for learning about denial of service attacks in smart contracts that render a contract temporarily or permanently unusable by manipulating execution flow or exploiting resource limitations.",
   "author": "Lukas Radovansky",
   "license": "MIT",
   "directories": {
