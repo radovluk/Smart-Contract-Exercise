@@ -1,6 +1,6 @@
 # Smart Contracts Exercise 01: Hello, Blockchain World!
 
-Welcome to the first smart contracts exercise! In this first exercise, you will become familiar with the basics of smart contract development. The goal is to create a simple smart contract. You will then compile, test, and deploy this smart contract in the local network, and subsequently deploy it to the live blockchain.
+Welcome to the first smart contracts exercise! In this exercise, you will become familiar with the basics of smart contract development. The goal is to create a simple smart contract. You will compile, test, and deploy this smart contract on a local network and, subsequently, deploy it to a live blockchain.
 
 ## Task: Set Up Hardhat Environment
 
@@ -8,50 +8,47 @@ In this task, you will set up the Hardhat development environment. Hardhat is a
 development environment for Ethereum software. It provides a suite of tools for
 editing, compiling, debugging, and deploying your smart contracts. For this
 exercise, you can choose between using a Docker container or installing locally
-on your machine - select the option that best suits your development
+on your machine—select the option that best suits your development
 preferences.
 
 ### Using Docker with VS Code
 
 This option uses Docker to create a development environment with all the
-necessary tools and dependencies pre-installed.
+necessary tools and dependencies preinstalled.
 
-**Prerequisites:**
+#### Prerequisites:
+* [Docker](https://www.docker.com/products/docker-desktop) - A platform for developing, shipping, and running applications in containers.
+* [Visual Studio Code](https://code.visualstudio.com/) - A lightweight but powerful source code editor.
+* [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
 
-* **[Docker](https://www.docker.com/products/docker-desktop)** - A platform for developing, shipping, and running applications in containers.
-* **[Visual Studio Code](https://code.visualstudio.com/)** - A lightweight but powerful source code editor.
-* **[Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)** - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
+#### Setting Up the Project:
 
-**Setting Up the Project:**
-
-1. Visit the following
-   [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/01-Hello-Blockchain-World/task/task-code) and clone it to your local machine.
+1. Visit the following [GitHub repository](https://github.com/radovluk/Smart-Contract-Exercise/tree/main/01-Hello-Blockchain-World/task/task-code) and clone it to your local machine.
 2. Open the repository folder in VS Code.
-3. When prompted, click "Reopen in Container" or use the command palette (F1)
-   and run `Dev Containers: Reopen in Container`.
+3. When prompted, click "Reopen in Container" or use the command palette (F1) and run `Dev Containers: Reopen in Container`.
 
-Note: If you encounter permission issues when using Docker, you may need to adjust file permissions or run Docker with appropriate privileges. On Linux systems, you might need to add your user to the docker group: `sudo usermod -aG docker $USER` and then log out and back in.
+Note: If you encounter permission issues when using Docker, you may need to adjust file permissions or run Docker with appropriate privileges. On Linux systems, you might need to add your user to the docker group: `sudo usermod -aG docker $USER` and then log out and log back in.
 
-**Tip**: If you are using Windows, we strongly recommend using Windows Subsystem for Linux (WSL) to follow this guide. For more information, refer to the [official documentation](https://learn.microsoft.com/en-us/windows/wsl/about).
+**Tip**: If you are using Windows, we strongly recommend using the Windows Subsystem for Linux (WSL) to follow this guide. For more information, refer to the [official documentation](https://learn.microsoft.com/en-us/windows/wsl/about).
 
 ### Local Setup
 
 If you prefer working directly on your machine without Docker, you can set up
 the development environment locally. Before setting up Hardhat, ensure that you
-have the following installed on your system:
+have the following prerequisites installed on your system:
 
-**Prerequisites**
-* **Node.js**: https://nodejs.org/en/ - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
+#### Prerequisites
+* **Node.js**: https://nodejs.org/en/ - An open-source, cross-platform, backend JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
 * **NPM**: Node Package Manager, which comes with Node.js.
 
-Open your terminal and run the following commands to verify the installations:
+Open your terminal and run the following commands to verify your installations:
 
 ```bash
 $ node -v
 $ npm -v
 ```
 
-Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
+Both commands should return the installed version numbers of Node.js and NPM, respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
 
 **Tip**: If you are using Visual Studio Code, consider installing the [Visual Studio Code Solidity Extension](https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity). This extension helps your development process by providing features like syntax highlighting, code completion, etc.
 
@@ -65,14 +62,14 @@ $ npm init -y # Initialize an npm project in the directory.
 $ npm install --save-dev hardhat # Install Hardhat in the directory.
 $ npx hardhat init # Initialize a Hardhat project.
 ```
-Select `Create an empty hardhat.config.js` with your keyboard
-and hit enter.
+Select the `Create an empty hardhat.config.js` option with your keyboard
+and press Enter.
 
 ## Task: Writing Your First Smart Contract
 
 Start by creating a new directory inside your project called `contracts`
-and create a file inside the directory called `Greeter.sol`. Paste the
-code below into the file and take a minute to read the code.
+and create a file inside this directory called `Greeter.sol`. Paste the
+code below into the file and take a minute to read through it.
 
 ```solidity
 // File: contracts/Greeter.sol
@@ -115,27 +112,27 @@ $ npx hardhat compile
 Compiled 1 Solidity file successfully (evm target: paris).
 ```
 
-Hardhat compiled your Solidity smart contract and generated corresponding
+Hardhat compiles your Solidity smart contract and generates corresponding
 artifacts—including the contract's ABI (Application Binary Interface, which
 defines how to interact with the contract), bytecode (the compiled binary code
 that runs on the Ethereum Virtual Machine), and related metadata—which are
-stored in the `artifacts` folder. Take a look into
+stored in the `artifacts` folder. Take a look at the
 `artifacts/contracts/Greeter.sol/Greeter.json` file.
 
 ## Task: Test your Smart Contract with Local Hardhat Network
 
 ### Set Up Hardhat-Toolbox Plugin
 In this task, you will write and execute a simple test case for the
-`Greeter` contract using Hardhat's local network. For this task, we will
-need the `@nomicfoundation/hardhat-toolbox` plugin. It integrates
+`Greeter` contract using Hardhat's local network. For this task, you will
+need the `@nomicfoundation/hardhat-toolbox` plugin, which integrates
 testing libraries, Ethers.js, and other deployment utilities. Run the following
-command in the directory to install the plugin:
+command in the project directory to install the plugin:
 
 ```bash
 $ npm install --save-dev @nomicfoundation/hardhat-toolbox
 ```
 
-To include the plugin in your Hardhat project, add the following to your `hardhat.config.js` file in the project directory so that it will look like this:
+To include the plugin in your Hardhat project, modify your `hardhat.config.js` file in the project directory so that it looks like this:
 
 ```javascript
 // File: hardhat.config.js
@@ -147,8 +144,7 @@ module.exports = {
   solidity: "0.8.28",
 };
 ```
-For more information about plugins and how to test contracts in Hardhat, visit
-[Hardhat documentation](https://hardhat.org/tutorial/testing-contracts).
+For more information about plugins and how to test contracts in Hardhat, visit the [Hardhat documentation](https://hardhat.org/tutorial/testing-contracts).
 
 ### Writing a Simple Test
 
@@ -185,7 +181,7 @@ describe("Greeter contract says Hello, Blockchain World!", function () {
 });
 ```
 
-**Note:** For all exercises we will use [ethers.js v6](https://docs.ethers.org/v6/). If you're using an older version of ethers, the syntax may differ. For example, in ethers v5, you would use `await ethers.getContractFactory("Greeter")` and then `await greeterFactory.deploy(initialGreeting)` instead. Keep this in mind when encountering errors.
+**Note:** For all exercises, we will use [ethers.js v6](https://docs.ethers.org/v6/). If you're using an older version of ethers, the syntax may differ. For example, in ethers v5, you would use `await ethers.getContractFactory("Greeter")` and then `await greeterFactory.deploy(initialGreeting)` instead. Keep this in mind if you encounter errors.
 
 ### Running the Test
 
@@ -199,27 +195,27 @@ Congratulations! You wrote, compiled, and tested your first smart contract!
 
 ## Task: Deploying to a Live Network
 
-Once you have programmed and tested your dApp, you want to deploy it to a
-public blockchain so that others can access it. For the purposes of our
-exercise, we will not use the Ethereum mainnet because we would have to pay
-with real money, but instead use a live testnet. A testnet mimics real-world
-scenarios without risking our own money. Ethereum has several
+Once you have programmed and tested your dApp, you will want to deploy it to a
+public blockchain so others can access it. For the purposes of our
+exercise, we will not use the Ethereum mainnet because it would require paying
+with real money, but instead we will use a live testnet. A testnet mimics real-world
+scenarios without risking actual funds. Ethereum has several
 [testnets](https://ethereum.org/en/developers/docs/networks/#ethereum-testnets);
-for our purposes, we will choose the [Sepolia testnet](https://sepolia.dev/). Deploying to a testnet is the same as deploying to mainnet at the
+for our purposes, we will use the [Sepolia testnet](https://sepolia.dev/). Deploying to a testnet is the same as deploying to the mainnet at the
 software level. The only difference is the network you connect to.
 
 ### Prerequisites
 
-In order to finish this task, you will need the following tools:
+To complete this task, you will need the following tools:
 
-* **MetaMask**: A popular Ethereum wallet that allows you to interact with the Ethereum blockchain. You can download the MetaMask extension for your browser from the [official website](https://metamask.io/) and set it up. But you can also use other Ethereum wallets or simply create your own private-public key pair.
+* **MetaMask**: A popular Ethereum wallet that allows you to interact with the Ethereum blockchain. You can download the MetaMask extension for your browser from the [official website](https://metamask.io/) and set it up. Alternatively, you can use other Ethereum wallets or simply create your own private-public key pair.
 
 * **Infura API Key**: Infura provides access to Ethereum nodes without the need to run your own. Sign up at [Infura](https://infura.io/) to obtain an API key.
 
 * **Sepolia Faucet**: Acquire Sepolia test Ether from a faucet to fund your deployment. Even on testnets, you'll need testnet ETH to pay for gas fees. Make sure you have enough Sepolia ETH (0.01 Sepolia ETH should be sufficient for this exercise) in your wallet before deployment. Gas prices fluctuate based on network congestion, even on testnets. Some reliable faucets include:
-    * [**Google Cloud Web3**](https://cloud.google.com/application/web3/faucet/ethereum/sepolia) (needs only Google account)
-    * [Metamask Sepolia Faucet](https://docs.metamask.io/developer-tools/faucet/) (needs some ETH on mainnet)
-    * [Alchemy Sepolia Faucet](https://www.alchemy.com/faucets/ethereum-sepolia) (nedds some ETH on mainnet)
+  * [Google Cloud Web3](https://cloud.google.com/application/web3/faucet/ethereum/sepolia) (needs only Google account)
+  * [Metamask Sepolia Faucet](https://docs.metamask.io/developer-tools/faucet/) (needs some ETH on mainnet)
+  * [Alchemy Sepolia Faucet](https://www.alchemy.com/faucets/ethereum-sepolia) (needs some ETH on mainnet)
 
 ### Configuring Hardhat for Sepolia Deployment
 
@@ -230,26 +226,26 @@ Hardhat with the network details and your wallet credentials.
 
 It's crucial to keep sensitive information like your private key and Infura API
 key secure. We recommend using configuration variables to manage these
-credentials only for the purpose of this exercise. A Hardhat project can use
+credentials, but only for the purpose of this exercise. A Hardhat project can use
 configuration variables for user-specific values or for data that shouldn't be
 included in the code repository. These variables are set via tasks in the vars
 scope and can be retrieved in the config using the vars object.
 
 * Set the INFURA_API_KEY
 
-    ```bash
-    $ npx hardhat vars set INFURA_API_KEY
-    Enter value: ********************************
-    ```
+  ```bash
+  $ npx hardhat vars set INFURA_API_KEY
+  Enter value: ********************************
+  ```
 
 * Set the SEPOLIA_PRIVATE_KEY
 
-    ```bash
-    $ npx hardhat vars set SEPOLIA_PRIVATE_KEY
-    Enter value: ********************************
-    ```
+  ```bash
+  $ npx hardhat vars set SEPOLIA_PRIVATE_KEY
+  Enter value: ********************************
+  ```
 
-* **Warning**: Configuration variables are stored in plain text on your disk. Avoid using this feature for data you wouldn't normally save in an unencrypted file. Run `npx hardhat vars path` to find the storage's file location. Never use your private key associated with real money in plain text!
+**Warning**: Configuration variables are stored in plain text on your disk. Avoid using this feature for data you wouldn't normally save in an unencrypted file. Run `npx hardhat vars path` to find the storage file location. Never use your private key associated with real money in plain text!
 
 #### Updating `hardhat.config.js`
 
@@ -276,7 +272,7 @@ module.exports = {
 };
 ```
 
-This configuration tells Hardhat how to connect to the Sepolia testnet using your Infura API key and deploy contracts using your wallet's private key.
+This configuration tells Hardhat how to connect to the Sepolia testnet using your Infura API key and how to deploy contracts using your wallet's private key.
 
 ### Deploying the Smart Contract to Sepolia
 
@@ -332,10 +328,10 @@ Contract greeting: Hello, Blockchain World!
 ```
 You can verify the deployment by visiting the Sepolia Etherscan explorer and
 searching for your contract address:
-https://sepolia.etherscan.io/address/<ContractAddress>. Search also for
-your account address and see your interactions with the deployed contract.
+https://sepolia.etherscan.io/address/<ContractAddress>. Also, search for
+your account address to see your interactions with the deployed contract.
 
-Hardhat also includes Hardhat network, a local Ethereum network node for development. It enables you to deploy contracts, run tests, and debug code, all within your local environment. We already used it during running our test. To use it, open a separate terminal and run `npx hardhat node` in the terminal. To deploy the contract, run `npx hardhat run scripts/deploy.js --network hardhat` in another terminal. See [Hardhat network](https://hardhat.org/hardhat-network/docs/overview#hardhat-network) for more information.
+Hardhat also includes Hardhat Network, a local Ethereum network node for development. It enables you to deploy contracts, run tests, and debug code, all within your local environment. We already used it when running our test. To use it explicitly, open a separate terminal and run `npx hardhat node`. To deploy the contract, run `npx hardhat run scripts/deploy.js --network hardhat` in another terminal. See the [Hardhat Network](https://hardhat.org/hardhat-network/docs/overview#hardhat-network) for more information.
 
 ### Interacting with Your Deployed Contract
 
@@ -363,4 +359,4 @@ For more detailed information, refer to the following resources:
 * [Ethers.js Documentation](https://docs.ethers.org/v6/) (for scripting)
 * [Chai Assertion Library](https://www.chaijs.com/)
 
-Congratulations! You have successfully deployed your first smart contract to the live blockchain network! Stay tuned for the upcoming exercises!
+Congratulations! You have successfully deployed your first smart contract to a live blockchain network! Stay tuned for the upcoming exercises!

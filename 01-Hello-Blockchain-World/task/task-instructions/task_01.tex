@@ -80,7 +80,7 @@
 
 \maketitle
 \noindent
-Welcome to the first smart contracts exercise! In this first exercise, you will become familiar with the basics of smart contract development. The goal is to create a simple smart contract. You will then compile, test, and deploy this smart contract in the local network, and subsequently deploy it to the live blockchain.
+Welcome to the first smart contracts exercise! In this exercise, you will become familiar with the basics of smart contract development. The goal is to create a simple smart contract. You will compile, test, and deploy this smart contract on a local network and, subsequently, deploy it to a live blockchain.
 
 \section{Task: Set Up Hardhat Environment}
 
@@ -88,16 +88,15 @@ In this task, you will set up the Hardhat development environment. Hardhat is a
 development environment for Ethereum software. It provides a suite of tools for
 editing, compiling, debugging, and deploying your smart contracts. For this
 exercise, you can choose between using a Docker container or installing locally
-on your machine - select the option that best suits your development
+on your machine—select the option that best suits your development
 preferences.
 
 \subsection{Using Docker with VS Code}
 
 This option uses Docker to create a development environment with all the
-necessary tools and dependencies pre-installed.
+necessary tools and dependencies preinstalled.
 
 \subsubsection*{Prerequisites:}
-
 \begin{itemize}
     \item \textbf{\href{https://www.docker.com/products/docker-desktop}{Docker}} - A platform for developing, shipping, and running applications in containers.
     \item \textbf{\href{https://code.visualstudio.com/}{Visual Studio Code}} - A lightweight but powerful source code editor.
@@ -108,34 +107,33 @@ necessary tools and dependencies pre-installed.
 
 \begin{enumerate}
     \item Visit the following
-          \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/01-Hello-Blockchain-World/task/task-code}{GitLab
-              repository} and clone it to your local machine.
+          \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/01-Hello-Blockchain-World/task/task-code}{GitHub repository} and clone it to your local machine.
     \item Open the repository folder in VS Code.
     \item When prompted, click ``Reopen in Container'' or use the command palette (F1)
           and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
 
 \noindent
-Note: If you encounter permission issues when using Docker, you may need to adjust file permissions or run Docker with appropriate privileges. On Linux systems, you might need to add your user to the docker group: \codegrey{sudo usermod -aG docker \$USER} and then log out and back in.
+Note: If you encounter permission issues when using Docker, you may need to adjust file permissions or run Docker with appropriate privileges. On Linux systems, you might need to add your user to the docker group: \codegrey{sudo usermod -aG docker \$USER} and then log out and log back in.
 
 \medskip
 \noindent
-\textbf{Tip}: If you are using Windows, we strongly recommend using Windows Subsystem for Linux (WSL) to follow this guide. For more information, refer to the \href{https://learn.microsoft.com/en-us/windows/wsl/about}{official documentation}.
+\textbf{Tip}: If you are using Windows, we strongly recommend using the Windows Subsystem for Linux (WSL) to follow this guide. For more information, refer to the \href{https://learn.microsoft.com/en-us/windows/wsl/about}{official documentation}.
 
 \subsection{Local Setup}
 
 If you prefer working directly on your machine without Docker, you can set up
 the development environment locally. Before setting up Hardhat, ensure that you
-have the following installed on your system:
+have the following prerequisites installed on your system:
 
 \subsubsection*{Prerequisites}
 \begin{itemize}
-    \item \textbf{Node.js}: \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
+    \item \textbf{Node.js}: \url{https://nodejs.org/en/} - An open-source, cross-platform, backend JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
     \item \textbf{NPM}: Node Package Manager, which comes with Node.js.
 \end{itemize}
 
 \noindent
-Open your terminal and run the following commands to verify the installations:
+Open your terminal and run the following commands to verify your installations:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ node -v
@@ -143,7 +141,7 @@ $ npm -v
 \end{minted}
 
 \noindent
-Both commands should return the installed version numbers of Node.js and NPM respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
+Both commands should return the installed version numbers of Node.js and NPM, respectively. Node.js provides the runtime environment required to execute JavaScript-based tools like Hardhat, while NPM is used to manage the packages and dependencies needed for development.
 
 \medskip
 \noindent
@@ -159,14 +157,14 @@ $ npm init -y # Initialize an npm project in the directory.
 $ npm install --save-dev hardhat # Install Hardhat in the directory.
 $ npx hardhat init # Initialize a Hardhat project.
 \end{minted}
-Select \codegrey{Create an empty \texttt{hardhat.config.js}} with your keyboard
-and hit enter.
+Select the \codegrey{Create an empty hardhat.config.js} option with your keyboard
+and press Enter.
 
 \section{Task: Writing Your First Smart Contract}
 
 Start by creating a new directory inside your project called \texttt{contracts}
-and create a file inside the directory called \texttt{Greeter.sol}. Paste the
-code below into the file and take a minute to read the code.
+and create a file inside this directory called \texttt{Greeter.sol}. Paste the
+code below into the file and take a minute to read through it.
 
 \noindent
 \begin{minipage}[c]{\textwidth}
@@ -212,28 +210,28 @@ $ npx hardhat compile
 Compiled 1 Solidity file successfully (evm target: paris).
 \end{minted}
 
-Hardhat compiled your Solidity smart contract and generated corresponding
+Hardhat compiles your Solidity smart contract and generates corresponding
 artifacts—including the contract's ABI (Application Binary Interface, which
 defines how to interact with the contract), bytecode (the compiled binary code
 that runs on the Ethereum Virtual Machine), and related metadata—which are
-stored in the \texttt{artifacts} folder. Take a look into
+stored in the \texttt{artifacts} folder. Take a look at the
 \texttt{artifacts/contracts/Greeter.sol/Greeter.json} file.
 
 \section{Task: Test your Smart Contract with Local \\ Hardhat Network}
 
 \subsection{Set Up Hardhat-Toolbox Plugin}
 In this task, you will write and execute a simple test case for the
-\texttt{Greeter} contract using Hardhat's local network. For this task, we will
-need the \texttt{@nomicfoundation/hardhat-toolbox} plugin. It integrates
+\texttt{Greeter} contract using Hardhat's local network. For this task, you will
+need the \texttt{@nomicfoundation/hardhat-toolbox} plugin, which integrates
 testing libraries, Ethers.js, and other deployment utilities. Run the following
-command in the directory to install the plugin:
+command in the project directory to install the plugin:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ npm install --save-dev @nomicfoundation/hardhat-toolbox
 \end{minted}
 
 \noindent
-To include the plugin in your Hardhat project, add the following to your \texttt{hardhat.config.js} file in the project directory so that it will look like this:
+To include the plugin in your Hardhat project, modify your \texttt{hardhat.config.js} file in the project directory so that it looks like this:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{javascript}
 // File: hardhat.config.js
@@ -245,7 +243,7 @@ module.exports = {
   solidity: "0.8.28",
 };
 \end{minted}
-For more information about plugins and how to test contracts in Hardhat, visit
+For more information about plugins and how to test contracts in Hardhat, visit the
 \\ \href{https://hardhat.org/tutorial/testing-contracts}{Hardhat
     documentation}.
 
@@ -288,7 +286,7 @@ describe("Greeter contract says Hello, Blockchain World!", function () {
 \end{minipage}
 
 \noindent
-\textbf{Note:} For all exercises we will use \href{https://docs.ethers.org/v6/}{ethers.js v6}. If you're using an older version of ethers, the syntax may differ. For example, in ethers v5, you would use \\ \codegrey{await ethers.getContractFactory("Greeter")} and then \\ \codegrey{await greeterFactory.deploy(initialGreeting)} instead. Keep this in mind when encountering errors.
+\textbf{Note:} For all exercises, we will use \href{https://docs.ethers.org/v6/}{ethers.js v6}. If you're using an older version of ethers, the syntax may differ. For example, in ethers v5, you would use \\ \codegrey{await ethers.getContractFactory("Greeter")} and then \\ \codegrey{await greeterFactory.deploy(initialGreeting)} instead. Keep this in mind if you encounter errors.
 
 \subsection{Running the Test}
 
@@ -302,22 +300,21 @@ Congratulations! You wrote, compiled, and tested your first smart contract!
 
 \section{Task: Deploying to a Live Network}
 
-Once you have programmed and tested your dApp, you want to deploy it to a
-public blockchain so that others can access it. For the purposes of our
-exercise, we will not use the Ethereum mainnet because we would have to pay
-with real money, but instead use a live testnet. A testnet mimics real-world
-scenarios without risking our own money. Ethereum has several
+Once you have programmed and tested your dApp, you will want to deploy it to a
+public blockchain so others can access it. For the purposes of our
+exercise, we will not use the Ethereum mainnet because it would require paying
+with real money, but instead we will use a live testnet. A testnet mimics real-world
+scenarios without risking actual funds. Ethereum has several
 \href{https://ethereum.org/en/developers/docs/networks/#ethereum-testnets}{testnets};
-for our purposes, we will choose the \href{https://sepolia.dev/}{Sepolia
-    testnet}. Deploying to a testnet is the same as deploying to mainnet at the
+for our purposes, we will use the \href{https://sepolia.dev/}{Sepolia testnet}. Deploying to a testnet is the same as deploying to the mainnet at the
 software level. The only difference is the network you connect to.
 
 \subsection{Prerequisites}
 
-In order to finish this task, you will need the following tools:
+To complete this task, you will need the following tools:
 
 \begin{itemize}
-    \item \textbf{MetaMask}: A popular Ethereum wallet that allows you to interact with the Ethereum blockchain. You can download the MetaMask extension for your browser from the \href{https://metamask.io/}{official website} and set it up. But you can also use other Ethereum wallets or simply create your own private-public key pair.
+    \item \textbf{MetaMask}: A popular Ethereum wallet that allows you to interact with the Ethereum blockchain. You can download the MetaMask extension for your browser from the \href{https://metamask.io/}{official website} and set it up. Alternatively, you can use other Ethereum wallets or simply create your own private-public key pair.
 
     \item \textbf{Infura API Key}: Infura provides access to Ethereum nodes without the need to run your own. Sign up at \href{https://infura.io/}{Infura} to obtain an API key.
 
@@ -325,7 +322,7 @@ In order to finish this task, you will need the following tools:
           \begin{itemize}
               \item \href{https://cloud.google.com/application/web3/faucet/ethereum/sepolia}{\textbf{Google Cloud Web3}} (needs only Google account)
               \item \href{https://docs.metamask.io/developer-tools/faucet/}{Metamask Sepolia Faucet} (needs some ETH on mainnet)
-              \item \href{https://www.alchemy.com/faucets/ethereum-sepolia}{Alchemy Sepolia Faucet}  (nedds some ETH on mainnet)
+              \item \href{https://www.alchemy.com/faucets/ethereum-sepolia}{Alchemy Sepolia Faucet}  (needs some ETH on mainnet)
           \end{itemize}
 \end{itemize}
 
@@ -338,7 +335,7 @@ Hardhat with the network details and your wallet credentials.
 
 It's crucial to keep sensitive information like your private key and Infura API
 key secure. We recommend using configuration variables to manage these
-credentials only for the purpose of this exercise. A Hardhat project can use
+credentials, but only for the purpose of this exercise. A Hardhat project can use
 configuration variables for user-specific values or for data that shouldn't be
 included in the code repository. These variables are set via tasks in the vars
 scope and can be retrieved in the config using the vars object.
@@ -361,7 +358,7 @@ scope and can be retrieved in the config using the vars object.
 \end{itemize}
 
 \begin{itemize}
-    \item \textbf{Warning}: Configuration variables are stored in plain text on your disk. Avoid using this feature for data you wouldn’t normally save in an unencrypted file. Run \texttt{npx hardhat vars path} to find the storage's file location. Never use your private key associated with real money in plain text!
+    \item \textbf{Warning}: Configuration variables are stored in plain text on your disk. Avoid using this feature for data you wouldn't normally save in an unencrypted file. Run \texttt{npx hardhat vars path} to find the storage file location. Never use your private key associated with real money in plain text!
 \end{itemize}
 
 \subsubsection*{Updating \texttt{hardhat.config.js}}
@@ -393,7 +390,7 @@ module.exports = {
 \end{minipage}
 
 \noindent
-This configuration tells Hardhat how to connect to the Sepolia testnet using your Infura API key and deploy contracts using your wallet's private key.
+This configuration tells Hardhat how to connect to the Sepolia testnet using your Infura API key and how to deploy contracts using your wallet's private key.
 
 \subsection{Deploying the Smart Contract to Sepolia}
 
@@ -454,11 +451,11 @@ Contract greeting: Hello, Blockchain World!
 \end{minted}
 You can verify the deployment by visiting the Sepolia Etherscan explorer and
 searching for your contract address:
-\url{https://sepolia.etherscan.io/address/<ContractAddress>}. Search also for
-your account address and see your interactions with the deployed contract.
+\url{https://sepolia.etherscan.io/address/<ContractAddress>}. Also, search for
+your account address to see your interactions with the deployed contract.
 
 \noindent
-Hardhat also includes Hardhat network, a local Ethereum network node for development. It enables you to deploy contracts, run tests, and debug code, all within your local environment. We already used it during running our test. To use it, open a separate terminal and run \codegrey{npx hardhat node} in the terminal. To deploy the contract, run \codegrey{npx hardhat run scripts/deploy.js --network hardhat} in another terminal. See \href{https://hardhat.org/hardhat-network/docs/overview\#hardhat-network}{Hardhat network} for more information.
+Hardhat also includes Hardhat Network, a local Ethereum network node for development. It enables you to deploy contracts, run tests, and debug code, all within your local environment. We already used it when running our test. To use it explicitly, open a separate terminal and run \codegrey{npx hardhat node}. To deploy the contract, run \codegrey{npx hardhat run scripts/deploy.js --network hardhat} in another terminal. See the \href{https://hardhat.org/hardhat-network/docs/overview\#hardhat-network}{Hardhat Network} for more information.
 
 \subsection{Interacting with Your Deployed Contract}
 
@@ -489,6 +486,6 @@ For more detailed information, refer to the following resources:
     \item \href{https://www.chaijs.com/}{Chai Assertion Library}
 
 \end{itemize}
-Congratulations! You have successfully deployed your first smart contract to the live blockchain network! Stay tuned for the upcoming exercises!
+Congratulations! You have successfully deployed your first smart contract to a live blockchain network! Stay tuned for the upcoming exercises!
 
 \end{document}
