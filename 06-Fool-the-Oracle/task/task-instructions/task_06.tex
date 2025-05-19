@@ -88,7 +88,7 @@ Oracles are essential components in decentralized applications that require exte
 
 \subsection*{Project Setup}
 
-You have two options for working with this exercise: using Docker container or local installation. Choose the one that best fits your preferences.
+You have two options for working with this exercise: using a Docker container or local installation. Choose the option that best fits your preferences.
 
 \subsection{Using Docker with VS Code}
 
@@ -99,13 +99,13 @@ This option uses Docker to create a development environment with all the necessa
 \begin{itemize}
     \item \textbf{\href{https://www.docker.com/products/docker-desktop}{Docker}} - A platform for developing, shipping, and running applications in containers.
     \item \textbf{\href{https://code.visualstudio.com/}{Visual Studio Code}} - A lightweight but powerful source code editor.
-    \item \textbf{\href{https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers}{Dev Containers}} - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
+    \item \textbf{\href{https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers}{Dev Containers}} - An extension for VS Code that lets you use a Docker container as a full-featured development environment.
 \end{itemize}
 
 \subsubsection*{Setting Up the Project:}
 
 \begin{enumerate}
-  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/06-Fool-the-Oracle/task/task-code}{GitLab repository} and clone it to your local machine.
+  \item Visit the following \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/06-Fool-the-Oracle/task/task-code}{GitHub repository} and clone it to your local machine.
   \item Open the repository folder in VS Code.
   \item When prompted, click ``Reopen in Container'' or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
@@ -133,13 +133,13 @@ Both commands should return the installed version numbers of Node.js and NPM res
 \subsubsection*{Setting Up the Project}
 
 \begin{enumerate}
-    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/06-Fool-the-Oracle/task/task-code}{GitLab repository} and clone it to your local machine.
+    \item Visit the following \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/06-Fool-the-Oracle/task/task-code}{GitHub repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
     \item Install the project dependencies by running \codegrey{npm install}.
 \end{enumerate}
 
 \section{Oracles}
-Smart contracts cannot access data outside the blockchain on their own. They lack HTTP or similar network methods to access external sources. This is intentional to prevent non-deterministic behavior once a function is called. However, various DApp applications often need external information, such as lending platforms, insurance contracts, betting contracts, wrapped cryptocurrencies, synthetics, and others. Whenever a smart contract relies on external data to compute future states, an oracle pattern is required. The disadvantages of oracles include the cost in terms of gas consumption and the risk of dependence on third parties in terms of data manipulation and data availability.
+Smart contracts cannot access data outside the blockchain on their own. They lack HTTP or similar network methods to access external sources. This limitation is intentional to prevent non-deterministic behavior once a function is called. However, various DApp applications often need external information, such as lending platforms, insurance contracts, betting contracts, wrapped cryptocurrencies, synthetics, and others. Whenever a smart contract relies on external data to compute future states, an oracle pattern is required. The disadvantages of oracles include the cost in terms of gas consumption and the risk of dependence on third parties with respect to data manipulation and data availability.
 
 \subsection*{Synchronous Oracles}
 
@@ -194,7 +194,7 @@ DEXes like \href{https://app.uniswap.org/}{Uniswap} or \href{https://www.sushi.c
 \newpage
 \section{Automated Market Makers}
 
-Imagine you want to exchange your valuable token for another token or buy or sell some token with ETH. The service you are looking for is an exchange. Traditional centralized exchanges use order books where buyers and sellers are matched. Examples of such centralized services include Binance, Coinbase, Kraken, etc. However, the web3 world is about decentralization, right? What if we told you that you could exchange your assets simply with a smart contract? Decentralized Exchanges (DEXes) often use Automated Market Makers (AMMs), which are smart contracts that create markets for any pair of tokens by using liquidity pools. They rely on a mathematical formula to price assets instead of using an order book. The most commonly used formula is the \textbf{Constant Product}, which follows the equation:
+Imagine you want to exchange your valuable token for another token, or buy or sell some tokens with ETH. The service you are looking for is an exchange. Traditional centralized exchanges use order books where buyers and sellers are matched. Examples of such centralized services include Binance, Coinbase, and Kraken, among others. However, the web3 world is about decentralization, right? What if we told you that you could exchange your assets simply through a smart contract? Decentralized Exchanges (DEXes) often use Automated Market Makers (AMMs), which are smart contracts that create markets for any pair of tokens by using liquidity pools. They rely on a mathematical formula to price assets instead of using an order book. The most commonly used formula is the \textbf{Constant Product}, which follows the equation:
 
 % \begin{figure}[H]
 % \centering
@@ -253,7 +253,7 @@ Solving for \( \Delta y \), the amount of Token B the trader receives:
 
 
 \subsubsection*{Slippage}
-A key characteristic of AMMs is that the larger the trade relative to the pool size, the more significant the price impact or ``Slippage''. This is because removing a larger percentage of one token from the pool causes the price to move more dramatically according to the constant product formula.
+A key characteristic of AMMs is that the larger the trade relative to the pool size, the more significant the price impact or ``slippage''. This is because removing a larger percentage of one token from the pool causes the price to move more dramatically according to the constant product formula.
 
 \medskip
 \noindent
@@ -271,7 +271,7 @@ A key characteristic of AMMs is that the larger the trade relative to the pool s
 
 Stablecoins are cryptocurrencies designed to maintain a stable value relative to a specific asset, typically a fiat currency like the US dollar. They aim to combine the benefits of cryptocurrencies (fast transfers, programmability, global accessibility) with the stability of traditional currencies.
 
-USDC is one of the most widely-used stablecoins in the crypto ecosystem. It is simply an ERC20 token. Each USDC token should be backed by \$1 held in reserve. Circle, the company behind USDC, is regulated and publishes monthly attestations verifying these reserves. See \href{https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48}{USDC token contract on Etherscan}.
+USDC is one of the most widely used stablecoins in the crypto ecosystem. It is simply an ERC-20 token. Each USDC token should be backed by \$1 held in reserve. Circle, the company behind USDC, is regulated and publishes monthly attestations verifying these reserves. See \href{https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48}{USDC token contract on Etherscan}.
 
 \medskip
 \noindent
@@ -316,7 +316,7 @@ Files that are relevant for this challenge:
 \item contracts/\textbf{SimpleDEX.sol}: A decentralized exchange with a one liquidity pool containing 1 ETH and 2,000 USDC.
 \item contracts/\textbf{FELStudentNFT.sol}: A collection of unique CTU FEL Student NFTs with different traits.
 \item contracts/\textbf{NFTMarketplace.sol}: A marketplace for trading these NFTs. It uses SimpleDEX as its price oracle to convert USD (USDC) prices to ETH.
-\item contracts/\textbf{USDCToken.sol}: An ERC20 token representing simplified version of USDC.
+\item contracts/\textbf{USDCToken.sol}: An ERC-20 token representing simplified version of USDC.
 \end{itemize}
 
 \noindent
@@ -346,7 +346,7 @@ This pattern is implemented in our \texttt{FlashLoanProvider.sol} and \texttt{Fl
 
 \subsection*{Task 2: Fool the Oracle 02}
 
-The success of the first FEL Student NFT collection was tremendous! The same marketplace now lists three new, even more valuable NFTs: EEM student pulling an all-nighter on Stackoverflow - 3,500 USD, SIT student dreaming of Statnice while listening to headphones - 7,500 USD and UEK power napper with a Tahak - 5,000 USD.
+The success of the first FEL Student NFT collection was tremendous! The same marketplace now lists three new, even more valuable NFTs: EEM student pulling an all-nighter on Stackoverflow - 3,500 USD, SIT student dreaming of Statnice while listening to headphones - 7,500 USD, and UEK power napper with a Tahak - 5,000 USD.
 
 \begin{figure}[h!]
   \centering
@@ -363,7 +363,7 @@ The success of the first FEL Student NFT collection was tremendous! The same mar
   \end{minipage}
 \end{figure}
 
-This time, the marketplace has become more resilient. The SimpleDEX now has a much larger liquidity pool containing 100 ETH and 200,000 USDC, making direct price manipulation much more difficult. At the current exchange rate of 1 ETH = 2,000 USDC, the total value of all NFTs is approximately 8 ETH. As a poor student, you only have 3 ETH on your wallet (and no USDC). Buying all three NFTs legitimately is impossible with your current funds. However, you have a secret weapon: Flash Loans! For this challenge, you can use the Flash Loan Provider, which has a pool of 200,000 USDC available for flash loans. The provider charges a minimal fee of just 0.01\% (1 basis point) on all loans.
+This time, the marketplace has become more resilient. The SimpleDEX now has a much larger liquidity pool containing 100 ETH and 200,000 USDC, making direct price manipulation much more difficult. At the current exchange rate of 1 ETH = 2,000 USDC, the total value of all NFTs is approximately 8 ETH. As a poor student, you only have 3 ETH in your wallet (and no USDC). Buying all three NFTs legitimately is impossible with your current funds. However, you have a secret weapon: Flash Loans! For this challenge, you can use the Flash Loan Provider, which has a pool of 200,000 USDC available for flash loans. The provider charges a minimal fee of just 0.01\% (1 basis point) on all loans.
 
 \medskip
 \noindent
@@ -378,7 +378,7 @@ Files that are relevant for this challenge:
 \item contracts/\textbf{SimpleDEX.sol}: The DEX with increased liquidity (100 ETH, 200,000 USDC).
 \item contracts/\textbf{FELStudentNFT.sol}: The NFT collection.
 \item contracts/\textbf{NFTMarketplace.sol}: The marketplace using SimpleDEX as price oracle.
-\item contracts/\textbf{USDCToken.sol}: An ERC20 token representing simplified version of USDC.
+\item contracts/\textbf{USDCToken.sol}: An ERC-20 token representing simplified version of USDC.
 \end{itemize}
 
 \noindent
