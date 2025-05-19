@@ -93,26 +93,26 @@ function transferFrom(address _from, address _to, uint256 _value)
   public returns (bool success)
 function approve(address _spender, uint256 _value) public returns (bool success)
 function allowance(address _owner, address _spender) 
-  public view returns (uint256 remaining)
+  public view returns (uint256 remaining)  
 ```
 
 ### Events
 
 ```solidity
 event Transfer(address indexed _from, address indexed _to, uint256 _value)
-event Approval(address indexed _owner, address indexed _spender, uint256 _value)
+event Approval(address indexed _owner, address indexed _spender, uint256 _value)  
 ```
 
 ### OpenZeppelin
 
 [OpenZeppelin](https://www.openzeppelin.com/) provides an open-source library for secure smart contract development. It is built on a solid
-foundation of community-vetted code. Using standardized implementations like those from OpenZeppelin is considered good practice. Documentation for available contracts created by OpenZeppelin can be found [here](https://docs.openzeppelin.com/contracts/4.x/). The actual implementations of the contracts are available on [GitHub](https://github.com/OpenZeppelin/openzeppelin-contracts). OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC-20 implementation by OpenZeppelin is a standard recognized by the official EIP-20 documentation. You can find the implementation [here](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol). It is common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purposes of this exercise, you will implement the ERC20 contract yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
+foundation of community-vetted code. Using standardized implementations like those from OpenZeppelin is considered good practice. Documentation for available contracts created by OpenZeppelin can be found [here](https://docs.openzeppelin.com/contracts/4.x/). The actual implementations of the contracts are available on [GitHub](https://github.com/OpenZeppelin/openzeppelin-contracts). OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC-20 implementation by OpenZeppelin is a standard recognized by the official EIP-20 documentation. You can find the implementation [here](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol). It is common practice to use the ERC-20 implementation by OpenZeppelin when creating ERC-20 token contracts, instead of explicitly implementing the ERC-20 interface inside the contract. However, for the educational purposes of this exercise, you will implement the ERC-20 contract yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
 
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.0;
 
-// Import OpenZeppelin's ERC20 implementation
+// Import OpenZeppelin's ERC-20 implementation
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /**

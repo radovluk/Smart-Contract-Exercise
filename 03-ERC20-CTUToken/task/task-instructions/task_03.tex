@@ -222,7 +222,7 @@ If a Smart Contract implements the following methods and events, it can be calle
 \subsection*{OpenZeppelin}
 
 \href{https://www.openzeppelin.com/}{OpenZeppelin} provides an open-source library for secure smart contract development. It is built on a solid
-foundation of community-vetted code. Using standardized implementations like those from OpenZeppelin is considered good practice. Documentation for available contracts created by OpenZeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC-20 implementation by OpenZeppelin is a standard recognized by the official EIP-20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purposes of this exercise, you will implement the ERC20 contract yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
+foundation of community-vetted code. Using standardized implementations like those from OpenZeppelin is considered good practice. Documentation for available contracts created by OpenZeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC-20 implementation by OpenZeppelin is a standard recognized by the official EIP-20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is common practice to use the ERC-20 implementation by OpenZeppelin when creating ERC-20 token contracts, instead of explicitly implementing the ERC-20 interface inside the contract. However, for the educational purposes of this exercise, you will implement the ERC-20 contract yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -230,7 +230,7 @@ foundation of community-vetted code. Using standardized implementations like tho
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.0;
 
-// Import OpenZeppelin's ERC20 implementation
+// Import OpenZeppelin's ERC-20 implementation
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /**

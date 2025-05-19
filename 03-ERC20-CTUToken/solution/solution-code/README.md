@@ -39,14 +39,14 @@ function decreaseAllowance(
 }
 ```
 
-We recommend using the OpenZeppelin ERC20 token implementation, which you can find in the file `contracts/CTUTokenOpenZeppelin.sol`.
+We recommend using the OpenZeppelin ERC-20 token implementation, which you can find in the file `contracts/CTUTokenOpenZeppelin.sol`.
 Take time to explore and understand the implementation in the [OpenZeppelin GitHub repository](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol). Note: OpenZeppelin has removed the `increaseAllowance` and `decreaseAllowance` functions from their implementation. You can find their explanation for this decision [here](https://github.com/OpenZeppelin/openzeppelin-contracts/issues/4583).
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.0;
 
-// Import OpenZeppelin's ERC20 implementation
+// Import OpenZeppelin's ERC-20 implementation
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /**
