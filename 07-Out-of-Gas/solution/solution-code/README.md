@@ -1,6 +1,6 @@
-# Smart Contracts Exercise 07: Out of Gas -- Solution
+# Smart Contracts Exercise 07: Out of Gas --- Solution
 
-The solved Exercise 07 - Out of Gas can be found in this [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/07-Out-of-Gas/solution/solution-code?ref_type=heads).
+The solution for Exercise 07: Out of Gas can be found in this [GitHub repository](https://github.com/radovluk/Smart-Contract-Exercise/tree/main/07-Out-of-Gas/solution/solution-code).
 
 ## Solution to Task 1: NFT Auction Sabotage
 
@@ -11,12 +11,13 @@ This task demonstrates a "DoS with Unexpected Revert" vulnerability in smart con
 The vulnerability stems from the following code in the `endAuction` function:
 
 ```solidity
-// Process refunds for all bidders
-for (uint i = 0; i < bidders.length; i++) {
+    // Process refunds for all bidders
+    uint256 biddersLength = bidders.length;
+    for (uint i = 0; i < biddersLength; i++) {
     address bidder = bidders[i];
     uint256 amount = pendingReturns[bidder];
     if (amount > 0) {
-        // Setting the pending amount to 0 before sending to prevent re-entrancy
+        // Setting the pending amount to 0 before sending to prevent reentrancy
         pendingReturns[bidder] = 0;
 
         // Send the refund
@@ -62,7 +63,7 @@ contract NFTAuctionAttacker {
 }
 ```
 
-To execute the attack, we deploy the attacker contract and bid through it:
+To execute the attack, we deploy the attacker contract and place a bid through it:
 
 ```javascript
 // Deploy our attacker contract
@@ -123,11 +124,12 @@ function getWinningProposals() public view returns (uint256[] memory) {
     // Create a temporary array to store winning proposal IDs (max size is all proposals)
     uint256[] memory temp = new uint256[](proposals.length);
     uint256 count = 0;
+    uint256 proposalsLength = proposals.length;
+    if (proposalsLength == 0) revert EmptyProposalsArray();
 
     // Find all winning proposals in a single loop
-    for (uint256 i = 0; i < proposals.length; i++) {
+    for (uint256 i = 0; i < proposalsLength; i++) {
         Proposal storage proposal = proposals[i];
-
         // Check if the proposal has passed and is ready for execution
         if (
             !proposal.executed &&
@@ -138,18 +140,10 @@ function getWinningProposals() public view returns (uint256[] memory) {
             count++;
         }
     }
-
-    // Create the final array of exactly the right size
-    uint256[] memory winningProposals = new uint256[](count);
-    for (uint256 i = 0; i < count; i++) {
-        winningProposals[i] = temp[i];
-    }
-
-    return winningProposals;
 }
 ```
 
-The issue is that this function iterates through *all* proposals. If there are too many proposals, this function will consume too much gas and eventually exceed the block gas limit, preventing the execution of any proposal.
+The issue is that this function iterates through **all** proposals. If there are too many proposals, this function will consume too much gas and eventually exceed the block gas limit, preventing the execution of any proposal.
 
 ### The Attack Strategy
 

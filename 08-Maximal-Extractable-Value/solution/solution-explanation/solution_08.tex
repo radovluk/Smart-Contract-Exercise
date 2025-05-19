@@ -20,7 +20,7 @@
 
 \geometry{a4paper, margin=1in}
 
-\title{Smart Contracts Exercise 08: \\ Maximal Extractable Value -- Solution}
+\title{Smart Contracts Exercise 08: \\ Maximal Extractable Value --- Solution}
 \author{}
 \date{}
 
@@ -81,7 +81,7 @@
 \maketitle
 
 \noindent
-The solved Exercise 08 - Maximal Extractable Value can be found in this \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/08-Maximal-Extractable-Value/solution/solution-code}{GitLab repository}.
+The solution for Exercise 08: Maximal Extractable Value can be found in this \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/08-Maximal-Extractable-Value/solution/solution-code}{GitHub repository}.
 
 \section*{Solution to Task 1: NFT Auction Frontrunning}
 
@@ -128,7 +128,7 @@ console.log("Player sent frontrunning transaction");
 
 \subsubsection*{Possible Mitigation}
 
-\textbf{Commit-Reveal Schemes}: Users first submit a hash of their bid (commit), and later reveal the actual bid value. This prevents frontrunning since the actual bid values aren't visible in the mempool.
+\textbf{Commit-Reveal Schemes}: Users first submit a hash of their bid (commit) and later reveal the actual bid value. This prevents frontrunning since the actual bid values aren't visible in the mempool.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -223,7 +223,7 @@ const frontrunTx = await simpleDEX.connect(player).ethToUsdc({
 
 mine(1);
 
-// backrun the transaction
+// Backrun the transaction
 const backrunAmount = await usdcToken.balanceOf(player.address);
 await usdcToken.connect(player).approve(simpleDEX.target, backrunAmount);
 await simpleDEX.connect(player).usdcToEth(backrunAmount);
@@ -232,7 +232,7 @@ await simpleDEX.connect(player).usdcToEth(backrunAmount);
 
 \subsubsection*{Possible Mitigation}
 
-DEX should support slippage tolerance to protect against significant price movements. If the price moves beyond the tolerance, the transaction reverts.
+DEXs should support slippage tolerance to protect against significant price movements. If the price moves beyond the tolerance, the transaction reverts.
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{solidity}
 function ethToUsdcWithSlippage(uint minUsdcOut) external payable {

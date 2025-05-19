@@ -84,7 +84,7 @@
 \maketitle
 \section{Introduction}
 
-Denial of Service attacks in smart contracts aim to render a contract
+Denial of service attacks in smart contracts aim to render a contract
 temporarily or permanently unusable by manipulating its execution flow or
 exploiting resource limitations. Unlike traditional web applications where DoS
 attacks typically involve overwhelming a system with traffic, blockchain DoS
@@ -95,15 +95,15 @@ with the concept of decentralized autonomous organization.
 
 \subsection*{Project Setup}
 
-You have two options for working with this exercise: using Docker container or
+You have two options for working with this exercise: using a Docker container or
 local installation. Choose the one that best fits your preferences.
 
 \subsection{Using Docker with VS Code}
 
 This option uses Docker to create a development environment with all the
-necessary tools and dependencies pre-installed.
+necessary tools and dependencies preinstalled.
 
-\subsubsection*{Prerequisites:}
+\subsubsection*{Prerequisites}
 
 \begin{itemize}
     \item \textbf{\href{https://www.docker.com/products/docker-desktop}{Docker}} - A platform for developing, shipping, and running applications in containers.
@@ -130,7 +130,7 @@ the development environment locally.
 \subsubsection*{Prerequisites}
 \begin{itemize}
     \item \textbf{Node.js}: \url{https://nodejs.org/en/} - An open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.
-    \item \textbf{NPM}: Node Package Manager, which comes with Node.js.
+    \item \textbf{NPM}: Node Package Manager, which comes bundled with Node.js.
 \end{itemize}
 
 \noindent
@@ -166,7 +166,7 @@ contracts.
 \subsection{DoS with Block Gas Limit}
 
 Ethereum blocks have a maximum gas limit. If a function requires more gas than
-this limit to execute, it becomes impossible to call. This commonly happens
+this limit to execute, it becomes impossible to call that function. This commonly happens
 with functions that loop through unbounded arrays, make multiple external
 calls, or perform complex computations. Read more about gas:
 \href{https://ethereum.org/gas/}{https://ethereum.org/gas/}.
@@ -175,7 +175,7 @@ The following code shows a contract that iterates through an unbounded array to
 check if someone is a member of the organization. With each additional member
 in the organization, the join function requires more and more gas to execute,
 making it increasingly expensive to run. Eventually, when the member count
-becomes too high, the join() function will become impossible to call at all due
+becomes too high, the join() function will become impossible to call due
 to exceeding the block gas limit. You can try this yourself in the
 \href{https://remix.ethereum.org/?#activate=solidity&url=https://github.com/radovluk/unbreakable-vault/contracts/DoS01.sol&lang=en&optimize=false&runs=200&evmVersion=null&version=soljson-v0.8.28+commit.7893614a.js}{prepared
     file in REMIX IDE}.
@@ -214,7 +214,7 @@ rejected operation can block the entire process. See this
     in REMIX IDE}. In this case, the successful execution of the \codegrey{claimThrone()}
 function depends on the transfer operation completing successfully. If a smart
 contract becomes the current king and doesn't implement a receive function, it
-will remain king forever.
+will remain the king forever.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -243,7 +243,7 @@ contract MaliciousKing {
 
 \subsection{Owner Operations DoS}
 
-If a contract relies on an owner for critical operations, and the owner's
+If a contract relies on an owner for critical operations and the owner's
 private key is lost or the owner becomes unresponsive, the contract can become
 permanently unusable.
 
@@ -265,7 +265,7 @@ In this example, if the owner loses their private key or becomes unresponsive, t
 \subsubsection*{Pull Over Push Payment Pattern}
 
 Instead of pushing payments to users, let users pull their own funds. This
-shifts the responsibility of handling failed transactions to individual users
+pattern shifts the responsibility of handling failed transactions to individual users
 rather than affecting everyone.
 
 \noindent
@@ -285,7 +285,7 @@ function withdraw() public {
 
 \subsubsection*{Avoid Unbounded Operations}
 
-Never iterate through unbounded arrays or perform unbounded operations that
+Avoid iterating through unbounded arrays or performing unbounded operations that
 could exceed the block gas limit.
 
 \noindent
@@ -331,24 +331,24 @@ function processPayments() public {
 \section{Decentralized Autonomous Organizations (DAOs)}
 
 DAOs are blockchain-based organizations governed by smart contracts and
-controlled by their members rather than a central authority. They rely on
+controlled by their members rather than by a central authority. They rely on
 on-chain voting mechanisms to make decisions and allocate resources. The
 foundation of a DAO is a smart contract on the blockchain that precisely
 establishes the rules by which the organization will be governed. Examples of
 DAOs include charities (where members decide where to contribute funds),
-collective ownership structures, and ventures and grants - where a venture fund
-pools investment capital and members vote on which ventures to support. Key
+collective ownership structures, and ventures and grants - where venture funds
+pool investment capital and members vote on which ventures to support. Key
 components of DAOs include:
 
 \begin{enumerate}
     \item \textbf{Membership Management}: Rules for joining the DAO, often by holding governance tokens or paying membership fees.
-    \item \textbf{Proposal Mechanism}: Allowing members to submit proposals for changes or fund allocation.
+    \item \textbf{Proposal Mechanism}: Allowing members to submit proposals for changes or funds allocation.
     \item \textbf{Voting System}: A system for members to vote on proposals.
     \item \textbf{Execution Mechanism}: Logic for implementing approved proposals.
 \end{enumerate}
 
 \noindent
-One of the most infamous DAO organizations was the notorious \href{https://en.wikipedia.org/wiki/The_DAO}{The DAO} which you learned about in Exercise 05 - Re-entrancy. You will see simple example of DAO in the Task 2.
+One of the most infamous DAO organizations was the notorious \href{https://en.wikipedia.org/wiki/The_DAO}{The DAO}, which you learned about in Exercise 05 - Re-entrancy. You will see a simple example of a DAO in Task 2.
 
 \begin{table}[H]
     \centering
@@ -386,12 +386,12 @@ More about DAOs:
 \subsection*{Task 1: NFT Auction Sabotage}
 
 One of the most valuable students from the FEL NFT Students collection is now
-for sale. It's an Electronics and Communication student who dozed off with a
+for sale. It depicts an Electronics and Communication student who dozed off with a
 calculator. The owner (seller) has decided not to sell this rare piece on an
-ordinary marketplace, but through an auction. The starting price is 0.5 ETH,
+ordinary marketplace but through an auction. The starting price is 0.5 ETH,
 but it quickly rises to 2.8 ETH. You have 3 ETH available and want to acquire
 this piece at all costs! Suddenly, a well-known speculator and reseller appears
-and threatens on the auction forum that they'll pay 50 ETH for the NFT student.
+and announces on the auction forum that they'll pay 50 ETH for the NFT student.
 You realize that you no longer have any chance of winning the auction. But you
 decide: if you can't have the NFT, no one will!
 
@@ -413,7 +413,7 @@ decide: if you can't have the NFT, no one will!
 \end{itemize}
 
 \noindent
-Code your solution in the \texttt{test/NFTAuction.js} file. Use only the player account or contracts that you deploy using player account. Verify your solution by running the following command:
+Code your solution in the \texttt{test/NFTAuction.js} file. Use only the player account or contracts that you deploy using the player account. Verify your solution by running the following command:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ npm run auction
@@ -436,7 +436,7 @@ join the DAO must pay a membership fee of 1 ETH. Everything looks promising
 until one member proposes to donate all the funds to a cat charity
 organization. This proposal is very popular and all members (except you) vote
 in favor of it. By coincidence, it's the same cat charity that you exploited in
-Exercise 4, but this time it's sufficiently protected against re-entrancy
+Exercise 4, but this time it's sufficiently protected against reentrancy
 attacks. You hate cats and don't want the funds to reach them under any
 circumstances.
 

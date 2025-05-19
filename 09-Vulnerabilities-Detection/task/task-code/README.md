@@ -2,52 +2,36 @@
 
 ## Introduction
 
-This exercise focuses on general vulnerability detection in smart contracts. We
-will the explore static analysis tool Slither to identify vulnerabilities in
-contracts from previous exercises. The exercise will also cover the
-implementation of unit tests, stateless fuzzing tests, and stateful fuzzing
-tests with invariants. We will introduce the Foundry development environment
-(this will be new only for students who previously used Hardhat). The primary
-task involves writing tests for a simple toy smart contract and then applying
-this knowledge to develop more complex tests for the DEX contract from earlier
-exercise.
+This exercise focuses on general vulnerability detection in smart contracts. We will explore the static analysis tool Slither to identify vulnerabilities in contracts from previous exercises. The exercise will also cover the implementation of unit tests, stateless fuzzing tests, and stateful fuzzing tests with invariants. We will introduce the Foundry development environment (this will be new only for students who previously used Hardhat). The primary task involves writing tests for a simple toy smart contract and then applying this knowledge to develop more complex tests for the DEX contract from earlier exercise.
 
 ### Project Setup
 
-You have two options for working with this exercise: using a Docker container
-or local installation. Choose the option that best fits your preferences. For
-students who are accustomed to working in the Hardhat environment and using
-Docker, it's important to note that this exercise uses a different Docker
-image.
+You have two options for working with this exercise: using a Docker container or local installation. Choose the option that best fits your preferences. For students who are accustomed to working in the Hardhat environment and using Docker, it's important to note that this exercise uses a different Docker image.
 
 ### Using Docker with VS Code
 
-This option uses Docker to create a development environment with all the
-necessary tools and dependencies pre-installed.
+This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
 
-#### Prerequisites:
+**Prerequisites:**
 
 - **[Docker](https://www.docker.com/products/docker-desktop)** - A platform for developing, shipping, and running applications in containers.
 - **[Visual Studio Code](https://code.visualstudio.com/)** - A lightweight but powerful source code editor.
 - **[Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)** - An extension to VS Code that lets you use a Docker container as a full-featured development environment.
 
-#### Setting Up the Project:
+**Setting Up the Project:**
 
-1. Visit the following
-   [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code) and clone it to your local machine.
+1. Visit the following [GitHub repository](https://github.com/radovluk/Smart-Contract-Exercise/tree/main/09-Vulnerabilities-Detection/task/task-code) and clone it to your local machine.
 2. Open the repository folder in VS Code.
-3. When prompted, click "Reopen in Container" or use the command palette (F1)
-   and run `Dev Containers: Reopen in Container`.
+3. When prompted, click "Reopen in Container" or use the command palette (F1) and run `Dev Containers: Reopen in Container`.
 
 ### Local Setup
 
-If you prefer working directly on your machine without Docker, you can set up
-the development environment locally. Before setting up Foundry, ensure that you
-have the following installed on your system:
+If you prefer working directly on your machine without Docker, you can set up the development environment locally. Before setting up Foundry, ensure that you have the following installed on your system:
 
-#### Prerequisites
+**Prerequisites**
 - **Rust Toolchain** -- Since Foundry is built in Rust, you'll need the Rust compiler and Cargo, Rust's package manager. The easiest way to install both is by using [rustup.rs](https://rustup.rs/).
 - **Bun** -- JavaScript runtime & toolkit for installing dependencies and running scripts. Install it from [bun.sh](https://bun.sh/).
+- **Tip**: If you already have Node Package Manager installed and use it regularly, you can use it instead of Bun.
 
 If you don't have Rust installed, you can install it using:
 
@@ -60,7 +44,7 @@ To install Bun, use the following command:
 $ curl -fsSL https://bun.sh/install | bash
 ```
 
-Open your terminal and run the following command to verify the Rust and Bun installation:
+Open your terminal and run the following commands to verify the Rust and Bun installations:
 
 ```bash
 $ rustc --version
@@ -68,7 +52,7 @@ $ cargo --version
 $ bun --version
 ```
 
-#### Installing Foundry
+**Installing Foundry**
 You can install Foundry using Foundryup, the official installer:
 
 ```bash
@@ -90,21 +74,15 @@ $ cast --version
 $ anvil --version
 ```
 
-#### Setting Up the Project:
+**Setting Up the Project:**
 
-1. Visit the following
-   [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code) and clone it to your local machine.
+1. Visit the following [GitHub repository](https://github.com/radovluk/Smart-Contract-Exercise/tree/main/09-Vulnerabilities-Detection/task/task-code) and clone it to your local machine.
 2. Open a terminal and navigate to the project directory.
-3. Install the project dependencies by running `bun install`.
+3. Install the project dependencies by running `bun install`. (Alternatively with NPM, you can use `npm install`).
 
 ## Static Analysis
 
-Static analysis is a method of examining code without executing it. Unlike
-dynamic analysis, which examines code during execution, static analysis looks at
-the source code or bytecode to find patterns that match known vulnerability
-types. If you're using a local setup, you'll need to install Slither first.
-Students using the Docker container already have these tools available in
-the container.
+Static analysis is a method of examining code without executing it. Unlike dynamic analysis, which examines code during execution, static analysis looks at the source code or bytecode to find patterns that match known vulnerability types. If you're using a local setup, you'll need to install Slither first. Students using the Docker container already have these tools available in the container.
 
 ### Slither
 
@@ -144,21 +122,14 @@ Reentrancy in CatCharity.claimRefund() (src/CatCharity.sol#98-114):
         - CatCharity.donations (src/CatCharity.sol#24)
 ```
 
-As you can see, Slither successfully identified a re-entrancy vulnerability in
-the `CatCharity` contract. It also provided a
-[link](https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities)
-to documentation about this vulnerability type.
+As you can see, Slither successfully identified a re-entrancy vulnerability in the `CatCharity` contract. It also provided a [link](https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities) to documentation about this vulnerability type.
 
 ### Task 1: Analyze Contracts with Slither
-Analyze all other contracts in the `src` directory using Slither
-(`SimpleDEX`, `USDCToken`, `PiggyBank`) and review
-Slither's output. Determine whether the identified issues are actual problems
-or false positives. Examine the linked documentation for each reported
-vulnerability.
+Analyze all other contracts in the `src` directory using Slither (`SimpleDEX`, `USDCToken`, `PiggyBank`) and review Slither's output. Determine whether the identified issues are actual problems or false positives. Examine the linked documentation for each reported vulnerability.
 
 ## Testing in Foundry
 
-[Foundry](https://github.com/foundry-rs/foundry) provides powerful tools for testing smart contracts, with a focus on flexibility and efficiency. Unlike Hardhat (which uses JavaScript), Foundry uses Solidity for writing tests and scripts. We won't cover all Foundry functions in detail here, but will focus primarily on writing tests. For more information about working with Foundry, visit the project documentation [Foundry Book](https://book.getfoundry.sh/). Let's now introduce the concept of smart contract testing with a simple example that you'll work with in this exercise. The PiggyBank contract is a simple savings contract where anyone can deposit ETH, but only the owner can withdraw.
+[Foundry](https://github.com/foundry-rs/foundry) provides powerful tools for testing smart contracts, with a focus on flexibility and efficiency. Unlike Hardhat (which uses JavaScript), Foundry uses Solidity for writing tests and scripts. We won't cover all Foundry functions in detail here, but we will focus primarily on writing tests. For more information about working with Foundry, visit the project documentation [Foundry Book](https://book.getfoundry.sh/). Let's now introduce the concept of smart contract testing with a simple example that you'll work with in this exercise. The PiggyBank contract is a simple savings contract where anyone can deposit ETH, but only the owner can withdraw.
 
 **Note:** At the time of writing this exercise, Hardhat is adding support for Solidity-written tests and scripts in an alpha release. If you're interested, check it out: [Hardhat 3 Alpha](https://hardhat.org/hardhat3-alpha).
 
@@ -197,12 +168,7 @@ contract PiggyBank {
 
 ### Unit Testing
 
-Unit tests verify that individual functions or components of your contract work
-as expected in isolation. Documentation on how to write basic tests in Foundry
-is available [here](https://book.getfoundry.sh/forge/writing-tests). Let's
-look at an example using our PiggyBank contract. We want to test whether after
-calling the `deposit()` function, the value of
-`totalDeposits` will match our deposit.
+Unit tests verify that individual functions or components of your contract work as expected in isolation. Documentation on how to write basic tests in Foundry is available [here](https://book.getfoundry.sh/forge/writing-tests). Let's look at an example using our PiggyBank contract. We want to test whether after calling the `deposit()` function, the value of `totalDeposits` will match our deposit.
 
 ```solidity
 function test_Deposit() public {
@@ -236,13 +202,11 @@ function test_RevertWhen_WithdrawExceedsBalance() public {
 }
 ```
 
+[Image: Unit Testing Flow]
+
 ### Task 2: Write Unit Tests for PiggyBank
 
-In the file `test/PiggyBankUnitTest.t.sol`, complete the missing unit
-tests for the PiggyBank contract. Find the functions marked with
-`TODO` comments and implement them according to the instructions in
-the code. The file contains four completed unit tests and four unimplemented
-ones that you need to complete. Run the tests using the following command:
+In the file `test/PiggyBankUnitTest.t.sol`, complete the missing unit tests for the PiggyBank contract. Find the functions marked with `TODO` comments and implement them according to the instructions in the code. The file contains four completed unit tests and four unimplemented ones that you need to complete. Run the tests using the following command:
 
 ```bash
 $ forge test --mp test/PiggyBankUnitTest.t.sol -v
@@ -261,16 +225,7 @@ You can use different verbosity levels to make debugging easier:
 ```
 
 ### Stateless Fuzz Tests
-Fuzzing involves generating random inputs to test your contract's behavior
-under various conditions. Unlike unit tests where you provide specific inputs
-manually, fuzzing tests automatically generate random (pseudo-random) inputs.
-The key advantage is that you can run the same test multiple times with
-different input data each time. You can generate completely random input data
-or constrain it to specific value ranges. When you run a fuzzing test, it
-executes many times in succession, each with different input data, allowing you
-to discover edge cases you might not have anticipated. Information about fuzz
-testing in Foundry is available here:
-[Fuzz Testing](https://book.getfoundry.sh/forge/fuzz-testing).
+Fuzzing involves generating random inputs to test your contract's behavior under various conditions. Unlike unit tests where you provide specific inputs manually, fuzzing tests automatically generate random (pseudo-random) inputs. The key advantage is that you can run the same test multiple times with different input data each time. You can generate completely random input data or constrain it to specific value ranges. When you run a fuzzing test, it executes many times in succession, each with different input data, allowing you to discover edge cases you might not have anticipated. Information about fuzz testing in Foundry is available here: [Fuzz Testing](https://book.getfoundry.sh/forge/fuzz-testing).
 
 ```solidity
 function testFuzz_Deposit(uint96 amount) public {
@@ -292,13 +247,11 @@ function testFuzz_Deposit(uint96 amount) public {
 
 Note: In the literature, you'll often encounter confusion between different terms. To be precise, the method described above is called stateless fuzz testing. While we run the function multiple times with different inputs, each run uses a fresh contract instance.
 
+[Image: Stateless Fuzz Testing Flow]
+
 ### Task 3: Write Stateless Fuzz Tests for PiggyBank
 
-In the file `test/PiggyBankStatelessFuzzTest.t.sol`, complete the
-missing fuzz tests for the PiggyBank contract. Find the functions marked with
-`TODO` comments and implement them according to the instructions in
-the code. The file contains four completed fuzz tests and four unimplemented
-ones that you need to complete. Run the tests using the following command:
+In the file `test/PiggyBankStatelessFuzzTest.t.sol`, complete the missing fuzz tests for the PiggyBank contract. Find the functions marked with `TODO` comments and implement them according to the instructions in the code. The file contains four completed fuzz tests and four unimplemented ones that you need to complete. Run the tests using the following command:
 
 ```bash
 $ forge test --mp test/PiggyBankStatelessFuzzTest.t.sol -v
@@ -308,18 +261,7 @@ $ forge test --mp test/PiggyBankStatelessFuzzTest.t.sol -v
 
 ### Invariant Testing
 
-Invariant testing checks that certain properties (invariants) of your contract
-remain true regardless of the sequence of operations performed. An invariant is
-a specific condition that must always be satisfied no matter which functions
-were called on our program, in any order. For example, an invariant for our
-PiggyBank contract could be that the current balance of the contract must equal
-the difference between all deposits and all withdrawals. This property should
-always hold in the system, regardless of how many times the `deposit()`
-and `withdraw()` functions were called, in what order, and by which
-addresses. Properly defining invariants is fundamental to this process. After
-defining the invariants, we can simulate the system's execution using stateful
-fuzz tests, where different functions will be called in various orders with
-different input data, and we'll verify that the invariant is always satisfied.
+Invariant testing checks that certain properties (invariants) of your contract remain true regardless of the sequence of operations performed. An invariant is a specific condition that must always be satisfied no matter which functions are called on our program, in any order. For example, an invariant for our PiggyBank contract could be that the current balance of the contract must equal the difference between all deposits and all withdrawals. This property should always hold in the system, regardless of how many times the `deposit()` and `withdraw()` functions are called, in what order, and by which addresses. Properly defining invariants is fundamental to this process. After defining the invariants, we can simulate the system's execution using stateful fuzz tests, where different functions will be called in various orders with different input data, and we'll verify that the invariants are always satisfied.
 
 ```solidity
 /**
@@ -335,34 +277,23 @@ function invariant_balanceMatchesAccountingDiff() public view {
 }
 ```
 
+[Image: Invariant Testing Flow]
+
 ### Task 4: Write Invariants for PiggyBank
 
-In the file `test/PiggyBankInvariantTest.t.sol`, complete the invariant
-definitions for the PiggyBank contract. First, carefully review the
-[Foundry documentation](https://book.getfoundry.sh/forge/invariant-testing) on invariant testing. Then examine the structure of the
-`test/PiggyBankInvariantTest.t.sol` file to understand how the test is
-constructed. Your task is to define at least two additional invariants that
-should always hold true for the PiggyBank contract. Run the tests using the
-following command:
+In the file `test/PiggyBankInvariantTest.t.sol`, complete the invariant definitions for the PiggyBank contract. First, carefully review the [Foundry documentation](https://book.getfoundry.sh/forge/invariant-testing) on invariant testing. Then examine the structure of the `test/PiggyBankInvariantTest.t.sol` file to understand how the test is constructed. Your task is to define at least two additional invariants that should always hold true for the PiggyBank contract. Run the tests using the following command:
 
 ```bash
 $ forge test --mp test/PiggyBankInvariantTest.t.sol -v
 ```
 
-**Warning:** after any code change in invariant tests, you need to run the `forge clean` command because Foundry caches completed tests and only replicates them otherwise.
+**Warning:** After any code change in invariant tests, you need to run the `forge clean` command because Foundry caches completed tests and only replicates them otherwise.
 
 **Note:** Test configuration is set in the `foundry.toml` file. The default setting for invariant testing is 256 iterations per invariant with a maximum depth of 150. Each invariant is tested separately against a fresh EVM state.
 
 ## Task 5: Implement SimpleDEX Test Suite
 
-Testing the PiggyBank contract might not have been particularly exciting or
-challenging. In the second part of this exercise, you will test the simpleDEX
-contract that you're familiar with from Exercise 06 -- Fool The Oracle. To
-complete this exercise, you must write all the missing unit tests, all the
-missing fuzz tests, and add meaningful invariants. Implement your solution in
-the files `test/SimpleDEXUnitTest.t.sol`,
-`test/SimpleDEXStatelessFuzzTest.t.sol`, and
-`test/SimpleDEXInvariantTest.t.sol`.
+Testing the PiggyBank contract might not have been particularly exciting or challenging. In the second part of this exercise, you will test the SimpleDEX contract that you're familiar with from Exercise 06: Fool The Oracle. To complete this exercise, you must write all the missing unit tests, all the missing fuzz tests, and add meaningful invariants. Implement your solution in the files `test/SimpleDEXUnitTest.t.sol`, `test/SimpleDEXStatelessFuzzTest.t.sol`, and `test/SimpleDEXInvariantTest.t.sol`.
 
 Verify your solution with:
 
@@ -372,7 +303,7 @@ $ forge test --mp test/SimpleDEXStatelessFuzzTest.t.sol -v
 $ forge test --mp test/SimpleDEXInvariantTest.t.sol -v
 ```
 
-**Note:** Foundry follows a specific naming convention for tests and invariants that must be followed, otherwise the tests won't run:
+**Note:** Foundry follows a specific naming convention for tests and invariants that must be followed; otherwise, the tests won't run:
 
 - Test files end with `.t.sol`
 - Test contracts inherit from `forge-std/Test.sol`
@@ -389,39 +320,33 @@ For more resources on fuzzing and invariant testing, check out these links:
 - **Video Tutorial**: [Fuzzing Workshop by Trail of Bits](https://www.youtube.com/playlist?list=PLciHOL_J7Iwqdja9UH4ZzE8dP1IxtsBXI)
 - **Even More Resources**: [Updated comprehensive list of fuzzing resources](https://github.com/perimetersec/evm-fuzzing-resources?tab=readme-ov-file#evm-fuzzing-resources)
 
-## Beyond The Course: The End?
+## Beyond the Course: The End?
 
-This course has equipped you with foundational knowledge in smart contract
-security. However, the field of blockchain security is vast and constantly
-evolving. Here are resources to continue your journey:
+This course has equipped you with foundational knowledge in smart contract security. However, the field of blockchain security is vast and constantly evolving. Here are resources to continue your journey:
 
-#### Interactive Learning Resources -- Development Focus
+### Interactive Learning Resources -- Development Focus
 
 Practical hands-on courses focused on smart contract development.
 
 - **[CryptoZombies](https://cryptozombies.io/)**: Interactive lessons for learning Solidity
 - **[SpeedRunEthereum](https://speedrunethereum.com/)**: Hands-on challenges to build Ethereum apps
 
-#### Interactive Learning Resources -- Security Focus
+### Interactive Learning Resources -- Security Focus
 
-Practical exercises similar to those you solved in this course. Ethernaut
-offers shorter and simpler challenges in the style of the Vaults from Exercise
-04, while Damn Vulnerable DeFi is more complex and focuses on DeFi
-applications, often using real copies of smart contracts.
+Practical exercises similar to those you solved in this course. Ethernaut offers shorter and simpler challenges in the style of the Vaults from Exercise 04, while Damn Vulnerable DeFi is more complex and focuses on DeFi applications, often using real copies of smart contracts.
 
 - **[Damn Vulnerable DeFi](https://www.damnvulnerabledefi.xyz/)**: Challenges focusing on DeFi vulnerabilities
 - **[Ethernaut](https://ethernaut.openzeppelin.com/)**: OpenZeppelin's collection of smart contract security challenges
 
-#### University Courses
+### University Courses
 
 - **[TUM: Blockchain-based Systems Engineering](https://github.com/sebischair/bbse)**: Blockchain course at Technical University of Munich
 - **[Berkeley DeFi Course](https://rdi.berkeley.edu/berkeley-defi/f24)**: Decentralized Finance course at the University of California, Berkeley
 - **[FIT ČVUT: NIE-BLO](https://courses.fit.cvut.cz/NIE-BLO/index.html)**: Blockchain Course at Czech Technical University in Prague
 
-#### Cyfrin Courses
+### Cyfrin Courses
 
-Cyfrin is a smart contract security audit company that has published up-to-date
-practical courses on their website, accessible for free.
+Cyfrin is a smart contract security audit company that has published up-to-date practical courses on their website, accessible for free.
 
 - **[Security and Auditing Full Course](https://updraft.cyfrin.io/courses/security)**: Comprehensive guide to smart contract security
 - **[Foundry Fundamentals](https://updraft.cyfrin.io/courses/foundry)**: Master the Foundry development environment
@@ -429,23 +354,22 @@ practical courses on their website, accessible for free.
 - **[Advanced Foundry](https://updraft.cyfrin.io/courses/advanced-foundry)**: Take your Foundry skills to the next level
 - **[SoloDIT](https://solodit.cyfrin.io/)**: Cyfrin's searchable database of vulnerabilities found in audits
 
-#### Competitive Audit Platforms
+### Competitive Audit Platforms
 
-Participating in competitive audits is an excellent way to apply your skills in
-real-world scenarios, learn from others, and potentially earn rewards:
+Participating in competitive audits is an excellent way to apply your skills in real-world scenarios, learn from others, and potentially earn rewards:
 
 - **[Code4rena](https://code4rena.com/)**: Competitive audit platform with regular contests and substantial rewards
 - **[Sherlock](https://www.sherlock.xyz/)**: Combines security competitions with protocol coverage
 - **[CodeHawks](https://codehawks.cyfrin.io/)**: Newer platform with both private and public audit competitions
 - **[Immunefi](https://immunefi.com/)**: The largest bug bounty platform in crypto
 
-#### Security Tools and Technical Resources
+### Security Tools and Technical Resources
 
 - **[Manticore](https://github.com/trailofbits/manticore)**: Symbolic execution tool
 - **[Echidna](https://github.com/crytic/echidna)**: Fuzzing tool
 - **[Medusa](https://github.com/crytic/medusa)**: Fuzzing tool
 
-#### Communities and Networking
+### Communities and Networking
 
 - **[Cyfrin](https://discord.gg/cyfrin)**: Active community focused on smart contract security
 - **[Ethereum Research](https://discord.gg/qGpsxSA)**: Technical discussions about Ethereum

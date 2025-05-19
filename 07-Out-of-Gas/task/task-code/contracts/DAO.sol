@@ -106,7 +106,7 @@ contract DAO {
     error NoPassedProposals();
 
     /// Proposals array is empty 
-    error EmtyProposalsArray();
+    error EmptyProposalsArray();
 
     // ------------------------------------------------------------------------
     //                               Modifiers
@@ -235,7 +235,7 @@ contract DAO {
         uint256 count = 0;
 
         uint256 proposalsLength = proposals.length;
-        if (proposalsLength == 0) revert EmtyProposalsArray();
+        if (proposalsLength == 0) revert EmptyProposalsArray();
         // Find all winning proposals in a single loop
         for (uint256 i = 0; i < proposalsLength; i++) {
             Proposal storage proposal = proposals[i];

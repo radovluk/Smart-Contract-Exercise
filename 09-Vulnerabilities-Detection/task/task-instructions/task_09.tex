@@ -86,9 +86,7 @@
 \maketitle
 \section{Introduction}
 
-This exercise focuses on general vulnerability detection in smart contracts. We
-will the explore static analysis tool Slither to identify vulnerabilities in
-contracts from previous exercises. The exercise will also cover the
+This exercise focuses on general vulnerability detection in smart contracts. We will explore the static analysis tool Slither to identify vulnerabilities in contracts from previous exercises. The exercise will also cover the
 implementation of unit tests, stateless fuzzing tests, and stateful fuzzing
 tests with invariants. We will introduce the Foundry development environment
 (this will be new only for students who previously used Hardhat). The primary
@@ -121,7 +119,7 @@ necessary tools and dependencies pre-installed.
 
 \begin{enumerate}
     \item Visit the following
-          \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code}{GitLab
+          \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/09-Vulnerabilities-Detection/task/task-code}{GitHub
               repository} and clone it to your local machine.
     \item Open the repository folder in VS Code.
     \item When prompted, click ``Reopen in Container'' or use the command palette (F1)
@@ -155,7 +153,7 @@ $ curl -fsSL https://bun.sh/install | bash
 \end{minted}
 
 \noindent
-Open your terminal and run the following command to verify the Rust and Bun installation:
+Open your terminal and run the following commands to verify the Rust and Bun installations:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
 $ rustc --version
@@ -193,7 +191,7 @@ $ anvil --version
 
 \begin{enumerate}
     \item Visit the following
-          \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/09-Vulnerabilities-Detection/task/task-code}{GitLab
+          \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/09-Vulnerabilities-Detection/task/task-code}{GitHub
           repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
     \item Install the project dependencies by running \codegrey{bun install}. (Alternatively with NPM, you can use \codegrey{npm install}).
@@ -293,7 +291,7 @@ vulnerability.
 
 \section{Testing in Foundry}
 
-\href{https://github.com/foundry-rs/foundry}{Foundry} provides powerful tools for testing smart contracts, with a focus on flexibility and efficiency. Unlike Hardhat (which uses JavaScript), Foundry uses Solidity for writing tests and scripts. We won't cover all Foundry functions in detail here, but will focus primarily on writing tests. For more information about working with Foundry, visit the project documentation \href{https://book.getfoundry.sh/}{Foundry Book}. Let's now introduce the concept of smart contract testing with a simple example that you'll work with in this exercise. The PiggyBank contract is a simple savings contract where anyone can deposit ETH, but only the owner can withdraw.
+\href{https://github.com/foundry-rs/foundry}{Foundry} provides powerful tools for testing smart contracts, with a focus on flexibility and efficiency. Unlike Hardhat (which uses JavaScript), Foundry uses Solidity for writing tests and scripts. We won't cover all Foundry functions in detail here, but we will focus primarily on writing tests. For more information about working with Foundry, visit the project documentation \href{https://book.getfoundry.sh/}{Foundry Book}. Let's now introduce the concept of smart contract testing with a simple example that you'll work with in this exercise. The PiggyBank contract is a simple savings contract where anyone can deposit ETH, but only the owner can withdraw.
 
 \medskip
 \noindent
@@ -482,15 +480,15 @@ $ forge test --mp test/PiggyBankStatelessFuzzTest.t.sol -v
 Invariant testing checks that certain properties (invariants) of your contract
 remain true regardless of the sequence of operations performed. An invariant is
 a specific condition that must always be satisfied no matter which functions
-were called on our program, in any order. For example, an invariant for our
+are called on our program, in any order. For example, an invariant for our
 PiggyBank contract could be that the current balance of the contract must equal
 the difference between all deposits and all withdrawals. This property should
 always hold in the system, regardless of how many times the \texttt{deposit()}
-and \texttt{withdraw()} functions were called, in what order, and by which
+and \texttt{withdraw()} functions are called, in what order, and by which
 addresses. Properly defining invariants is fundamental to this process. After
 defining the invariants, we can simulate the system's execution using stateful
 fuzz tests, where different functions will be called in various orders with
-different input data, and we'll verify that the invariant is always satisfied.
+different input data, and we'll verify that the invariants are always satisfied.
 
 \noindent \begin{minipage}{\textwidth}
     \begin{lstlisting}[language=Solidity]
@@ -532,7 +530,7 @@ $ forge test --mp test/PiggyBankInvariantTest.t.sol -v
 \end{minipage}
 
 \noindent
-\textbf{Warning:} after any code change in invariant tests, you need to run the \texttt{forge clean} command because Foundry caches completed tests and only replicates them otherwise.
+\textbf{Warning:} After any code change in invariant tests, you need to run the \texttt{forge clean} command because Foundry caches completed tests and only replicates them otherwise.
 
 \noindent
 \textbf{Note:} Test configuration is set in the \texttt{foundry.toml} file. The default setting for invariant testing is 256 iterations per invariant with a maximum depth of 150. Each invariant is tested separately against a fresh EVM state.
@@ -540,8 +538,8 @@ $ forge test --mp test/PiggyBankInvariantTest.t.sol -v
 \section*{Task 5: Implement SimpleDEX Test Suite}
 
 Testing the PiggyBank contract might not have been particularly exciting or
-challenging. In the second part of this exercise, you will test the simpleDEX
-contract that you're familiar with from Exercise 06 -- Fool The Oracle. To
+challenging. In the second part of this exercise, you will test the SimpleDEX
+contract that you're familiar with from Exercise 06: Fool The Oracle. To
 complete this exercise, you must write all the missing unit tests, all the
 missing fuzz tests, and add meaningful invariants. Implement your solution in
 the files \texttt{test/SimpleDEXUnitTest.t.sol},
@@ -561,7 +559,7 @@ $ forge test --mp test/SimpleDEXInvariantTest.t.sol -v
 \end{minipage}
 
 \noindent
-\textbf{Note:} Foundry follows a specific naming convention for tests and invariants that must be followed, otherwise the tests won't run:
+\textbf{Note:} Foundry follows a specific naming convention for tests and invariants that must be followed; otherwise, the tests won't run:
 
 \begin{itemize}
     \item Test files end with \codegrey{.t.sol}
@@ -583,7 +581,7 @@ For more resources on fuzzing and invariant testing, check out these links:
     \item \textbf{Even More Resources}: \href{https://github.com/perimetersec/evm-fuzzing-resources?tab=readme-ov-file#evm-fuzzing-resources}{Updated comprehensive list of fuzzing resources}
 \end{itemize}
 
-\section{Beyond The Course: The End?}
+\section{Beyond the Course: The End?}
 
 This course has equipped you with foundational knowledge in smart contract
 security. However, the field of blockchain security is vast and constantly

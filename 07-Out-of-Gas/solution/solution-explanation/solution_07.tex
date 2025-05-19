@@ -20,7 +20,7 @@
 
 \geometry{a4paper, margin=1in}
 
-\title{Smart Contracts Exercise 07: \\ Out of Gas -- Solution}
+\title{Smart Contracts Exercise 07: \\ Out of Gas --- Solution}
 \author{}
 \date{}
 
@@ -81,7 +81,7 @@
 \maketitle
 
 \noindent
-The solved Exercise 07 - Out of Gas can be found in this \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/07-Out-of-Gas/solution/solution-code?ref_type=heads}{GitLab repository}.
+The solution for Exercise 07: Out of Gas can be found in this \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/07-Out-of-Gas/solution/solution-code}{GitHub repository}.
 
 \section*{Solution to Task 1: NFT Auction Sabotage}
 
@@ -94,12 +94,13 @@ The vulnerability stems from the following code in the \texttt{endAuction} funct
 \noindent
 \begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
-// Process refunds for all bidders
-for (uint i = 0; i < bidders.length; i++) {
+    // Process refunds for all bidders
+    uint256 biddersLength = bidders.length;
+    for (uint i = 0; i < biddersLength; i++) {
     address bidder = bidders[i];
     uint256 amount = pendingReturns[bidder];
     if (amount > 0) {
-        // Setting the pending amount to 0 before sending to prevent re-entrancy
+        // Setting the pending amount to 0 before sending to prevent reentrancy
         pendingReturns[bidder] = 0;
 
         // Send the refund
@@ -210,7 +211,7 @@ function withdraw() external returns (bool) {
 
 \section*{Solution to Task 2: Save the DAO Funds From the Cats}
 
-This task demonstrates a "DoS with Block Gas Limit" vulnerability. The DAO contract has an unbounded loop in its \texttt{getWinningProposals()} function, which is called by \texttt{executeProposals()}.
+This task demonstrates a ``DoS with Block Gas Limit'' vulnerability. The DAO contract has an unbounded loop in its \texttt{getWinningProposals()} function, which is called by \texttt{executeProposals()}.
 
 \subsection*{The Vulnerability}
 
@@ -223,11 +224,12 @@ function getWinningProposals() public view returns (uint256[] memory) {
     // Create a temporary array to store winning proposal IDs (max size is all proposals)
     uint256[] memory temp = new uint256[](proposals.length);
     uint256 count = 0;
+    uint256 proposalsLength = proposals.length;
+    if (proposalsLength == 0) revert EmptyProposalsArray();
 
     // Find all winning proposals in a single loop
-    for (uint256 i = 0; i < proposals.length; i++) {
+    for (uint256 i = 0; i < proposalsLength; i++) {
         Proposal storage proposal = proposals[i];
-
         // Check if the proposal has passed and is ready for execution
         if (
             !proposal.executed &&
@@ -238,14 +240,6 @@ function getWinningProposals() public view returns (uint256[] memory) {
             count++;
         }
     }
-
-    // Create the final array of exactly the right size
-    uint256[] memory winningProposals = new uint256[](count);
-    for (uint256 i = 0; i < count; i++) {
-        winningProposals[i] = temp[i];
-    }
-
-    return winningProposals;
 }
 \end{lstlisting}
 \end{minipage}

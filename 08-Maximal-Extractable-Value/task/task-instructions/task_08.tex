@@ -84,11 +84,11 @@
 \maketitle
 \section{Introduction}
 
-We first encountered frontrunning in Exercise 3: ERC20 - CTUToken. Frontrunning falls under the more general term known as MEV - Maximal Extractable Value. MEV has become a very important topic for Ethereum that needs to be addressed. In this exercise, we will examine this phenomenon in more detail. We'll explore additional MEV techniques and examples, such as DEX arbitrage, liquidations, sandwich trading, and more. An important topic of the exercise will also be calculating transaction fees, gas, and EIP-1559. In the practical exercises, you will try frontrunning an NFT auction and executing a sandwich attack on a DEX yourself. Finally, we'll look at how MEV is being solved today and introduce terms such as Proposer-Builder Separation and Builder APIs.
+We first encountered frontrunning in Exercise 3: ERC20 - CTUToken. Frontrunning falls under the more general term known as MEV - Maximal Extractable Value. MEV has become a very important topic for Ethereum that needs to be addressed. In this exercise, we will examine this phenomenon in more detail. We'll explore additional MEV techniques and examples, such as DEX arbitrage, liquidations, sandwich trading, and more. An important topic of the exercise will also be calculating transaction fees, gas, and understanding EIP-1559. In the practical exercises, you will try frontrunning an NFT auction and executing a sandwich attack on a DEX yourself. Finally, we'll look at how MEV is being solved today and introduce terms such as Proposer-Builder Separation and Builder APIs.
 
 \subsection*{Project Setup}
 
-You have two options for working with this exercise: using Docker container or local installation. Choose the one that best fits your preferences.
+You have two options for working with this exercise: using a Docker container or local installation. Choose the option that best fits your preferences.
 
 \subsection{Using Docker with VS Code}
 
@@ -105,7 +105,7 @@ This option uses Docker to create a development environment with all the necessa
 \subsubsection*{Setting Up the Project:}
 
 \begin{enumerate}
-  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/08-Maximal-Extractable-Value/task/task-code}{GitLab repository} and clone it to your local machine.
+  \item Visit the following \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/08-Maximal-Extractable-Value/task/task-code}{GitHub repository} and clone it to your local machine.
   \item Open the repository folder in VS Code.
   \item When prompted, click ``Reopen in Container'' or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
@@ -133,14 +133,14 @@ Both commands should return the installed version numbers of Node.js and NPM res
 \subsubsection*{Setting Up the Project}
 
 \begin{enumerate}
-    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/08-Maximal-Extractable-Value/task/task-code}{GitLab repository} and clone it to your local machine.
+    \item Visit the following \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/08-Maximal-Extractable-Value/task/task-code}{GitHub repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
     \item Install the project dependencies by running \codegrey{npm install}.
 \end{enumerate}
 
 \section{Maximal Extractable Value (MEV)}
 
-MEV stands for Maximal Extractable Value, which refers to the maximum value that can be extracted during block production in addition to the standard block rewards and gas fees. This value can be extracted by adding transactions to a block, removing transactions from it, or changing the order of transactions within the block. Originally, the acronym stood for ``Miner Extractable Value'', but since \href{https://ethereum.org/en/roadmap/merge/}{the Merge} replaced miners with validators, it's now known as ``Maximal Extractable Value''.
+MEV stands for Maximal Extractable Value, which refers to the maximum value that can be extracted during block production in addition to the standard block rewards and gas fees. This value can be extracted by adding transactions to a block, removing transactions from it, or changing the order of transactions within the block. Originally, the acronym stood for ``Miner Extractable Value,'' but since \href{https://ethereum.org/en/roadmap/merge/}{the Merge} replaced miners with validators, it's now known as ``Maximal Extractable Value''.
 
 \subsection*{Types of MEV}
 
@@ -166,7 +166,7 @@ To better understand why these techniques are profitable for attackers, let's ex
 \subsubsection*{DEX Arbitrage} If two DEXes offer tokens at different prices, someone can include a transaction in a block that buys tokens on one DEX and sells them at a higher price on another DEX. In this situation, the block creator can exploit this opportunity to profit from the arbitrage. Here's an \href{https://etherscan.io/tx/0x5e1657ef0e9be9bc72efefe59a2528d0d730d478cfc9e6cdd09af9f997bb3ef4}{example of such transaction}.
 
 \subsubsection*{Sandwich Attack}
-If someone wants to exchange a large amount of a specific token on a DEX, an attacker can add transactions that buy tokens before the large transaction and sell them afterward. Thanks to how DEXes set prices using the constant product formula ($x \cdot y = k$), this approach can be profitable. See an example of \href{https://eigenphi.io/mev/ethereum/tx/0x90204899500606f717cacd223fc27b2be0e017032c7f41986cfb094e686630b4}{such attack}. The process is detailed in Table~\ref{tab:sandwich-attack} and illustrated in Figure~\ref{fig:sandwich}.
+If someone wants to exchange a large amount of a specific token on a DEX, an attacker can add transactions that buy tokens before the large transaction and sell them afterward. Thanks to how DEXes set prices using the constant product formula ($x \cdot y = k$), this approach can be profitable. See an example of \href{https://eigenphi.io/mev/ethereum/tx/0x90204899500606f717cacd223fc27b2be0e017032c7f41986cfb094e686630b4}{such an attack}. The process is detailed in Table~\ref{tab:sandwich-attack} and illustrated in Figure~\ref{fig:sandwich}.
 
 \begin{figure}[H]
   \centering
@@ -218,7 +218,7 @@ Rather than developing complicated algorithms, it's possible to simply simulate 
 
 \subsection{MEV Threat and Solutions}
 
-MEV bots attempting to include their MEV transactions in blocks have led to network congestion and increased transaction fees for regular users. MEV extraction could eventually lead to gradual centralization of staking pools, as large pools will have more financial resources to develop sophisticated algorithms to extract MEV from their own MEV extraction activities. To address these MEV problems, solutions have been proposed: \href{https://ethereum.org/en/developers/docs/mev/#proposer-builder-separation}{Proposer-builder separation} and \href{https://ethereum.org/en/developers/docs/mev/#builder-api}{Builder APIs}. In proposer-builder separation, validators remain responsible for proposing new blocks, but a new entity of specialized builders has emerged who search for MEV opportunities and offer constructed blocks to validators. This reduces the risk of validator centralization. For smart contract developers, it's important to always keep MEV risks in mind and prevent them during application design when possible.
+MEV bots attempting to include their MEV transactions in blocks have led to network congestion and increased transaction fees for regular users. MEV extraction could eventually lead to gradual centralization of staking pools, as large pools will have more financial resources to develop sophisticated algorithms to extract MEV. To address these MEV problems, solutions have been proposed: \href{https://ethereum.org/en/developers/docs/mev/#proposer-builder-separation}{Proposer-builder separation} and \href{https://ethereum.org/en/developers/docs/mev/#builder-api}{Builder APIs}. In proposer-builder separation, validators remain responsible for proposing new blocks, but a new entity of specialized builders has emerged who search for MEV opportunities and offer constructed blocks to validators. This reduces the risk of validator centralization. For smart contract developers, it's important to always keep MEV risks in mind and mitigate them during application design when possible.
 
 \medskip
 \noindent
@@ -256,7 +256,7 @@ Where:
 \begin{itemize}
     \item \codegrey{base fee} is burned (removed from circulation)
     \item \codegrey{priority fee} (or tip) goes to the validator as an incentive
-    \item If \codegrey{base fee} + \codegrey{priority fee} \verb|>| \codegrey{max fee}, the priority fee is reduced to stay below max fee
+    \item If \codegrey{base fee} + \codegrey{priority fee} \verb|>| \codegrey{max fee}, the priority fee is reduced to stay below the max fee
 \end{itemize}
 
 \noindent
@@ -315,9 +315,9 @@ Files that are relevant for this challenge:
 
 \subsection*{Task 2: Sandwich Attack on a DEX}
 
-You've been monitoring the mempool and spot a juicy opportunity: someone (let's call them ``Innocent Victim'') is about to swap a massive 20 ETH for USDC tokens on SimpleDEX. With your knowledge of DeFi and MEV, you realize this is a perfect opportunity for a sandwich attack.
+You've been monitoring the mempool and spotted a juicy opportunity: someone (let's call them ``Innocent Victim'') is about to swap a massive 20 ETH for USDC tokens on SimpleDEX. With your knowledge of DeFi and MEV, you realize this is a perfect opportunity for a sandwich attack.
 
-You have 15 ETH at your disposal, and your blockchain professor would be so proud to see you apply your learnings in real life (or maybe not...).
+You have 15 ETH at your disposal, and your blockchain professor would be so proud to see you apply your knowledge in real life (or maybe not...).
 
 \medskip
 \noindent

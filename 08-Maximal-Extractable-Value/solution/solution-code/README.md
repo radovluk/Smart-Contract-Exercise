@@ -1,6 +1,6 @@
-# Smart Contracts Exercise 08: Maximal Extractable Value -- Solution
+# Smart Contracts Exercise 08: Maximal Extractable Value --- Solution
 
-The solved Exercise 08 - Maximal Extractable Value can be found in this [GitLab repository](https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/08-Maximal-Extractable-Value/solution/solution-code?ref_type=heads).
+The solution for Exercise 08: Maximal Extractable Value can be found in this [GitHub repository](https://github.com/radovluk/Smart-Contract-Exercise/tree/main/08-Maximal-Extractable-Value/solution/solution-code).
 
 ## Solution to Task 1: NFT Auction Frontrunning
 
@@ -42,7 +42,7 @@ console.log("Player sent frontrunning transaction");
 
 ### Possible Mitigation
 
-**Commit-Reveal Schemes**: Users first submit a hash of their bid (commit), and later reveal the actual bid value. This prevents frontrunning since the actual bid values aren't visible in the mempool.
+**Commit-Reveal Schemes**: Users first submit a hash of their bid (commit) and later reveal the actual bid value. This prevents frontrunning since the actual bid values aren't visible in the mempool.
 
 ```solidity
 function commitBid(bytes32 bidHash) external {
@@ -126,7 +126,7 @@ const frontrunTx = await simpleDEX.connect(player).ethToUsdc({
 
 mine(1);
 
-// backrun the transaction
+// Backrun the transaction
 const backrunAmount = await usdcToken.balanceOf(player.address);
 await usdcToken.connect(player).approve(simpleDEX.target, backrunAmount);
 await simpleDEX.connect(player).usdcToEth(backrunAmount);
@@ -134,7 +134,7 @@ await simpleDEX.connect(player).usdcToEth(backrunAmount);
 
 ### Possible Mitigation
 
-DEX should support slippage tolerance to protect against significant price movements. If the price moves beyond the tolerance, the transaction reverts.
+DEXs should support slippage tolerance to protect against significant price movements. If the price moves beyond the tolerance, the transaction reverts.
 
 ```solidity
 function ethToUsdcWithSlippage(uint minUsdcOut) external payable {
