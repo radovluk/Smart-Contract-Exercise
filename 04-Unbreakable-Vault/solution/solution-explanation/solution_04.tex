@@ -18,7 +18,7 @@
 
 \geometry{a4paper, margin=1in}
 
-\title{Smart Contracts Exercise 04: \\ Unbreakable Vault -- Solution}
+\title{Smart Contracts Exercise 04: \\ Unbreakable Vault --- Solution}
 \author{}
 \date{}
 
@@ -81,11 +81,11 @@
 \maketitle
 
 \noindent
-The solved exercise 4 can be found in this \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/04-Unbreakable-Vault/solution/solution-code?ref_type=heads}{GitLab repository}.
+The solved exercise 4 can be found in this \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/04-Unbreakable-Vault/solution/solution-code}{GitHub repository}.
 
 \subsection*{Vault01: A Password Password}
 
-To breach \texttt{Vault01}, you need to call the \texttt{breachVault} function in \texttt{test/Vault01.js} with the correct password. The password is the \texttt{keccak256} hash of the string \texttt{"password"}. Use \texttt{ethers.id("password")} to compute the hash and pass it to the function to successfully breach the vault. See \href{https://docs.ethers.org/v6/api/hashing/\#id}{id docs} for more.
+To breach \texttt{Vault01}, you need to call the \texttt{breachVault} function in \texttt{test/Vault01.js} with the correct password. The password is the \texttt{keccak256} hash of the string \texttt{"password"}. Use \texttt{ethers.id("password")} to compute the hash and pass it to the function to successfully breach the vault. See \href{https://docs.ethers.org/v6/api/hashing/\#id}{id docs} for more information.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -100,7 +100,7 @@ await vault.connect(player).breachVault(hash);
 
 \subsection*{Vault02: Packet Sender}
 
-To breach \texttt{Vault02}, you need to call the \texttt{breachVault} function with the correct password. The password is the \texttt{keccak256} hash of the \texttt{msg.sender} address. Use \texttt{ethers.solidityPacked} to mimic \texttt{abi.encodePacked(msg.sender)}, first encode the player's address. See \href{https://docs.ethers.org/v6/api/hashing/\#solidityPacked}{solidityPacked docs} for more.
+To breach \texttt{Vault02}, you need to call the \texttt{breachVault} function with the correct password. The password is the \texttt{keccak256} hash of the \texttt{msg.sender} address. Use \texttt{ethers.solidityPacked} to mimic \texttt{abi.encodePacked(msg.sender)} by first encoding the player's address. See \href{https://docs.ethers.org/v6/api/hashing/\#solidityPacked}{solidityPacked docs} for more.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -118,7 +118,7 @@ await vault.connect(player).breachVault(hash);
 
 \subsection*{Vault03: Origins}
 
-To breach \texttt{Vault03}, you need to bypass the requirement that \texttt{msg.sender} must not be equal to \texttt{tx.origin}. This means the function must be called from a smart contract rather than directly from an externally owned account (EOA). 
+To breach \texttt{Vault03}, you need to bypass the requirement that \texttt{msg.sender} must not be equal to \texttt{tx.origin}. This means the function must be called from a smart contract rather than directly from an externally owned account (EOA).
 
 Deploy the \texttt{Vault03Attack} contract, passing the vault's address as a parameter. Then, call the \texttt{attack} function from the attack contract, which in turn calls \texttt{breachVault()}. Since the attack contract acts as an intermediary, \texttt{msg.sender} will be the attack contract, while \texttt{tx.origin} remains the player's address, satisfying the vault's condition. 
 
@@ -126,7 +126,7 @@ Deploy the \texttt{Vault03Attack} contract, passing the vault's address as a par
 \begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity 0.8.28;
 
 interface IVault03 {
     function breachVault() external returns (bool);
@@ -151,13 +151,13 @@ This successfully updates \texttt{lastSolver} to the player's address, completin
 
 \subsection*{Vault04: Pseudo-Random Trap}
 
-To breach \texttt{Vault04}, you need to provide a correct guess computed using  \texttt{block.timestamp} and \texttt{blockhash(block.number - 1)}. Since both values are accessible during the same transaction, you can compute the correct guess on-chain and submit it immediately. Deploy the \texttt{Vault04Attack} contract, passing the vault's address as a parameter. Then, call the \texttt{attack} function from the attack contract, which computes the guess and calls \texttt{breachVault()} with the correct value.
+To breach \texttt{Vault04}, you need to provide a correct guess computed using \texttt{block.timestamp} and \texttt{blockhash(block.number - 1)}. Since both values are accessible during the same transaction, you can compute the correct guess on-chain and submit it immediately. Deploy the \texttt{Vault04Attack} contract, passing the vault's address as a parameter. Then, call the \texttt{attack} function from the attack contract, which computes the guess and calls \texttt{breachVault()} with the correct value.
 
 \noindent
 \begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
     // SPDX-License-Identifier: MIT
-    pragma solidity ^0.8.28;
+    pragma solidity 0.8.28;
     
     interface IVault04 {
         function breachVault(uint256 _password) external returns (bool);
@@ -190,7 +190,7 @@ Since the guess is derived from predictable on-chain data and is used within the
 
 \subsection*{Vault05: Fortune Teller}
 
-To breach \texttt{Vault05}, you need to use the \texttt{blockhash} of the block when the guess was locked in, but only after the next block has been mined. First, you lock the guess using \texttt{lockInGuess}. Then, you must wait for the next block and calculate the random number using \texttt{blockhash(lockInBlockNumber)}. The issue is that at the moment of locking in the password, we do not know the blockhash yet. We can only access the blockhash of the previous blocks. However, since the \texttt{blockhash} function only returns the blockhash for the last 256 blocks, otherwise it returns zero (see \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Solidity documentation}). Therefore, we simply lock in a 0 and mine 256 blocks before calling the \texttt{breachVault} function.
+To breach \texttt{Vault05}, you need to use the \texttt{blockhash} of the block when the guess was locked in, but only after the next block has been mined. First, you lock the guess using \texttt{lockInGuess}. Then, you must wait for the next block and calculate the random number using \texttt{blockhash(lockInBlockNumber)}. The issue is that at the moment of locking in the password, we do not know the blockhash yet. We can only access the blockhash of previous blocks. However, the \texttt{blockhash} function only returns the blockhash for the last 256 blocks; otherwise, it returns zero (see \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Solidity documentation}). Therefore, we simply lock in a 0 and mine 256 blocks before calling the \texttt{breachVault} function.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -222,7 +222,7 @@ Arg [1] : 000000000000000000000000000000000000000000000000000000000000000b
 Arg [2] : 796f756e61696c65646974000000000000000000000000000000000000000000
 \end{minted}
 
-You can also find the password from a previous transactions that interacted with this contract. For example, see \href{https://sepolia.etherscan.io/inputdatadecoder?tx=0xc1f544372d0e732537a72f5e6fba05ad2ef2346695519416bedd8f37d2f17a57}{this transaction}. The password is "younailedit".
+You can also find the password from previous transactions that interacted with this contract. For example, see \href{https://sepolia.etherscan.io/inputdatadecoder?tx=0xc1f544372d0e732537a72f5e6fba05ad2ef2346695519416bedd8f37d2f17a57}{this transaction}. The password is "younailedit".
 
 \subsection*{Vault07: You Shall Not Pass!}
 
@@ -247,7 +247,7 @@ To breach \texttt{Vault07}, you need to figure out the stored \texttt{password} 
 \end{table}
 
 
-First, retrieve the value stored in slot 4. The last byte of the stored value in this slot contains metadata, indicating the length of the password string. You can decode the password by using the first \texttt{length} bytes from the slot's value, where \texttt{length} is computed from the last byte metadata.
+First, retrieve the value stored in slot 4. The last byte of the stored value in this slot contains metadata, indicating the length of the password string. You can decode the password by using the first \texttt{length} bytes from the slot's value, where \texttt{length} is computed from the last byte's metadata.
 
 After extracting the password string, you can compute the hash of the password using \texttt{keccak256(abi.encodePacked(password, playerAddress))}. Finally, pass the hashed password to the \texttt{breachVault} function to successfully breach the vault. The password is "youshallnotpassword".
 
@@ -309,7 +309,7 @@ await playerVault.breachVault();
 
 \subsection*{Vault09: Less Is More}
 
-To breach \texttt{Vault09}, you need to exploit an integer underflow vulnerability in the \texttt{transferFrom} function. The key observation is that the contract checks if the message sender has enough tokens, but not whether the \texttt{from} address has enough tokens. This allows you to cause an underflow in the \texttt{tokenBalances[from] -= amount} operation.
+To breach \texttt{Vault09}, you need to exploit an integer underflow vulnerability in the \texttt{transferFrom} function. The key observation is that the contract checks if the message sender has enough tokens but not whether the \texttt{from} address has enough tokens. This allows you to cause an underflow in the \texttt{tokenBalances[from] -= amount} operation.
 
 First, deploy an attack contract that will interact with the vulnerable vault. Then, from your account (which starts with 1 token), approve the attack contract to spend tokens on your behalf. Next, have the attack contract call \texttt{transferFrom} to transfer more tokens than you actually have, causing an integer underflow in your token balance.
 

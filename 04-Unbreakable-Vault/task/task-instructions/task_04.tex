@@ -88,18 +88,18 @@ interaction with the Ethereum blockchain and its ecosystem. We will also
 demonstrate how to work in \href{https://remix.ethereum.org/}{Remix IDE}, an
 open-source development environment accessible through a web browser.
 Additionally, you will learn about blockchain data transparency, storage,
-randomness pattern and the differences between \texttt{msg.sender} and
-\texttt{tx.origin} and integer underflow and overflow problems.
+randomness patterns, and the differences between \texttt{msg.sender} and
+\texttt{tx.origin}, as well as integer underflow and overflow problems.
 
 \subsection*{Project Setup}
 
-You have two options for working with this exercise. Using Docker container or
+You have two options for working with this exercise: using a Docker container or a
 local installation. Choose the one that best fits your preferences.
 
 \subsection{Using Docker with VS Code}
 
 This option uses Docker to create a development environment with all the
-necessary tools and dependencies pre-installed.
+necessary tools and dependencies preinstalled.
 
 \subsubsection*{Prerequisites:}
 
@@ -113,7 +113,7 @@ necessary tools and dependencies pre-installed.
 
 \begin{enumerate}
     \item Visit the following
-          \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/04-Unbreakable-Vault/task/task-code}{GitLab
+          \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/04-Unbreakable-Vault/task/task-code}{GitHub
               repository} and clone it to your local machine.
     \item Open the repository folder in VS Code.
     \item When prompted, click ``Reopen in Container'' or use the command palette (F1)
@@ -148,7 +148,7 @@ and dependencies needed for development.
 
 \begin{enumerate}
     \item Visit the following
-          \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/04-Unbreakable-Vault/task/task-code}{GitLab
+          \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/04-Unbreakable-Vault/task/task-code}{GitHub
               repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
     \item Install the project dependencies by running \codegrey{npm install}.
@@ -157,8 +157,8 @@ and dependencies needed for development.
 \subsection{Testing Your Solution}
 
 For the purposes of this exercise, you will need an Infura API key and a
-configured wallet. If you do not have this set up yet, we recommend going
-through the Smart Contracts Exercise 01: Hello, Blockchain World! where
+configured wallet. If you do not have these set up yet, we recommend going
+through the Smart Contracts Exercise 01: Hello, Blockchain World!, where
 everything is explained. Ensure that configuration variables are set for your
 Hardhat projects. You can verify this by running:
 
@@ -239,8 +239,8 @@ Verify your solution with:
 
 In this exercise, each individual task is also available in Remix IDE. Remix is
 a versatile tool that requires no installation, promotes rapid development, and
-offers a wide range of plugins with intuitive GUIs created by Ethereum
-foundation. It is available as both a web application and a desktop
+offers a wide range of plugins with intuitive GUIs created by the Ethereum
+Foundation. It is available as both a web application and a desktop
 application. The purpose of this is to familiarize you with the basic
 operations in this program and to facilitate your interaction with smart
 contracts.
@@ -295,10 +295,10 @@ In the Ethereum network, there are two main types of accounts:
     \item Externally Owned Accounts (EOAs)
     \item Smart Contract Accounts (SCAs)
 \end{itemize}
-EOAs are managed by private keys, SCAs are governed by smart contract code.
+EOAs are managed by private keys, while SCAs are governed by smart contract code.
 
 \noindent
-To breach the third vault, you need to understand the difference between \texttt{msg.sender} and \texttt{tx.origin}. The key distinction is that \texttt{tx.origin} always refers to the original external account that initiated the transaction, while \texttt{msg.sender} can be any contract or account that called the current function. As illustrated in the graph below (see Figure~\ref{fig:msg.sender}), smart contracts can call other smart contracts, but only an externally owned account can initiate a transaction and forward the gas. It is important to never use \texttt{tx.origin} for authentication. For this challenge, you cannot implement the solution directly in \texttt{test/Vault03}. Instead, you need to use a proxy contract. Implement your solution in \texttt{contracts/AttackVault03.sol}.
+To breach the third vault, you need to understand the difference between \texttt{msg.sender} and \texttt{tx.origin}. The key distinction is that \texttt{tx.origin} always refers to the original external account that initiated the transaction, while \texttt{msg.sender} can be any contract or account that called the current function. As illustrated in the graph below (see Figure~\ref{fig:msg.sender}), smart contracts can call other smart contracts, but only an externally owned account can initiate a transaction and forward the gas. It is important to never use \texttt{tx.origin} for authentication. For this challenge, you cannot implement the solution directly in \texttt{test/Vault03.js}. Instead, you need to use a proxy contract. Implement your solution in \texttt{contracts/AttackVault03.sol}.
 
 \begin{figure}[h!]
     \centering
@@ -354,11 +354,11 @@ use pseudo-random number generators (PRNGs) based on
 \end{itemize}
 
 \noindent
-The problem is, that block proposers might attempt to delay transactions that do not yield the desired outcome. This issue is particularly relevant for high-value transactions exceeding the staking reward. It is potentially predictable and generally not recommended.
+The problem is that block proposers might attempt to delay transactions that do not yield the desired outcome. This issue is particularly relevant for high-value transactions exceeding the staking reward. This approach is potentially predictable and generally not recommended.
 
 \subsubsection*{Solution with Oracles} Oracles are typically used to access external data from outside the blockchain. Additionally, oracles can provide verifiable random numbers. However, they come with limitations such as high gas costs and dependency on third parties (the oracle owner can manipulate the data). We will learn more about oracles in future exercises.
 
-\subsubsection*{Commit and Reveal Scheme} Another solution might be commit and reveal scheme. The process involves two steps:
+\subsubsection*{Commit and Reveal Scheme} Another solution might be a commit-and-reveal scheme. The process involves two steps:
 \begin{enumerate}
     \item \textbf{Commit}: Users (more than one) hash their random number concatenated with a secret value. They commit to this number by publishing the hash to the smart contract.
     \item \textbf{Reveal}: Users reveal their random number and the secret value. The smart contract verifies the hash and calculates the random number from these commits:
@@ -417,7 +417,7 @@ For this vault, you will need a proxy contract as well. Implement your solution 
 \subsection*{Vault05: Fortune Teller}
 
 This vault cannot be opened without a crystal ball. Or can it? Implement your
-solution in the \texttt{test/Vault05.sol} file. Look for hints here:
+solution in the \texttt{test/Vault05.js} file. Look for hints here:
 \href{https://docs.soliditylang.org/en/latest/units-and-global-variables.html}{Units
     and global variables in Solidity}.
 
@@ -458,16 +458,16 @@ solution in the \texttt{test/Vault05.sol} file. Look for hints here:
 \subsection*{Vault06: Explorer}
 
 The EVM can store data in different areas: storage, transient storage, memory, and
-stack.
+the stack.
 
 \begin{itemize}
-    \item \textbf{Storage} is persistent between function calls and transactions. It is the most expensive type of memory in terms of gas cost. We can think of storage as a hard drive. State variables are saved in storage by default.
+    \item \textbf{Storage} is persistent between function calls and transactions. It is the most expensive type of memory in terms of gas cost. We can think of storage as a hard drive. State variables are stored in storage by default.
 
-    \item \textbf{Transient Storage} is similar to storage, but the main difference is that it resets at the end of each transaction. The value stored in this data persists only across function calls originating from the first call of the transaction. The cost is significantly lower than storage.
+    \item \textbf{Transient Storage} is similar to storage, but the main difference is that it resets at the end of each transaction. The values stored here persist only across function calls originating from the first call of the transaction. The cost is significantly lower than storage.
 
-    \item \textbf{Memory} is a temporary storage location for data. A contract obtains a freshly cleaned instance for each message call. Once execution is completed, memory is cleared for the next execution. It is comparable to RAM.
+    \item \textbf{Memory} is a temporary storage location for data. A contract obtains a freshly cleared instance for each message call. Once execution is completed, memory is cleared for the next execution. It is comparable to RAM.
 
-    \item \textbf{Stack} EVM is a stack machine rather than a register machine; all computations are done in the data region called the stack. It has a strict size limit (1024 slots), meaning complex operations often require \texttt{memory} or \texttt{storage}.
+    \item \textbf{Stack}: EVM is a stack machine rather than a register machine; all computations are done in the data region called the stack. It has a strict size limit (1024 slots), meaning complex operations often require \texttt{memory} or \texttt{storage}.
 
 \end{itemize}
 
@@ -507,7 +507,7 @@ It's important to note that marking a variable as private only restricts access 
 
 \medskip
 \noindent
-You can also interact with the contract directly from the Remix IDE if you connect it to your MetaMask wallet, change the environment to "Injected Provider - MetaMask" and use the "Load contract from address" function.
+You can also interact with the contract directly from the Remix IDE if you connect it to your MetaMask wallet, change the environment to ``Injected Provider - MetaMask'' and use the ``Load contract from address'' function.
 
 \medskip
 \noindent
@@ -566,7 +566,7 @@ vulnerabilities in smart contracts, where numeric calculations could wrap
 around in unexpected ways:
 
 \begin{itemize}
-    \item \textbf{Integer Overflow}: Occurs when a number exceeds its maximum value and wraps around to its minimum value. For example, incrementing a \texttt{uint8} with value 255 by 1 would result in 0, not 256.
+    \item \textbf{Integer Overflow}: Occurs when a number exceeds its maximum value and wraps around to its minimum value. For example, incrementing a \texttt{uint8} with a value of 255 by 1 would result in 0, not 256.
     \item \textbf{Integer Underflow}: Occurs when a number goes below its minimum value and wraps around to its maximum value. For example, decrementing a \texttt{uint8} with value 0 by 1 would result in 255, not -1.
 \end{itemize}
 
@@ -595,11 +595,11 @@ Starting with Solidity 0.8.0, arithmetic operations automatically include overfl
 \end{minipage}
 
 \noindent
-The \texttt{unchecked} keyword tells the compiler to skip the overflow/underflow checks for the code inside the block, which can save gas but potentially introduces vulnerabilities if not used carefully.
+The \texttt{unchecked} keyword tells the compiler to skip the overflow/underflow checks for the code inside the block, which can save gas but potentially introduce vulnerabilities if not used carefully.
 
 \medskip
 \noindent
-This challenge involves a token vault running on Solidity 0.7.6. Your goal is to obtain 1,000,000 tokens without paying the required amount of ETH. The price of each token is 1 ETH and you (player) will start only with 1 ETH. Implement your solution in \texttt{test/Vault08.js}.
+This challenge involves a token vault running on Solidity 0.7.6. Your goal is to obtain 1,000,000 tokens without paying the required amount of ETH. The price of each token is 1 ETH and you (player) will start with only 1 ETH. Implement your solution in \texttt{test/Vault08.js}.
 
 \noindent
 \begin{minipage}{\textwidth}
