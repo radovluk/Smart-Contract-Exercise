@@ -81,7 +81,7 @@
 \maketitle
 
 \noindent
-The example implementation of the CTU Token contract can be found in this \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/03-ERC20-CTUToken/solution/solution-code}{GitLab repository}. The required implementation is in the file \texttt{contracts/CTUToken.sol}. Even this implementation cannot prevent a frontrunning attack using only the \texttt{approve()} function. One possible solution is to use the \texttt{increaseAllowance()} and \texttt{decreaseAllowance()} functions instead of the \texttt{approve()} function. It's important to note, that even this solution is not completely foolproof, as the \texttt{decreaseAllowance()} function can still be frontrun before the allowance value is reduced. Frontrunning is part of the complex topic of MEV (Maximal Extractable Value), which is beyond the scope of this exercise and will be covered in future exercises.
+The example implementation of the CTU Token contract can be found in this \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/03-ERC20-CTUToken/solution/solution-code}{GitHub repository}. The required implementation is in the file \texttt{contracts/CTUToken.sol}. Even this implementation cannot prevent a frontrunning attack when using only the \texttt{approve()} function. One possible solution is to use the \texttt{increaseAllowance()} and \texttt{decreaseAllowance()} functions instead of the \texttt{approve()} function. It's important to note that even this solution is not completely foolproof, as the \texttt{decreaseAllowance()} function can still be frontrun before the allowance value is reduced. Frontrunning is part of the complex topic of MEV (Maximal Extractable Value), which is beyond the scope of this exercise and will be covered in future exercises.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -127,7 +127,7 @@ function decreaseAllowance(
 \end{minipage}
 
 We recommend using the OpenZeppelin ERC20 token implementation, which you can find in the file \texttt{contracts/CTUTokenOpenZeppelin.sol}.
-Take time to explore and understand the implementation in the \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{OpenZeppelin GitHub repository}. Note: OpenZeppelin has removed the increaseAllowance and decreaseAllowance functions from their implementation. You can find their explanation for this decision \href{https://github.com/OpenZeppelin/openzeppelin-contracts/issues/4583}{here}.
+Take time to explore and understand the implementation in the \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{OpenZeppelin GitHub repository}. Note: OpenZeppelin has removed the \texttt{increaseAllowance} and \texttt{decreaseAllowance} functions from their implementation. You can find their explanation for this decision \href{https://github.com/OpenZeppelin/openzeppelin-contracts/issues/4583}{here}.
 
 \noindent
 \begin{minipage}{\textwidth}

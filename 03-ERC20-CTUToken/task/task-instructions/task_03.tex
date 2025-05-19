@@ -82,12 +82,12 @@
 \maketitle
 \section{Introduction}
 
-Tokens in the Ethereum ecosystem are smart contracts that implement a standardized interface. They are designed to represent various assets digitally. These assets can range from financial instruments like company shares and stablecoins (e.g., USDC, DAI) to governance tokens that allow holders to vote on decisions in decentralized projects (e.g., Uniswap's UNI). Tokens can also enable artists to tokenize their works and sell them as unique digital items (NFTs), represent collectibles in games, or are used for digital identity or access to services. Depending on the use case, there are different types of tokens, each serving distinct purposes. Below are three common types of tokens:
+Tokens in the Ethereum ecosystem are smart contracts that implement a standardized interface. They are designed to represent various assets in digital form. These assets can range from financial instruments like company shares and stablecoins (e.g., USDC, DAI) to governance tokens that allow holders to vote on decisions in decentralized projects (e.g., Uniswap's UNI). Tokens can also enable artists to tokenize their works and sell them as unique digital items (NFTs), represent collectibles in games, or be used for digital identity or access to services. Depending on the use case, there are different types of tokens, each serving distinct purposes. Below are three common types of tokens:
 
 \begin{enumerate}
   \item \textbf{Fungible Tokens}
 
-  Fungible tokens \href{https://eips.ethereum.org/EIPS/eip-20}{(\textit{ERC-20 Tokens})} are interchangeable and have exactly the same value. Each unit of a fungible token is identical to another unit. Examples are cryptocurrencies, utility tokens or governance tokens.
+  Fungible tokens \href{https://eips.ethereum.org/EIPS/eip-20}{(\textit{ERC-20 Tokens})} are interchangeable and have exactly the same value. Each unit of a fungible token is identical to another unit. Examples include cryptocurrencies, utility tokens, or governance tokens.
 
     \begin{figure}[h!]
       \centering
@@ -98,7 +98,7 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
 
     \item \textbf{Non-Fungible Tokens (NFTs)}
 
-    Non-fungible tokens \href{https://eips.ethereum.org/EIPS/eip-721}{(\textit{ERC-721 Tokens})} are unique and cannot be exchanged on a one-to-one basis. They are used to represent ownership of unique items such as digital art, collectibles, and real estate and many others. Each token is uniquely identifiable by an ID.
+    Non-fungible tokens \href{https://eips.ethereum.org/EIPS/eip-721}{(\textit{ERC-721 Tokens})} are unique and cannot be exchanged on a one-to-one basis. They are used to represent ownership of unique items such as digital art, collectibles, real estate, and many others. Each token is uniquely identifiable by an ID.
 
     \begin{figure}[h!]
       \centering
@@ -119,15 +119,15 @@ Tokens in the Ethereum ecosystem are smart contracts that implement a standardiz
     \end{figure}
   \end{enumerate}
 
-In this exercise, you'll create your own ERC-20 token contract following the specified standard, and then attempt to hack it. For more information about tokens, check out this animated video: \href{https://www.youtube.com/watch?v=Xdkkux6OxfM}{What Are NFTs and How Can They Be Used in Decentralized Finance?} You'll also work with your own NFTs in future exercises.
+In this exercise, you'll create your own ERC-20 token contract following the specified standard and then attempt to hack it. For more information about tokens, check out this animated video: \href{https://www.youtube.com/watch?v=Xdkkux6OxfM}{What Are NFTs and How Can They Be Used in Decentralized Finance?} You'll also work with your own NFTs in future exercises.
 
 \subsection*{Project Setup}
 
-You have two options for working with this exercise. Using Docker container or local installation. Choose the one that best fits your preferences.
+You have two options for working with this exercise: using a Docker container or a local installation. Choose the one that best fits your preferences.
 
 \subsection{Using Docker with VS Code}
 
-This option uses Docker to create a development environment with all the necessary tools and dependencies pre-installed.
+This option uses Docker to create a development environment with all the necessary tools and dependencies preinstalled.
 
 \subsubsection*{Prerequisites:}
 
@@ -140,7 +140,7 @@ This option uses Docker to create a development environment with all the necessa
 \subsubsection*{Setting Up the Project:}
 
 \begin{enumerate}
-  \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/03-ERC20-CTUToken/task/task-code?ref_type=heads}{GitLab repository} and clone it to your local machine.
+  \item Visit the following \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/03-ERC20-CTUToken/task/task-code}{GitHub repository} and clone it to your local machine.
   \item Open the repository folder in VS Code.
   \item When prompted, click ``Reopen in Container'' or use the command palette (F1) and run \codegrey{Dev Containers: Reopen in Container}.
 \end{enumerate}
@@ -168,18 +168,18 @@ Both commands should return the installed version numbers of Node.js and NPM res
 \subsubsection*{Setting Up the Project}
 
 \begin{enumerate}
-    \item Visit the following \href{https://gitlab.fel.cvut.cz/radovluk/smart-contracts-exercises/-/tree/main/03-ERC20-CTUToken/task/task-code?ref_type=heads}{GitLab repository} and clone it to your local machine.
+    \item Visit the following \href{https://github.com/radovluk/Smart-Contract-Exercise/tree/main/03-ERC20-CTUToken/task/task-code}{GitHub repository} and clone it to your local machine.
     \item Open a terminal and navigate to the project directory.
     \item Install the project dependencies by running \codegrey{npm install}.
 \end{enumerate}
 
 \section{Specification: ERC-20 Token}
 
-The ERC-20 standard was first proposed by Fabian Vogelsteller and Vitalik Buterin in November 2015. The token specification defines the interface that a smart contract must implement to be ERC-20 compliant. It is important to note that it \textbf{does not specify the actual implementation}. It is the most widely used standard with more than 1.5 million smart contracts on the mainnet implementing it.
+The ERC-20 standard was first proposed by Fabian Vogelsteller and Vitalik Buterin in November 2015. The token specification defines the interface that a smart contract must implement to be ERC-20 compliant. It is important to note that it \textbf{does not specify the actual implementation}. It is the most widely used standard, with more than 1.5 million smart contracts on the mainnet implementing it.
 
 \medskip
 \noindent
-Example functionalities ERC-20 provides:
+Examples of functionalities that ERC-20 provides:
 
 \begin{itemize}
   \item Transfer tokens from one account to another.
@@ -188,7 +188,7 @@ Example functionalities ERC-20 provides:
   \item Approve whether an amount of token from an account can be spent by a third-party account.
 \end{itemize}
 
-If a Smart Contract implements the following methods and events, it can be called an ERC-20 Token Contract. Once deployed, it will be responsible for keeping track of the created tokens on Ethereum. To see the full specification, visit \href{https://eips.ethereum.org/EIPS/eip-20}{EIP20 proposal}.
+If a Smart Contract implements the following methods and events, it can be called an ERC-20 Token Contract. Once deployed, it will be responsible for keeping track of the created tokens on Ethereum. To see the full specification, visit the \href{https://eips.ethereum.org/EIPS/eip-20}{EIP-20 proposal}.
 
 \subsubsection*{Methods}
 
@@ -222,13 +222,13 @@ If a Smart Contract implements the following methods and events, it can be calle
 \subsection*{OpenZeppelin}
 
 \href{https://www.openzeppelin.com/}{OpenZeppelin} provides an open-source library for secure smart contract development. It is built on a solid
-foundation of community-vetted code. It is good practice to use standardized implementations like those from OpenZeppelin. Documentation about available contracts made by OpenZeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC20 implementation by OpenZeppelin is a standard recognized by the official EIP20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is a common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purpose of this exercise, you will implement the ERC20 contract by yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
+foundation of community-vetted code. Using standardized implementations like those from OpenZeppelin is considered good practice. Documentation for available contracts created by OpenZeppelin can be found \href{https://docs.openzeppelin.com/contracts/4.x/}{here}. The actual implementations of the contracts are available on \href{https://github.com/OpenZeppelin/openzeppelin-contracts}{GitHub}. OpenZeppelin contracts can be installed using npm and imported directly into a contract. The ERC-20 implementation by OpenZeppelin is a standard recognized by the official EIP-20 documentation. You can find the implementation \href{https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol}{here}. It is common practice to use the ERC20 implementation by OpenZeppelin when creating ERC20 token contracts, instead of explicitly implementing the ERC20 interface inside the contract. However, for the educational purposes of this exercise, you will implement the ERC20 contract yourself. The implementation of the CTU Token contract using OpenZeppelin can be seen in the code below.
 
 \noindent
 \begin{minipage}{\textwidth}
 \begin{lstlisting}[language=Solidity]
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.0;
 
 // Import OpenZeppelin's ERC20 implementation
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -331,7 +331,7 @@ To fulfill the exercise, you need to pass all the provided tests. You can run th
 
 Did your contract pass all the tests? Congratulations! It is now fully tested and ready for deployment to the mainnet. But is it really?
 
-When you submit a transaction, it first enters the public mempool where anyone can see it. To get your transaction included in the blockchain, you need to pay a fee to validators. Validators typically choose transactions that offer the highest profit rather than processing them in chronological order. This means transactions submitted earlier might be included later, while those submitted more recently could be processed sooner. Note: this is a simplified explanation - we'll cover this topic more thoroughly in a future exercise about MEV.
+When you submit a transaction, it first enters the public mempool where anyone can see it. To get your transaction included in the blockchain, you need to pay a fee to validators. Validators typically choose transactions that offer the highest profit rather than processing them in chronological order. This means transactions submitted earlier might be included later, while those submitted more recently could be processed sooner. Note: This is a simplified explanation — we'll cover this topic more thoroughly in a future exercise about MEV.
 
 \begin{figure}[H]
 \centering
@@ -340,7 +340,7 @@ When you submit a transaction, it first enters the public mempool where anyone c
 \label{fig:frontrunning}
 \end{figure}
 
-The following table shows the attack vector for our CTU Token smart contract, where the attacker Bob manages to steal CTU tokens from Alice due to a frontrunning attack.
+The following table shows the attack vector for our CTU Token smart contract, where the attacker Bob manages to steal CTU tokens from Alice through a frontrunning attack.
 
 \begin{table}[H]
   \centering
@@ -369,13 +369,13 @@ The following table shows the attack vector for our CTU Token smart contract, wh
 
 \medskip
 \noindent
-Review the file \texttt{scripts/attack.js} where this attack is implemented and understand it. Then run the attack using the command
+Review the file \texttt{scripts/attack.js} where this attack is implemented and make sure you understand it. Then run the attack using the command:
 
 \begin{minted}[bgcolor=gray!5, fontsize=\footnotesize]{bash}
   $ npm run attack
 \end{minted}
 
-For this attack, we use a special configuration file for Hardhat, where we set that a new block is confirmed every 500ms and transactions are selected for inclusion in the blockchain based on priority fees. In our simulation, each block contains only one transaction for simplicity. However, this does not protect against frontrunning attacks, as transactions with higher fees will simply be included in earlier blocks. 
+For this attack, we use a special configuration file for Hardhat, where we set a new block to be confirmed every 500ms and transactions to be selected for inclusion in the blockchain based on priority fees. In our simulation, each block contains only one transaction for simplicity. However, this does not protect against frontrunning attacks, as transactions with higher fees will simply be included in earlier blocks. 
 
 \subsection*{Task:} Modify the CTU Token smart contract to prevent vulnerability to frontrunning attacks.
 
